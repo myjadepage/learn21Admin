@@ -1,0 +1,267 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+       <div class="col-xl-12">
+
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="미입고 현황 검색하기">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+
+                                <th scope="row"><span class="text-primary">가맹점</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-5">
+                                            <select class="form-control">
+                                                        <option>그룹</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                        </div>
+                                        <div class="col col-sm-5">
+                                            <select class="form-control">
+                                                        <option>가맹점</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row"><span class="text-primary">거래처</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" placeholder="거래처검색">
+                                                <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('vendorList')"><i class="la la-search"></i></button>
+                                                <vendor-list-popup title="거래처검색" v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><span class="text-primary">조회기간</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <DateSelect @state-start-date="startDate" @state-end-date="endDate"
+                                            :defStartDate="pfromDate"
+                                            :defEndDate="ptoDate"></DateSelect>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">비고</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex justify-content-start">
+                                            <div class="styled-checkbox">
+                                                <input type="checkbox" name="checkbox" id="check-1" checked>
+                                                <label for="check-1">전표건별 확인</label>
+                                            </div>
+                                            <div class="styled-checkbox">
+                                                <input type="checkbox" name="checkbox" id="check-1" checked>
+                                                <label for="check-1">잔량 0이하 제외</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary">조회</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-12 d-flex justify-content-end">
+                            <button type="button" class="btn btn-outline-primary"  @click="openModalPopup('buyNotInPrint')">인쇄</button>
+                            <buy-not-in-print-popup  v-if="modalOpenFlag && modalPopupId === 'buyNotInPrint'" @close="closeModalPopup"></buy-not-in-print-popup>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table class="table table-bordered mb-0" summary="미입고현황 리스트">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="15%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>전표번호</th>
+                                <th>발주일자</th>
+                                <th>거래처</th>
+                                <th>품목</th>
+                                <th>발주수량</th>
+                                <th>입고수량</th>
+                                <th>미입고수량</th>
+                                <th>공급가</th>
+                                <th>합계금액</th>
+                                <th>잔량합계금액</th>
+                            </tr>
+                        </thead>
+                        <tfoot class="table-primary">
+                            <tr>
+                                <th class="text-center">[합계]</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right">5,960</td>
+                                <td class="text-right">5,960</td>
+                                <td class="text-right">5,960</td>
+                                <td class="text-right">5,960,000</td>
+                                <td class="text-right">5,960,000</td>
+                                <td class="text-right">5,960,000</td>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr>
+                                <td>1234567</td>
+                                <td>2020-12-10</td>
+                                <td class="text-left">(주)다래출판</td>
+                                <td class="text-left">PB TOEFL JUNIOR SET(A)</td>
+                                <td class="text-right">200</td>
+                                <td class="text-right">180</td>
+                                <td class="text-right">20</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-left">PB TOEFL JUNIOR SET(A)</td>
+                                <td class="text-right">200</td>
+                                <td class="text-right">180</td>
+                                <td class="text-right">20</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-left">PB TOEFL JUNIOR SET(A)</td>
+                                <td class="text-right">200</td>
+                                <td class="text-right">180</td>
+                                <td class="text-right">20</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td>1234567</td>
+                                <td>2020-12-10</td>
+                                <td class="text-left">(주)다래출판</td>
+                                <td class="text-left">PB TOEFL JUNIOR SET(A)</td>
+                                <td class="text-right">200</td>
+                                <td class="text-right">180</td>
+                                <td class="text-right">20</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-left">PB TOEFL JUNIOR SET(A)</td>
+                                <td class="text-right">200</td>
+                                <td class="text-right">180</td>
+                                <td class="text-right">20</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-left">PB TOEFL JUNIOR SET(A)</td>
+                                <td class="text-right">200</td>
+                                <td class="text-right">180</td>
+                                <td class="text-right">20</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                                <td class="text-right">250,000,000</td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import dateSelect from '@/mixin/dateSelect'
+import VendorListPopup from '@/components/popup/common/VendorListPopup.vue'
+import BuyNotInPrintPopup from '@/components/popup/print/BuyNotInPrintPopup.vue'
+
+export default {
+  name: 'buyNotin',
+  mixins: [pageHeader({title: '미입고현황', groupName: '구매관리'}), dateSelect],
+  components: { VendorListPopup, BuyNotInPrintPopup },
+  data () {
+    return {
+      modalOpenFlag: false
+    }
+  },
+  methods: {
+    openModalPopup (id) {
+      switch (id) {
+        case 'vendorList': // 거래처검색
+          this.modalPopupId = 'vendorList'
+          break
+        case 'buyNotInPrint': // 매입명세서 인쇄
+          this.modalPopupId = 'buyNotInPrint'
+          break
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

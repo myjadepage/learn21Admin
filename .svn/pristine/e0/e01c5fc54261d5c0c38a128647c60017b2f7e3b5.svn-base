@@ -1,0 +1,166 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader v-bind:pageCurrentInfo="pageCurrentInfo" />
+      <div class="col-sm-12">
+        <!-- 검색영역 시작-->
+        <div class="widget has-shadow">
+          <div class="widget-body">
+            <table class="table table-bordered" summary="가맹점 검색하기">
+              <colgroup>
+                <col width="10%" />
+                <col width="40%" />
+                <col width="10%" />
+                <col width="40%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span>가맹점명</span>
+                  </th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-4">
+                        <input type="text" class="form-control" placeholder="검색어 입력"/>
+                      </div>
+                    </div>
+                  </td>
+                  <th><span>가맹점 그룹</span></th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-3">
+                        <select class="form-control" :value="fcGroupList" @input="selectFcGroup">
+                          <option value="">선택하세요</option>
+                          <option value="">청담어학원</option>
+                          <option value="">APRIL</option>
+                        </select>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <button type="button" class="btn btn-primary">검색</button>
+            </div>
+          </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+         <data-table-vue-4
+                :columnDef="columns"
+                :rowData="rows"
+                :isPaging="true"
+                :btnLinkedList="[{
+                      column: 'button',
+                      label: '수정',
+                      paramColumn: 'fgCode',
+                      onClick: (data) => {
+                        this.$router.push({name: 'baseShopInput',
+                                           params: {fgCode: data}})
+                        }
+                    }]" />
+      </div>
+      <!-- End Page Content -->
+    </div>
+  </div>
+</template>
+
+<script>
+import DataTableVue4 from '@/components/DataTableVue4'
+import pageHeader from '@/mixin/pageHeader'
+import { getFcList } from '@/api'
+
+export default {
+  name: 'baseShopList',
+  mixins: [pageHeader({title: '가맹점 관리', groupName: '기초관리'})],
+  components: { DataTableVue4 },
+  data: function () {
+    return {
+      fcGroupList: [],
+      fcList: [],
+      rows: [],
+      columns: [{
+        label: 'No',
+        name: 'index',
+        sort: true
+      },
+      {
+        label: '그룹',
+        name: 'fgCode',
+        sort: true
+      },
+      {
+        label: '가맹점명',
+        name: 'fuName',
+        sort: true,
+        row_classes: 'table-text-left'
+      },
+      {
+        label: '사업자번호',
+        name: 'fuoFiiceNumber',
+        sort: true
+      },
+      {
+        label: '대표자',
+        name: 'fuCeoName',
+        sort: true
+      },
+      {
+        label: '전화',
+        name: 'fuTel',
+        sort: true
+      },
+      {
+        label: 'FAX',
+        name: 'fuFax',
+        sort: true
+      },
+      {
+        label: '지역',
+        name: 'fuArea',
+        sort: true
+      },
+      {
+        label: '외부연결코드',
+        name: 'fuOutCode',
+        sort: true
+      },
+      {
+        label: '관리',
+        name: 'button',
+        sort: false
+      }]
+    }
+  },
+  mounted () {
+    this.getFranchise()
+  },
+  methods: {
+    // api
+    getFranchise () {
+      getFcList()
+        .then(res => {
+          this.rows = res.data.map(el => {
+            const container = {}
+            container.fgCode = el.fgCode
+            container.fuName = el.fuName
+            container.fuoFiiceNumber = el.fuoFiiceNumber
+            container.fuCeoName = el.fuCeoName
+            container.fuTel = el.fuTel
+            container.fuFax = el.fuFax
+            container.fuArea = el.fuArea
+            container.fuOutCode = `${el.fuOutCode} | ${el.fuOutCode2} `
+            return container
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    selectFcGroup (e) {
+      console.log('event', e.target.value)
+    }
+  }
+}
+</script>

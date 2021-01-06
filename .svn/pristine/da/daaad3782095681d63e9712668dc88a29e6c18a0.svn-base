@@ -1,0 +1,32 @@
+import axios from 'axios'
+
+const config = {
+  // baseUrl: 'http://localhost:8443'
+  baseUrl: 'http://192.168.232.51:8443/booksadmin'
+}
+
+// 코드 관리 > 코드그룹 select option
+export function getCodeGroup () {
+  return axios.get(`${config.baseUrl}/basic/code/find/groupCode`)
+}
+// 코드 관리 >  검색
+export function getCodeList (cdName, cgCode) {
+  return axios.get(`${config.baseUrl}/basic/code/find`, {
+    params: {
+      cdName: cdName,
+      cgCode: cgCode
+    }
+  })
+}
+// 코드 관리 > 코드그룹 상세
+export function getCodeGroupDetail (cgCode) {
+  return axios.get(`${config.baseUrl}/basic/code/find/groupCode/detail`, {
+    params: {
+      cgCode: cgCode
+    }
+  })
+}
+// 코드 추가
+export function addCodeDetail (param) {
+  return axios.post(`${config.baseUrl}/basic/code/save`, param)
+}

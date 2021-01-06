@@ -1,0 +1,21 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+
+export default {
+  mixins: [
+    pageHeader({title: '반품처리 현황', groupName: '물류관리'})
+  ]
+}
+</script>
+
+<style>
+
+</style>

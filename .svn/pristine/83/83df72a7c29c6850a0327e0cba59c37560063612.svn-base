@@ -1,0 +1,167 @@
+<template>
+    <div class="widget has-shadow">
+        <div class="widget-header bordered">
+            <div class="row" v-if="getIsPaging || getBtnList.length > 0">
+                <div class="col-sm-6 d-flex align-items-center justify-content-start">
+                    <div class="dropdown show vbt-per-page-dropdown col-sm-2">
+                        <a class="btn btn-block dropdown-toggle form-control" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{configVue4.per_page}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a v-for="(option, key, index) in configVue4.per_page_options" :key="index" class="dropdown-item" href="" @click.prevent="perPageHandler(option)" v-bind:class="{ active:  (option == configVue4.per_page)}">
+                                {{option}}
+                            </a>
+                        </div>
+                    </div>
+                    <label class="col-sm-4 table-len-label">조회건수 : {{ getRowData.length }}개</label>
+                </div>
+                <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center" v-if="getBtnList.length>0">
+                    <button class='btn btn-outline-danger' v-for="(o,i) in getBtnList" :key="i"
+                            @click="o.onClick()">{{o.btnName}}</button>
+                </div>
+            </div>
+        </div>
+        <div class="widget-body">
+            <v-table :rows="getRowData" :columns="getColumnDef" :config="configVue4" :classes="classes"
+                    @on-select-row="onChangeDtSelectedRows" @on-unselect-row="onChangeDtSelectedRows"
+            >
+              <template slot="empty-results">
+                  조회된 데이터가 없습니다.
+              </template>
+              <!-- 컬럼 포멧 설정 -->
+              <template :slot="o.name" slot-scope="props" v-for="(o, i) in this.getColumnDef.filter(x => x.type !== undefined)">
+                <span v-if="props.column.type === 'Date' && props.cell_value !== undefined && props.cell_value !== ''" :key="i">
+                  {{cellDateFormat(props.cell_value)}}
+                </span>
+                <span v-if="props.column.type === 'Number' && props.cell_value !== undefined && props.cell_value !== ''" :key="i">
+                  {{cellNumberFormat(props.cell_value)}}
+                </span>
+              </template>
+              <!-- row editor -->
+              <template :slot="o.editColumn" slot-scope="props" v-for="(o,i) in getRowEditorList">
+                <div v-if="o.type === 'LINK'" :key="i">
+                  <a href="#" @click.prevent="o.onClick(props)">
+                    {{ props.cell_value }}
+                  </a>
+                </div>
+                <div v-if="o.type === 'BUTTON'" :key="i">
+                  <button class="btn btn-sm btn-outline-dark" @click="o.onClick(props)">{{ o.label }}</button>
+                </div>
+                <div v-if="o.type === 'INPUT'" :key="i">
+                  <input type="text"
+                         :class="'form-control text-'
+                          + (props.column.row_classes !== undefined && props.column.row_classes.includes('right')? 'right' : 'left')"
+                         :disabled="o.disabled !== undefined ? o.disabled : false"
+                         :value="props.column.type === 'Number' ? cellNumberFormat(props.row[o.editColumn]) : props.row[o.editColumn]"
+                         @change="(e) => o.onChange(e, props)"
+                  />
+                </div>
+                <div v-if="o.type === 'SELECT'" :key="i">
+                  <select class="form-control" v-model="props.row[o.editColumn]" @change="(e) => o.onChange(e, props)">
+                    <option v-for="(o,i) in o.option" :key="i" :value="o.value">{{o.text}}</option>
+                  </select>
+                </div>
+              </template>
+            </v-table>
+
+        </div>
+    </div>
+</template>
+
+<script>
+import VueBootstrap4Table from 'vue-bootstrap4-table'
+export default {
+  name: 'DataTableVue4',
+  components: {
+    VTable: VueBootstrap4Table // table 이름변경 <v-table></v-table>
+  },
+  props: {
+    columnDef: { type: Array, required: true, default: () => [] },
+    rowData: { type: Array, default: () => [] },
+    isPaging: { type: Boolean, default: true },
+    isPagingInfo: { type: Boolean, default: false },
+    isCheckbox: { type: Boolean, default: false },
+    numOfVisibilePaginationButtons: { default: 10 },
+    isHighlightRowHover: { type: Boolean, default: true },
+    isRowsSelectable: { type: Boolean, default: false },
+    isMultiColumnSort: { type: Boolean, default: false },
+    isCardMode: { type: Boolean, default: false },
+    isSelectedRowsInfo: { type: Boolean, default: false },
+    perPage: { default: 20 },
+    perPageOptionList: { type: Array, default: () => [20, 50, 100] },
+    isShowResetButton: { type: Boolean, default: false },
+    isShowRefreshButton: { type: Boolean, default: false },
+    placeholder: { type: String, default: '' },
+    isVisibility: { type: Boolean, default: false },
+    isCaseSensitive: { type: Boolean, default: false },
+    // :btnList="[{btnName: '등록',onClick: () => { return this.$router.push({name: 'noticeInput'}) }}]"
+    btnList: { type: Array, default: () => [] },
+    rowEditorList: { type: Array, default: () => [] } // RowEditor
+  },
+  data: function () {
+    return {
+      configVue4: {
+        pagination: this.isPaging,
+        pagination_info: this.isPagingInfo,
+        num_of_visibile_pagination_buttons: this.numOfVisibilePaginationButtons,
+        checkbox_rows: this.isCheckbox,
+        highlight_row_hover: this.isHighlightRowHover,
+        rows_selectable: this.isRowsSelectable,
+        multi_column_sort: this.isMultiColumnSort,
+        card_mode: this.isCardMode,
+        selected_rows_info: this.isSelectedRowsInfo,
+        per_page: this.perPage,
+        per_page_options: this.perPageOptionList,
+        show_reset_button: this.isShowResetButton,
+        show_refresh_button: this.isShowRefreshButton,
+        global_search: {
+          placeholder: this.placeholder,
+          visibility: this.isVisibility,
+          case_sensitive: this.isCaseSensitive
+        }
+      },
+      classes: {
+        table: 'table table-bordered',
+        cell: {
+          'my-cell my-cell2': true
+        }
+      },
+      dtSelectedRows: []
+    }
+  },
+  computed: {
+    getColumnDef: function () { return this.columnDef },
+    getRowData: function () { return this.rowData },
+    getIsPaging: function () { return this.isPaging },
+    getBtnList: function () { return this.btnList },
+    getRowEditorList: function () { return this.rowEditorList }
+  },
+  methods: {
+    // table perpage
+    perPageHandler (option) {
+      this.configVue4.per_page = option
+    },
+    cellDateFormat (data) {
+      return this.$moment(data.trim()).format('YYYY-MM-DD')
+    },
+    cellNumberFormat (data) {
+      let resultVal = ''
+      if (data !== null && data !== '') {
+        resultVal = Number.parseInt(data.trim()).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      }
+      return resultVal
+    },
+    onChangeDtSelectedRows (e) {
+      if (e.selected_item !== undefined) {
+        this.dtSelectedRows.push(e.selected_item)
+      }
+      if (e.unselected_item !== undefined) {
+        this.dtSelectedRows = this.lodash.differenceWith(this.dtSelectedRows, [e.unselected_item], this.lodash.isEqual)
+      }
+      this.$emit('selectedRowData', this.dtSelectedRows)
+    }
+  },
+  mounted: function () {
+  }
+}
+</script>

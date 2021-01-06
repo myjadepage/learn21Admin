@@ -1,0 +1,222 @@
+<template>
+  <div class="default-sidebar">
+    <nav
+      class="side-navbar box-scroll sidebar-scroll"
+      :class="{ shrinked: isShrinked }"
+    >
+      <ul class="list-unstyled" id="pageMove">
+        <li>
+          <a href="#dropdown-base" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-leaf"></i><span>기초 관리</span></a
+          >
+          <SidebarMenu id="dropdown-base" :items="items.base" v-on:addTab="addTabPageClick"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-buy" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-shopping-cart"></i><span>구매 관리</span></a
+          >
+          <SidebarMenu id="dropdown-buy" :items="items.buy"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-sales" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-calculator"></i><span>영업 관리</span></a
+          >
+          <ul id="dropdown-sales" class="collapse list-unstyled">
+            <li><router-link to="sales_spec_list">매출 명세서</router-link></li>
+            <li><router-link to="sales_settle">매출 정산</router-link></li>
+            <li><router-link to="sales_search">매출 조회</router-link></li>
+            <li><router-link to="sales_invoice">매출처 원장</router-link></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dropdown-order" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-bus"></i><span>주문/배송 관리</span></a
+          >
+          <ul id="dropdown-order" class="collapse list-unstyled">
+            <li><router-link to="order_list">주문서 조회</router-link></li>
+            <li><router-link to="order_cancle_list">주문취소/반품 조회</router-link></li>
+            <li><router-link to="order_refund_list">환불 관리</router-link></li>
+            <li>
+              <router-link to="order_delivery_back_list">반품연동 조회</router-link>
+            </li>
+            <li><router-link to="order_num_send">에스크로 송장번호 전송</router-link></li>
+            <li>
+              <router-link to="order_num_send_list"
+                >에스크로 송장번호 전송 내역조회</router-link
+              >
+            </li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dropdown-stock" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-cubes"></i><span>물류관리</span></a
+          >
+          <ul id="dropdown-stock" class="collapse list-unstyled">
+            <li><router-link to="stock_basic">재고 현황</router-link></li>
+            <li><router-link to="stock_items">품목별 상세 재고</router-link></li>
+            <li><router-link to="stock_manage">재고자산 조정 관리</router-link></li>
+            <li><router-link to="stock_invoice">송장 관리</router-link></li>
+            <li><router-link to="stock_delivery">택배출고 현황</router-link></li>
+            <li><router-link to="stock_return">반품 관리</router-link></li>
+            <li><router-link to="stock_return_status">반품 처리 현황</router-link></li>
+            <li><router-link to="stock_shop">가맹점 물류이동</router-link></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dropdown-goods" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-book"></i><span>상품관리</span></a
+          >
+          <ul id="dropdown-goods" class="collapse list-unstyled">
+            <li><router-link to="goods_classify">상품 분류 관리</router-link></li>
+            <li><router-link to="goods_manage_info">상품 정보 관리</router-link></li>
+            <li><router-link to="goods_update_info">상품 정보 일괄 변경</router-link></li>
+          </ul>
+        </li>
+        <li>
+          <a href="#dropdown-cs" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-edit"></i><span>상담관리</span></a
+          >
+          <ul id="dropdown-cs" class="collapse list-unstyled">
+            <li><router-link to="cs_qa">1:1 상담 관리</router-link></li>
+            <li><router-link to="cs_manage">고객상담 관리</router-link></li>
+            <li><router-link to="cs_sms_manage">SMS 관리</router-link></li>
+            <li><router-link to="cs-sms_list">SMS 발송 결과</router-link></li>
+            <li><router-link to="cs_category">상담유형 등록</router-link></li>
+            <li><router-link to="cs-category_manage">상담유형 관리</router-link></li>
+          </ul>
+        </li>
+        <li>
+          <a
+            href="#dropdown-manage"
+            aria-expanded="false"
+            data-toggle="collapse"
+            ><i class="la la-file-text"></i><span>운영 관리</span></a
+          >
+          <ul id="dropdown-manage" class="collapse list-unstyled">
+            <li><router-link to="manage_notice_list">공지사항 관리</router-link></li>
+            <li><router-link to="manage_faq_list">FAQ 관리</router-link></li>
+          </ul>
+        </li>
+        <li>
+          <a
+            href="#dropdown-member"
+            aria-expanded="false"
+            data-toggle="collapse"
+            ><i class="la la-users"></i><span>직원 관리</span></a
+          >
+          <ul id="dropdown-member" class="collapse list-unstyled">
+            <li><router-link to="member_manage">직원 관리</router-link></li>
+          </ul>
+        </li>
+        <li>
+          <a
+            href="#dropdown-statistics"
+            aria-expanded="false"
+            data-toggle="collapse"
+            ><i class="la la-signal"></i><span>통계</span></a
+          >
+          <ul id="dropdown-statistics" class="collapse list-unstyled">
+            <li><router-link to="statistics_member">회원 분포</router-link></li>
+            <li>
+              <router-link to="statistics_member_new">회원가입/탈퇴 현황</router-link>
+            </li>
+            <li><router-link to="statistics_sales">판매 실적 조회</router-link></li>
+            <li>
+              <router-link to="statistics_online">온라인 구매비율 분석</router-link>
+            </li>
+            <li><router-link to="statistics_topseller">상위 구매자 현황</router-link></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</template>
+
+<script>
+import $ from 'jquery'
+import axios from 'axios'
+import SidebarMenu from './sidebar/SidebarMenu'
+
+export default {
+  components: {
+    SidebarMenu
+  },
+  name: 'SideBar',
+  data: function () {
+    return {
+      items: {
+        base: [
+          {title: '가맹점 관리', path: '/base/shop_list'},
+          {title: '거래처 관리', path: '/base/vendor_list'},
+          {title: '품목 관리', path: '/base/items'},
+          {title: '코드 관리', path: '/base/code'},
+          {title: '코드상세 관리', path: '/base/code_detail'},
+          {title: '코드그룹 관리', path: '/base/code_group'}
+        ],
+        buy: [
+          {title: '구매 발주서', path: '/buy'},
+          {title: '매입 확정', path: '/buy/confirm'},
+          {title: '매입 명세서', path: '/buy/spec_list'},
+          {title: '매입 조회', path: '/buy/search'},
+          {title: '매입처 원장', path: '/buy/invoice'},
+          {title: '미입고 현황', path: '/buy/not_in'}
+        ]
+      }
+    }
+  },
+  created () {
+    this.getMenuList()
+  },
+  mounted () {
+    this.makeScroll()
+    this.makeCollapse()
+  },
+  computed: {
+    isShrinked () {
+      return this.$store.state.isSideOpen
+    }
+  },
+  methods: {
+    // dynamic page tab add
+    addTabPageClick () {
+      $('#tabs').append(`
+      <li class="current"><router-link class="tab" to="${this.currentPage}">${this.currentPage}</router-link></li>
+      `)
+    },
+    // 대메뉴 api
+    getMenuList () {
+      axios({
+        method: 'get',
+        url: 'http://localhost:8443/basic/menu/find'
+      })
+        .then(function (res) {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // scroll
+    makeScroll () {
+      $('.sidebar-scroll').niceScroll({
+        cursorcolor: 'transparent',
+        cursorborder: 'transparent',
+        cursoropacitymax: 0,
+        boxzoom: false,
+        autohidemode: 'hidden',
+        cursorfixedheight: 80
+      })
+    },
+    // collapse
+    makeCollapse () {
+      $('.side-navbar li a').click(function () {
+        $('.collapse').collapse('hide')
+      })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,105 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-sm-12">
+        <!-- 리스트영역 시작 -->
+        <div class="widget has-shadow">
+          <div class="widget-header bordered">
+            <div class="row">
+              <div
+                class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center"
+              >
+                <label class="col-sm-12" style="padding-top:13px">선택한 코드그룹 건수 : {{ codegroup.length }}개</label>
+              </div>
+            </div>
+          </div>
+          <div class="widget-body">
+            <table
+              id="code_list-table"
+              class="table table-bordered"
+              summary="코드관리 리스트"
+            >
+              <colgroup>
+                <col width="10%" />
+                <col width="15%" />
+                <col width="15%" />
+                <col width="*" />
+                <col width="7%" />
+                <col width="10%" />
+                <col width="5%" />
+                <col width="10%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>코드그룹</th>
+                  <th>코드그룹명</th>
+                  <th>상위 참조코드</th>
+                  <th>코드 패키지</th>
+                  <th>코드길이</th>
+                  <th>업체</th>
+                  <th>사용</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="codegroup.length == 0">
+                  <td colspan="8" class="text-center">조회할 "코드그룹"을 먼저 선택하고 조회하세요</td>
+                </tr>
+                <tr v-for="item in codegroup" :key='item.index'>
+                  <td>{{ item.cgCode }}</td>
+                  <td>{{ item.cgName}}</td>
+                  <td> </td>
+                  <td class="text-left">{{ item.cgList }}</td>
+                  <td>{{ item.cgLength }}</td>
+                  <td>{{ item.cpCode }}</td>
+                  <td>{{ item.cgUseyn }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-outline-dark" @click="$router.push(`code_detail/${item.cgCode}`)">수정</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- 리스트영역 끝 -->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import { codeApi } from '@/api'
+
+export default {
+  name: 'baseCode',
+  mixins: [pageHeader({title: '코드관리', groupName: '기초관리'})],
+  data () {
+    return {
+      selected: '',
+      codegroup: []
+    }
+  },
+  created () {
+    this.getCodeGroupFind()
+  },
+  methods: {
+    // api
+    getCodeGroupFind () {
+      codeApi.getCodeGroup()
+        .then(res => {
+          console.log(res.data)
+          this.codegroup = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    codeEdit (index) {
+      console.log('수정해야해')
+    }
+  }
+}
+</script>

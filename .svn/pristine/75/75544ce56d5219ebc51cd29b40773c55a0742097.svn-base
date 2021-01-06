@@ -1,0 +1,243 @@
+<template>
+      <div id="purchasedSpecModal" class="modal-mask">
+        <div class="modal-dialog modal-item">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">매출 명세서</h4>
+                    <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="widget no-margin">
+                                <div class="widget-body no-padding">
+                                    <table class="table table-bordered" summary="매출명세서 관리">
+                                        <colgroup>
+                                            <col width="5%" />
+                                            <col width="7%" />
+                                            <col width="20%" />
+                                            <col width="7%" />
+                                            <col width="15%" />
+                                            <col width="7%" />
+                                            <col width="*" />
+                                            <col width="7%" />
+                                            <col width="20%" />
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th rowspan="3" class="bg-primary">편집</th>
+                                                <th scope="row"><span class="text-primary">매출일자</span></th>
+                                                <td>
+                                                   <div class="row">
+                                                        <div class="col col-sm-10">
+                                                            <datepicker :value="state.startdate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                                        </div>
+                                                        <div class="input-group col col-sm-2">
+                                                            <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <th scope="row"><span class="text-primary">거래처</span></th>
+                                                <td colspan="3">
+                                                    <div class="input-group row col-sm-7">
+                                                        <input type="text" class="form-control" placeholder="거래처검색" />
+                                                        <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('vendorList')"><i class="la la-search"></i></button>
+                                                        <vendor-list-popup title="거래처검색" v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+                                                    </div>
+                                                </td>
+                                                <th scope="row"><span class="text-primary">공급가</span></th>
+                                                <td class="text-right">15,200</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><span class="text-primary">담당자</span></th>
+                                                <td>
+                                                    <select class="form-control">
+                                                        <option>선택</option>
+                                                        <option>홍길동</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </td>
+                                                <th scope="row"><span class="text-primary">수주전표</span></th>
+                                                <td colspan="3">
+                                                    <div class="input-group row col-sm-7">
+                                                        <input type="text" class="form-control" placeholder="발주전표검색" />
+                                                        <button type="button" class="btn btn-sm btn-secondary"  @click="openModalPopup('buyInvoiceList')"><i class="la la-search"></i></button>
+                                                        <buy-invoice-list-popup title="발주서 검색" v-if="modalOpenFlag && modalPopupId === 'buyInvoiceList'" @close="closeModalPopup"></buy-invoice-list-popup>
+                                                    </div>
+                                                </td>
+                                                <th scope="row"><span class="text-primary">부가세</span></th>
+                                                <td class="text-right">0</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><span class="text-primary">메모</span></th>
+                                                <td colspan="3">
+                                                    <input type="text" class="form-control" placeholder="7.17일 주문서" />
+                                                </td>
+                                                <th scope="row"><span class="text-primary">합계수량</span></th>
+                                                <td>15</td>
+                                                <th scope="row"><span class="text-primary">합계금액</span></th>
+                                                <td class="text-right">15,200</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- 매입명세서리스트 -->
+                            <div class="widget">
+                                <div class="widget-body no-padding">
+                                    <table id="spec-table" class="table table-bordered" summary="품목명 리스트">
+                                        <colgroup>
+                                            <col width="5%" />
+                                            <col width="*" />
+                                            <col width="7%" />
+                                            <col width="8%" />
+                                            <col width="7%" />
+                                            <col width="8%" />
+                                            <col width="7%" />
+                                            <col width="7%" />
+                                            <col width="25%" />
+                                            <col width="5%" />
+                                        </colgroup>
+                                        <thead>
+                                            <tr>
+                                                <th>NO</th>
+                                                <th>품목명</th>
+                                                <th>수량</th>
+                                                <th>단가</th>
+                                                <th>공급가</th>
+                                                <th>부가세</th>
+                                                <th>합계금액</th>
+                                                <th>재고</th>
+                                                <th>비고</th>
+                                                <th>관리</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" placeholder="" />
+                                                        <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('itemSelectSingle')"><i class="la la-search"></i></button>
+                                                        <item-select-single-popup v-if="modalOpenFlag && modalPopupId === 'itemSelectSingle'" @close="closeModalPopup"></item-select-single-popup>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control text-right" value="3" />
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control text-right" value="39,000" />
+                                                </td>
+                                                <td>5400000</td>
+                                                <td>
+                                                    <input type="text" class="form-control text-right" value="39,000" />
+                                                </td>
+                                                <td class="text-right">10</td>
+                                                <td class="text-right">10</td>
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <input type="text" class="form-control"
+                                                                placeholder="비고 내용 표기" />
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div
+                                                        class="col-sm-12 d-flex align-items-center justify-content-center">
+                                                        <button class="btn btn-sm btn-outline-danger">-</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="widget-footer">
+                                    <div class="d-flex align-items-stretch justify-content-between">
+                                        <button class="btn btn-sm btn-outline-primary" @click="openModalPopup('itemSelect')">품목선택</button>
+                                        <item-select-popup title="품목선택" v-if="modalOpenFlag && modalPopupId === 'itemSelect'" @close="closeModalPopup"></item-select-popup>
+                                        <button id="btnAddRow" class="btn btn-sm btn-primary">항목 추가</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="justify-content: center">
+                    <div class="row col">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-outline-primary">신규전표</button>
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary margin-right-5">저장</button>
+                            <button type="button" class="btn btn-info margin-right-5"  @click="openModalPopup('salesSpecPrint')">인쇄</button>
+                            <sales-spec-print-popup v-if="modalOpenFlag && modalPopupId === 'salesSpecPrint'" @close="closeModalPopup"></sales-spec-print-popup>
+                            <button type="button" class="btn btn-secondary" @click="$emit('close')">닫기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+import VendorListPopup from '@/components/popup/common/VendorListPopup.vue'
+import BuyInvoiceListPopup from '@/components/popup/common/BuyInvoiceListPopup.vue'
+import ItemSelectPopup from './ItemSelectPopup.vue'
+import ItemSelectSinglePopup from './ItemSelectSinglePopup.vue'
+import SalesSpecPrintPopup from '../print/SalesSpecPrintPopup.vue'
+
+export default {
+  components: { datepicker, VendorListPopup, BuyInvoiceListPopup, ItemSelectPopup, ItemSelectSinglePopup, SalesSpecPrintPopup },
+  data () {
+    return {
+      state: {
+        startdate: new Date()
+      },
+      ko: ko,
+      modalOpenFlag: false
+    }
+  },
+  methods: {
+    getFormatDate (date) {
+      return this.$moment(date).format('YYYY-MM-DD')
+    },
+    openModalPopup (id) {
+      switch (id) {
+        case 'vendorList': // 거래처검색
+          this.modalPopupId = 'vendorList'
+          break
+        case 'buyInvoiceList': // 발주서 선택
+          this.modalPopupId = 'buyInvoiceList'
+          break
+        case 'salesSpecPrint': // 매입명세서 인쇄
+          this.modalPopupId = 'salesSpecPrint'
+          break
+        case 'itemSelect': // 품목 선택
+          this.modalPopupId = 'itemSelect'
+          break
+        case 'itemSelectSingle': // 품목단일 선택
+          this.modalPopupId = 'itemSelectSingle'
+          break
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

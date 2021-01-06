@@ -1,0 +1,261 @@
+<template>
+  <div class="tab-pane  show active">
+                    <div class="widget has-shadow">
+                        <div class="widget-body">
+                            <table class="table table-bordered" summary="기간별 매입 검색하기">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="40%">
+                                    <col width="10%">
+                                    <col width="40%">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th><span class="text-primary">조회기간</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <DateSelect @state-start-date="startDate" @state-end-date="endDate" :defStartDate="pfromDate" :defEndDate="ptoDate"></DateSelect>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <th scope="row"><span class="text-primary">가맹점</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col col-sm-3">
+                                                    <select class="form-control">
+                                                                <option>그룹</option>
+                                                                <option>Ketchup</option>
+                                                                <option>Relish</option>
+                                                            </select>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <select class="form-control">
+                                                                <option>가맹점</option>
+                                                                <option>Ketchup</option>
+                                                                <option>Relish</option>
+                                                            </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><span class="text-primary">품목 / 담당자</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col col-sm-5">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" placeholder="품목검색">
+                                                        <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('itemSelectSingle')"><i class="la la-search"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <select class="form-control">
+                                                        <option>담당자</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <th scope="row"><span class="text-primary">거래처</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-sm-5">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" placeholder="거래처검색">
+                                                       <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('vendorList')"><i class="la la-search"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="text-center">
+                                <button class="btn btn-primary">조회</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 1. 상세재고 리스트영역 시작 -->
+                    <div class="widget has-shadow">
+                        <div class="widget-header bordered">
+                            <div class="row">
+                                <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                                    <!-- <select class="form-control col-sm-2">
+                                                <option>표시갯수</option>
+                                                <option>10개</option>
+                                                <option>20개</option>
+                                                <option>30개</option>
+                                            </select> -->
+                                    <label class="col-sm-4">조회건수 : {{ Object.keys(byGroupRow).length - 1}} 개</label>
+                                </div>
+                                <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                                    <button class="btn btn-outline-primary btn_excel">엑셀다운로드</button>
+                                    <button class="btn btn-outline-secondary" @click="openModalPopup('buyPeriodPrint')">인쇄</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <table class="table table-bordered" summary="기간별 매입조회 리스트">
+                                <colgroup>
+                                    <col width="15%">
+                                    <col width="20%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="10%">
+                                    <col width="5%">
+                                    <col width="10%">
+                                    <col width=*>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>일자</th>
+                                        <th>거래처</th>
+                                        <th>수량</th>
+                                        <th>단가</th>
+                                        <th>공급가</th>
+                                        <th>부가세</th>
+                                        <th>합계</th>
+                                        <th>메모</th>
+                                    </tr>
+                                </thead>
+                                <!-- <tfoot>
+                                    <tr>
+                                        <th>합계</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th class="text-right">2,500,000</th>
+                                        <th class="text-right">0</th>
+                                        <th class="text-right">2,500,000</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot> -->
+                                <tbody>
+                                     <template v-for="dataList in byGroupRow">
+                                        <tr v-for="(data, i) in dataList" :key="data.index">
+                                            <th v-if="i === 0" :rowspan="getRowspan(dataList) + 1">{{ data.diiPurchdate }}</th>
+                                            <th :class="(data.cuName === '[소계]') ? 'text-center' : ''">{{ data.cuName}}</th>
+                                            <td class="text-right">{{ data.diiCount }}</td>
+                                            <td class="text-right">{{ data.unitPrice }}</td>
+                                            <td class="text-right">{{ data.diiSupplyPrice }}</td>
+                                            <td class="text-right">{{ data.diiTax }}</td>
+                                            <td class="text-right">{{ data.diiTotalPrice }}</td>
+                                            <td class="text-left">{{ data.diiMemo }}</td>
+                                        </tr>
+                                  </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 기간별 리스트영역 끝 -->
+                    <item-select-single-popup v-if="modalOpenFlag && modalPopupId === 'itemSelectSingle'" @close="closeModalPopup"></item-select-single-popup>
+                    <vendor-list-popup title="거래처검색" v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+                    <buy-period-print-popup v-if="modalOpenFlag && modalPopupId === 'buyPeriodPrint'" @close="closeModalPopup"></buy-period-print-popup>
+
+                </div>
+</template>
+
+<script>
+import dateSelect from '@/mixin/dateSelect'
+import ItemSelectSinglePopup from '@/components/popup/common/ItemSelectSinglePopup'
+import VendorListPopup from '@/components/popup/common/VendorListPopup.vue'
+import BuyPeriodPrintPopup from '@/components/popup/print/BuyPeriodPrintPopup.vue'
+import { numberWithCommas } from '@/assets/script'
+import { getPurchasePeriod } from '@/api'
+
+export default {
+  mixins: [dateSelect],
+  components: {
+    ItemSelectSinglePopup,
+    VendorListPopup,
+    BuyPeriodPrintPopup
+  },
+  data () {
+    return {
+      modalOpenFlag: false,
+      modalPopupId: '',
+      rows: []
+    }
+  },
+  computed: {
+    byGroupRow () {
+      return this.rows.reduce((el, row) => {
+        (el[row.diiPurchdate] = el[row.diiPurchdate] || []).push(row)
+        return el
+      }, {})
+    }
+  },
+  mounted () {
+    this.init()
+  },
+  methods: {
+    getRowspan (list) {
+      return list.reduce((pre, curr, curI, arry) => curI)
+    },
+    // api
+    init () {
+      getPurchasePeriod()
+        .then(res => {
+          this.rows = res.data.map((el, index) => {
+            const container = {}
+            container.index = index
+            if (el.cuName === '소계') {
+              el.cuName = '[소계]'
+            }
+            container.cuName = el.cuName // 거래처
+            if (el.diiPurchdate === Date) {
+              container.diiPurchdate = this.$moment(el.diiPurchdate).format('YYYY-MM-DD') // 일자
+            } else if (el.diiPurchdate == null) {
+              container.diiPurchdate = ''
+            } else {
+              container.diiPurchdate = el.diiPurchdate
+            }
+            container.dpoSerialNo = el.dpoSerialNo // 일련번호
+            container.itemIsbnName = el.itemIsbnName // 코드
+            container.itemName = el.itemName // 품목
+            container.diiCount = el.diiCount // 수량
+            container.diiSupplyPrice = numberWithCommas(el.diiSupplyPrice) // 공급가
+            container.unitPrice = numberWithCommas(el.unitPrice) // 단가
+            container.diiTax = el.diiTax // 부가세
+            container.diiTotalPrice = numberWithCommas(el.diiTotalPrice) // 합계금액
+            container.diiMemo = el.diiMemo // 메모
+            return container
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 모달팝업 open
+    openModalPopup (id) {
+      switch (id) {
+        case 'itemSelectSingle': // 품목단일 선택
+          this.modalPopupId = 'itemSelectSingle'
+          break
+        case 'vendorList': // 거래처검색
+          this.modalPopupId = 'vendorList'
+          break
+        case 'buyPeriodPrint': // 기간별 매입 인쇄
+          this.modalPopupId = 'buyPeriodPrint'
+          break
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

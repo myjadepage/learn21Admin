@@ -1,0 +1,20 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/paageHeader'
+
+export default {
+  name: 'buyConfirm',
+  mixins: [pageHeader({title: '매출명세서', groupName: '영업관리'})]
+}
+</script>
+
+<style>
+
+</style>

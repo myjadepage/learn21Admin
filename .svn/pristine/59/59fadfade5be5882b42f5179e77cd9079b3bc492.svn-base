@@ -1,0 +1,35 @@
+import axios from 'axios'
+
+const config = {
+  baseUrl: 'http://192.168.232.51:8080'
+}
+
+// sidebar menu item
+export function getMenuItemList () {
+  return axios.get(`${config.baseUrl}/basic/menu/find`)
+}
+
+/*
+******* 기초관리*******
+*/
+// 코드 관리 >  검색
+export function getCodeList (cdName, cgCode) {
+  return axios.get(`${config.baseUrl}/basic/code/find`, {
+    params: {
+      cdName: cdName,
+      cgCode: cgCode
+    }
+  })
+}
+// 코드 관리 > 코드그룹 리스트
+export function getCodeGroup () {
+  return axios.get(`${config.baseUrl}/basic/code/find/groupCode`)
+}
+// 코드 관리 > 코드그룹 상세
+export function getCodeGroupDetail (cgCode) {
+  return axios.get(`${config.baseUrl}/basic/code/find/groupCode/detail`, {
+    params: {
+      cgCode: cgCode
+    }
+  })
+}

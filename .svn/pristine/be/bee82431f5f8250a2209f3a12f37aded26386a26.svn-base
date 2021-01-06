@@ -1,0 +1,17 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+import navToggle from './modules/NavToggle'
+import itemStore from './base/ItemStore'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    navToggle,
+    itemStore
+  }
+})

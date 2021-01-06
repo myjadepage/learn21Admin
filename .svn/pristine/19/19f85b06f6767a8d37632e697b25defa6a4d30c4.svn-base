@@ -1,0 +1,17 @@
+// date formatte 예시)2020-11-12
+// DateSelect.vue 같은 함수 사용 변경시 같이 변경할것
+
+export function getFormatDate (date) {
+  let temp = new Date(date)
+  let year = temp.getFullYear()
+  let month = temp.getMonth() + 1
+  let day = temp.getDate()
+  if (day < 10) {
+    day = '0' + day
+  }
+  return year + '-' + month + '-' + day
+}
+
+export function filterSortNo (list) {
+  return list.slice().sort((a, b) => a.noticeId < b.noticeId ? 1 : -1)
+}

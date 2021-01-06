@@ -1,0 +1,21 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+
+export default {
+  mixins: [
+    pageHeader({title: '재고자산 조정관리', groupName: '물류관리'})
+  ]
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,272 @@
+<template>
+  <div class="default-sidebar">
+    <nav
+      class="side-navbar box-scroll sidebar-scroll"
+      :class="{ shrinked: isShrinked }"
+    >
+      <ul class="list-unstyled" id="pageMove">
+        <!-- <li>
+          <a @click.prevent="collapsed = !collapsed"  :aria-expanded="collapsed ? 'true' : 'false'" data-toggle="collapse"
+            ><i class="la la-leaf"></i><span>기초 관리</span></a
+          >
+          <SidebarMenu :items="items.base" :class="{show :collapsed}"></SidebarMenu>
+        </li> -->
+        <li>
+          <a href="#dropdown-base" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-leaf"></i><span>기초 관리</span></a
+          >
+          <SidebarMenu id="dropdown-base" :items="items.base"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-buy" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-shopping-cart"></i><span>구매 관리</span></a
+          >
+          <SidebarMenu id="dropdown-buy" :items="items.buy"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-sales" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-calculator"></i><span>영업 관리</span></a
+          >
+           <SidebarMenu id="dropdown-sales" :items="items.sales"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-order" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-bus"></i><span>주문/배송 관리</span></a
+          >
+           <SidebarMenu id="dropdown-order" :items="items.order"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-stock" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-cubes"></i><span>물류 관리</span></a
+          >
+          <SidebarMenu id="dropdown-stock" :items="items.stock"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-goods" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-book"></i><span>상품 관리</span></a
+          >
+          <SidebarMenu id="dropdown-goods" :items="items.goods"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-cs" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-edit"></i><span>상담 관리</span></a
+          >
+           <SidebarMenu id="dropdown-cs" :items="items.cs"></SidebarMenu>
+        </li>
+        <li>
+          <a
+            href="#dropdown-manage"
+            aria-expanded="false"
+            data-toggle="collapse"
+            ><i class="la la-file-text"></i><span>운영 관리</span></a
+          >
+          <SidebarMenu id="dropdown-manage" :items="items.manage"></SidebarMenu>
+        </li>
+        <li>
+          <a
+            href="#dropdown-member"
+            aria-expanded="false"
+            data-toggle="collapse"
+            ><i class="la la-users"></i><span>직원 관리</span></a
+          >
+          <SidebarMenu id="dropdown-member" :items="items.member"></SidebarMenu>
+        </li>
+        <li>
+          <a
+            href="#dropdown-statistics"
+            aria-expanded="false"
+            data-toggle="collapse"
+            ><i class="la la-signal"></i><span>통계</span></a
+          >
+          <SidebarMenu id="dropdown-statistics" :items="items.statistics"></SidebarMenu>
+        </li>
+
+        <!--test accodiaon collpase mej=nu-->
+        <li>
+          <a @click.prevent="toggle"><i class="la la-users"></i><span>직원 관리</span></a>
+          <ul v-show="open">
+            <li><router-link to="/base/shop_list">가맹점 관리1</router-link></li>
+            <li><router-link to="/base/shop_list">가맹점 관리2</router-link></li>
+            <li><router-link to="/base/shop_list">가맹점 관리3</router-link></li>
+          </ul>
+        </li>
+        <!--test accodiaon collpase mej=nu-->
+      </ul>
+      <ul class="side-bottom-info">
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</template>
+
+<script>
+import $ from 'jquery'
+import SidebarMenu from './sidebar/SidebarMenu'
+import { getMenuItemList } from '@/api'
+
+export default {
+  components: {
+    SidebarMenu
+  },
+  name: 'SideBar',
+  data: function () {
+    return {
+      open: false,
+      menuItem: [{mnName: ''}],
+      items: {
+        base: [
+          {title: '가맹점 관리', path: '/base/shop_list'},
+          {title: '거래처 관리', path: '/base/vendor_list'},
+          {title: '품목 관리', path: '/base/items'},
+          {title: '코드 관리', path: '/base/code'}
+          // {title: '코드 상세 관리', path: '/base/code_detail'}
+        ],
+        buy: [
+          {title: '구매 발주서', path: '/buy/list'},
+          {title: '매입 확정', path: '/buy/confirm'},
+          {title: '매입 명세서', path: '/buy/spec_list'},
+          {title: '매입 조회', path: '/buy/search'},
+          {title: '매입처 원장', path: '/buy/invoice'},
+          {title: '미입고 현황', path: '/buy/not_in'}
+        ],
+        sales: [
+          {title: '매출 명세서', path: '/sales/spec_list'},
+          {title: '매출 정산', path: '/sales/settle'},
+          {title: '매출 조회', path: '/sales/search'},
+          {title: '매출처 원장', path: '/sales/invoice'}
+        ],
+        order: [
+          {title: '주문서 조회', path: '/order/order_list'},
+          {title: '주문취소/반품 조회', path: '/order/cancle_list'},
+          {title: '환불 관리', path: '/order/refund_list'},
+          {title: '반품연동 조회', path: '/order/delivery_back_list'},
+          {title: '에스크로 송장번호 전송', path: '/order/num_send'},
+          {title: '에스크로 송장번호 전송 내역조회', path: '/order/num_send_list'}
+        ],
+        stock: [
+          {title: '재고 현황', path: '/stock/basic'},
+          {title: '품목별 상세 재고', path: '/stock/items'},
+          {title: '재고자산 조정 관리', path: '/stock/manage'},
+          {title: '송장관리', path: '/stock/invoice'},
+          {title: '택배출고 현황', path: '/stock/delivery'},
+          {title: '반품 관리', path: '/stock/return'},
+          {title: '반품 처리 현황', path: '/stock/return_status'},
+          {title: '가맹점 물류이동', path: '/stock/shop'}
+        ],
+        goods: [
+          {title: '상품분류 관리', path: '/goods/classify'},
+          {title: '상품정보 관리', path: '/goods/manage_info'},
+          {title: '상품정보 일관변경', path: '/goods/update_info'}
+        ],
+        cs: [
+          {title: '1:1 상담 관리', path: '/cs/qa_list'},
+          {title: '고객상담 관리', path: '/cs/cs_manage'},
+          {title: 'SMS 관리', path: '/cs/sms_manage'},
+          {title: 'SMS 발송 결과', path: '/cs/sms_list'},
+          {title: '상담유형 등록', path: '/cs/category'},
+          {title: '상담유형 관리', path: '/cs/category_manage'}
+        ],
+        manage: [
+          {title: '공지사항 관리', path: '/manage/notice_list'},
+          {title: 'FAQ 관리', path: '/manage/faq_list'}
+        ],
+        member: [
+          {title: '직원 관리', path: '/member/manage'}
+        ],
+        statistics: [
+          {title: '회원 분포', path: '/statistics/member'},
+          {title: '회원가입/탈퇴 현황', path: '/statistics/member_in_out'},
+          {title: '판매 실적 조회', path: '/statistics/sales'},
+          {title: '온라인 구매비율 분석', path: '/statistics/online'},
+          {title: '상위 구매자 현황', path: '/statistics/topseller'}
+        ]
+      }
+    }
+  },
+  created () {
+  },
+  mounted () {
+    this.getMenuList()
+    this.makeScroll()
+    this.makeCollapse()
+  },
+  computed: {
+    isShrinked () {
+      return this.$store.state.isSideOpen
+    }
+    // currentPage () {
+    //   console.log(this.$route.path)
+    //   return this.$route.path
+    // }
+  },
+  methods: {
+    toggle () {
+      this.open = !this.open
+    },
+    // dynamic page tab add
+    addTabPageClick (path) {
+      // if ($('#tabs li').length !== 0) return
+      // if ($('#tabs li').length > 4) return
+      // $('#tabs li').removeClass('current')
+      // $('#tabs').append(`
+      // <li class="current"><router-link class="tab" to=${path}">${path}</router-link></li>
+      // `)
+      // $('#tabs li').on('click', function () {
+      //   $('#tabs li').addClass('current')
+      //   $(this).siblings().removeClass('current')
+      // })
+    },
+    // 대메뉴 api
+    getMenuList () {
+      getMenuItemList()
+        .then(res => {
+          let loadData = res.data
+          this.menuItem.splice(0)
+          loadData.forEach(item => {
+            this.menuItem.push(item)
+          })
+          // console.log(this.menuItem)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // scroll
+    makeScroll () {
+      $('.sidebar-scroll').niceScroll({
+        cursorcolor: 'transparent',
+        cursorborder: 'transparent',
+        cursoropacitymax: 0,
+        boxzoom: false,
+        autohidemode: 'hidden',
+        cursorfixedheight: 80
+      })
+    },
+    // collapse
+    makeCollapse () {
+      $('.side-navbar li a').click(function () {
+        $('.collapse').collapse('hide')
+      })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

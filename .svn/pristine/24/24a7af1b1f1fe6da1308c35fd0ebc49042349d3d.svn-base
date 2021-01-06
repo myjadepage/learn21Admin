@@ -1,0 +1,363 @@
+<template>
+<div id="orderCancelApplyModal" class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">주문취소/반품 접수</h4>
+                <button type="button" class="close" @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>주문정보</h5>
+                        <table class="table table-bordered totla-info" summary="주문정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <!-- <tr>
+                                    <th>주문번호/경로</th>
+                                    <td>{{orderCancelMainVO.orderNo}}/{{orderCancelMainVO.receiveTypeCd}}</td>
+                                    <th>회원ID</th>
+                                    <td>{{orderCancelMainVO.loginId}}</td>
+                                    <th>주문자</th>
+                                    <td>{{orderCancelMainVO.orderCustomerName}}</td>
+                                </tr>
+                                <tr>
+                                    <th>SMS연락처</th>
+                                    <td>{{orderCancelMainVO.customerTelNum}}</td>
+                                    <th>주문자 E-mail</th>
+                                    <td>{{orderCancelMainVO.customerEmail}}</td>
+                                    <th>결제수단</th>
+                                    <td>{{orderCancelMainVO.paymentTypeCd}}</td>
+                                </tr>
+                                <tr>
+                                    <th>결제총액</th>
+                                    <td>{{orderCancelMainVO.paymentTotal}}</td>
+                                    <th>주문총액</th>
+                                    <td>{{orderCancelMainVO.itemTotal}}</td>
+                                    <th>배송비총액</th>
+                                    <td>{{orderCancelMainVO.deliveryCostTotal}}</td>
+                                </tr>
+                                <tr>
+                                    <th>주문일시</th>
+                                    <td>{{orderCancelMainVO.dateOrdered}}</td>
+                                    <th>주문상태</th>
+                                    <td class="text-danger">{{orderCancelMainVO.orderStatusCd}}</td>
+                                    <th></th>
+                                    <td></td>
+                                </tr> -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>주문 상품 정보</h5>
+                        <table class="table table-bordered" summary="주문상품정보">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="10%">
+                                <col width=*>
+                                <col width="7%">
+                                <col width="15%">
+                                <col width="10%">
+                                <col width="7%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                            </colgroup>
+                            <thead>
+                                <th>
+                                    <div class="styled-checkbox">
+                                        <input type="checkbox" name="checkbox" id="check-1">
+                                        <label for="check-1"></label>
+                                    </div>
+                                </th>
+                                <th>상품코드</th>
+                                <th>품목</th>
+                                <th>상품유형</th>
+                                <th>공급처</th>
+                                <th>판매가</th>
+                                <th>수량</th>
+                                <th>환불가</th>
+                                <th>사유</th>
+                                <th>회수유형</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="styled-checkbox">
+                                            <input type="checkbox" name="checkbox" id="check-1">
+                                            <label for="check-1"></label>
+                                        </div>
+                                    </td>
+                                    <td>123456</td>
+                                    <td class="text-left">상품명1</td>
+                                    <td>일반</td>
+                                    <td class="text-left">(주)청담러닝</td>
+                                    <td class="text-right">13,000</td>
+                                    <td>5</td>
+                                    <td>
+                                        <input type="text" class="form-control text-right" placeholder="" value="13,000">
+                                    </td>
+                                    <td>
+                                        <select class="form-control">
+                                            <option>전체</option>
+                                            <option>취소</option>
+                                            <option>반품</option>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select class="form-control">
+                                            <option>전체</option>
+                                            <option>취소</option>
+                                            <option>반품</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>취소반품신청 정보</h5>
+                        <table class="table table-bordered" summary="취소반품신청 정보">
+                            <colgroup>
+                                <col width="15%">
+                                <col width="35%">
+                                <col width="15%">
+                                <col width="35%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>취소/반품 구분</th>
+                                    <td colspan="3">
+                                        <div class="row">
+                                            <div class="col-sm-3">
+                                                <select class="form-control">
+                                                    <option>취소</option>
+                                                    <option>반품</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-9 d-flex align-items-center">
+                                                <span>접수한 상품이 배송상태가 전송완료인 경우에는 반드시 "반품"으로 접수하시기 바랍니다.</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>환불계좌</th>
+                                    <td>
+                                        <input type="text" class="form-control">
+
+                                    </td>
+                                    <th>고객부담 회수비용</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-5">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control">
+                                                    <span>원</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>신청메모</th>
+                                    <td>
+                                        <textarea class="form-control"></textarea>
+                                    </td>
+                                    <th>처리메모</th>
+                                    <td>
+                                        <textarea class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>환불요청메모</th>
+                                    <td colspan="3">
+                                        <textarea class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>회수 정보</h5>
+                        <table class="table table-bordered totla-info" summary="회수 정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>이름</th>
+                                    <td>
+                                        <input type="text" class="form-control" value="홍길동">
+                                    </td>
+                                    <th>휴대폰번호</th>
+                                    <td>
+                                        <input type="text" class="form-control" value="010-1234-4567">
+                                    </td>
+                                    <th>전화번호</th>
+                                    <td>
+                                        <input type="text" class="form-control" value="032-1234-4567">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>배송지주소</th>
+                                    <td colspan="5">
+                                        <div class="row">
+                                            <div class="col col-sm-2">
+                                                <input type="text" class="form-control" placeholder="" value="11123">
+                                            </div>
+                                            <div class="col col-sm-2">
+                                                <button class="btn btn-sm btn-secondary input-btn-util">주소검색</button>
+                                            </div>
+                                        </div>
+                                        <div class="row  d-flex justify-content-start margin-top-5">
+                                            <div class="col col-sm-5">
+                                                <input type="text" class="form-control" value="경기도 성남시 분당구 탄천로 95">
+                                            </div>
+                                            <div class="col col-sm-4">
+                                                <input type="text" class="form-control" value="409동 102호">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>요청사항</th>
+                                    <td colspan="5">
+                                        <textarea class="form-control"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer" style="justify-content: center;">
+                <div class="row col">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-dark" @click="$emit('close')">닫기</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary margin-right-5">주문취소/반품접수</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</template>
+
+<script>
+// import { getOrderCancelDetail } from '@/api'
+export default {
+  name: 'orderCancelApplyPopup',
+  data: function () {
+    return {
+      /* 주문취소/반품 접수정보 */
+      orderCancelMainVO: {
+        exceptionNo: '', /* 주문예외번호 */
+        orderGuid: '', /* 주문서GUID */
+        orderNo: '', /* 주문번호 */
+        receiveTypeCd: '', /* 주문예외접수구분 (접수경로) */
+        exceptionTypeCd: '', /* 예외구분 (취소/반품/교환) */
+        orderCustomerName: '', /* 주문자명 */
+        loginId: '', /* 회원ID */
+        customerName: '', /* 고객명 */
+        statusCd: '', /* 예외처리상태 */
+        dateReceived: '', /* 예외접수일자 */
+        receiveName: '', /* 접수자명 */
+        dateCompleted: '', /* 처리완료일자 */
+        chargeName: '', /* 처리자명 */
+        receiver: '', /* 수취인명 */
+        customerTelNum: '', /* 고객연락처 */
+        dateCreated: '', /* 등록일자 */
+        customerTypeCd: '', /* 고객유형 */
+        customerMemo: '', /* 고객요청사항 */
+        receiveId: '', /* 접수자ID */
+        chargeId: '', /* 처리자ID */
+        adminMemo: '', /* 관리자메모 */
+        pid: '', /* 고객주민번호 */
+        customerEmail: '', /* 고객이메일 */
+        dateOrdered: '', /* 주문접수일자 */
+        paymentTypeCd: '', /* 결제수단 */
+        paymentTotal: '', /* 결제총액 */
+        itemTotal: '', /* 주문상품총액 */
+        deliveryCostTotal: '', /* 배송비총액 */
+        orderStatusCd: '' /* 주문상태 */
+      },
+      /* 주문취소/반품 항목정보 */
+      orderCancelDetailItemVOList: [],
+      /* 회수송장 정보 */
+      ordRecallInvoiceList: [],
+      /* 환불지시 정보 */
+      ordRefund: {
+        exceptionNo: '', /* 주문예외번호 */
+        refundAccount: '', /* 환불계좌번호 */
+        accountUserName: '', /* 환불계좌예금주명 */
+        refundBank: '', /* 환불계좌은행명 */
+        refundMemo: '', /* 환불메모 */
+        dateCreated: '', /* 등록일자 */
+        dateRefund: '', /* 환불일자 */
+        statusCd: '', /* 환불상태 */
+        refundAmount: '', /* 환불총액 */
+        refundCash: '', /* 현금환불액 */
+        refundCardCancel: '', /* 카드승인취소액 */
+        refundMileage: '', /* 아이머니환불액 */
+        refundDiscount: '', /* 즉시할인 환불액 (사용안함) */
+        adminMemo: '', /* 관리자메모 */
+        customerChargeDeliveryCost: '', /* 고객부담회수비용 (사용안함) */
+        refundDeliveryCost: '', /* 배송비환불액 */
+        refundCouponDiscount: '', /* 쿠폰환불액 */
+        refundOcbPoint: '', /*  */
+        refundAccountEnc: '' /*  */
+      }
+    }
+  },
+  methods: {
+    getDetailData () {
+      // 주문서 기본정보 조회
+    //   getOrderCancelDetail(this.modalParamObj.exceptionNo)
+    //     .then(res => {
+    //       this.orderCancelMainVO = res.orderCancelMainVO
+    //       this.orderCancelDetailItemVOList = res.orderCancelDetailItemVOList
+    //       this.ordRecallInvoiceList = res.ordRecallInvoiceList
+    //       this.ordRefund = res.ordRefund
+    //     })
+    }
+  },
+  mounted: function () {
+    this.getDetailData()
+  }
+}
+</script>
+
+<style>
+
+</style>

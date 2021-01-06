@@ -1,0 +1,301 @@
+# admin
+
+> booksadmin front Vue.js project
+
+## Build Setup
+
+```bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
+
+# run e2e tests
+npm run e2e
+
+# run all tests
+npm test
+```
+
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+---
+
+### componet만 update
+
+> <template>
+>    <component-to-re-render :key="componentKey" />
+> </template>
+
+> export default {
+> data() {
+> return {
+> componentKey: 0
+> }
+> },
+> methods: {
+> forceRerender() {
+> this.componentKey += 1
+> }
+> }
+> }
+
+---
+
+## mixin
+
+> 1. 날짜선택
+>    -mixin > dateSelect.js -사용법
+
+     import dateSelect from '@/mixin/dateSelect'
+     mixins: [dateSelect]
+    <DateSelect @state-start-date="startDate" @state-end-date="endDate"
+                                            :defStartDate="pfromDate"
+                                            :defEndDate="ptoDate"></DateSelect>
+
+> 1-2.날짜선택 1개일경우
+
+<div class="row">
+  <div class="col col-sm-10">
+    <datepicker :value="state.startdate":format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+  </div>
+  <div class="input-group col col-sm-2">
+    <span class="input-group-addon"><i class="la la-calendar"></i></span>
+  </div>
+</div>
+
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+
+components: { datepicker },
+data () {
+return {
+state: {
+startdate: new Date()
+},
+ko: ko
+}
+},
+methods: {
+getFormatDate (date) {
+return this.\$moment(date).format('YYYY-MM-DD')
+},
+
+> 2. 메뉴 경로 title
+>    -mixin > pageHeader.js -사용법
+
+    import pageHeader from '@/mixin/pageHeader'
+    mixins: [
+      pageHeader({title: 'FAQ 관리', groupName: '운영관리'})
+    ]
+     <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+---
+
+## modal
+
+> <QaManagePopup title="고객상담 상세" @close="closeModal" v-if="modal"></QaManagePopup>
+> import QaManagePopup from '@/components/popup/QaManagePopup'
+> components: {
+> QaManagePopup
+> },
+> data: function () {
+> return {
+> modal: false
+> }
+> },
+> methods: {
+> qaManageClick () {
+> this.modal = true
+
+       document.body.classList.add('modal-open')
+
+> },
+> closeModal () {
+> this.modal = false
+
+       document.body.classList.remove('modal-open')
+
+> }
+> }
+
+거래처검색
+<button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('vendorList')"><i class="la la-search"></i></button>
+<vendor-list-popup v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+import VendorListPopup from '@/components/popup/common/VendorListPopup.vue'
+
+---
+
+## moment 사용법
+
+1. <script에서 사용시>
+   this.\$moment(el.dateCreated).format('YYYY-MM-DD')
+
+2. <template에서 사용시>
+   date | moment('YYYY-MM-YY')
+
+---
+
+## file upload component
+
+<file-upload id="file2" @file2="clickFile1"></file-upload>
+import FileUpload from '@/components/parts/FileUpload.vue'
+
+data: function () {
+return {
+file1: ''
+}
+},
+methods: {
+clickFile1 (e) {
+this.file1 = e
+}
+}
+
+---
+
+## print
+
+## https://www.npmjs.com/package/vue-html-to-paper
+
+## table
+
+예시) noticeList.vue
+
+<페이당 데이터수 선택 및 총 조회건수>
+
+<div class="dropdown show vbt-per-page-dropdown col-sm-2">
+                          <a class="btn btn-block dropdown-toggle form-control" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              {{config.per_page}}
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <a v-for="(option, key, index) in config.per_page_options" :key="index" class="dropdown-item" href="" @click.prevent="perPageHandler(option)" v-bind:class="{ active:  (option == config.per_page)}">
+                                  {{option}}
+                              </a>
+                          </div>
+                      </div>
+                      <label class="col-sm-4 table-len-label">조회건수 : {{ rows.length }} 건</label>
+
+<테이블 컴포넌트>
+<v-table :rows="rows" :columns="columns" :config="config" :classes="classes">
+<template slot="empty-results">
+조회된 공지사항이 없습니다.
+</template>
+<template slot="title" slot-scope="props">
+<a href="#" @click.prevent="\$router.push({name: 'noticeInput'})">{{ props.cell_value }}</a>
+</template>
+</v-table>
+
+<script>
+import VueBootstrap4Table from 'vue-bootstrap4-table'
+
+components: {
+    VTable: VueBootstrap4Table // table 이름변경 <v-table></v-table>
+  },
+
+data: function () {
+retrun {
+
+// table 정의
+      rows: [],
+      columns: [{
+        label: 'No',
+        name: 'noticeId',
+        sort: true
+      },
+      {
+        label: '제목',
+        name: 'title',
+        sort: true,
+        row_classes: 'table-text-left'
+      },
+      {
+        label: '게시기간',
+        name: 'viewDate',
+        sort: true
+      },
+      {
+        label: '상태',
+        name: 'statusCd',
+        sort: true
+      },
+      {
+        label: '등록자',
+        name: 'userNameCreatedBy',
+        sort: true
+      },
+      {
+        label: '조회수',
+        name: 'viewCount',
+        sort: true
+      },
+      {
+        label: '등록일자',
+        name: 'dateCreated',
+        sort: true
+      }],
+      config: {
+        pagination: true,
+        pagination_info: false,
+        num_of_visibile_pagination_buttons: 10,
+        checkbox_rows: false,
+        highlight_row_hover: true,
+        rows_selectable: false,
+        multi_column_sort: false,
+        card_mode: false,
+        selected_rows_info: false,
+        per_page: 20,
+        per_page_options: [20, 50, 100],
+        show_reset_button: false,
+        show_refresh_button: false,
+        global_search: {
+          placeholder: '',
+          visibility: false,
+          case_sensitive: false
+        }
+      },
+      classes: {
+        table: 'table table-bordered'
+      }
+}
+}
+
+ methods: {
+    // api 리스트 받은거 데이터 가공해서 this.rows 에 삽입
+    getNotice (param) {
+      getNoticeList(param)
+        .then(res => {
+          this.rows = res.data.map(el => {
+            const container = {}
+            container.dateCreated = this.getFormatDate(el.dateCreated)
+            container.startDate = el.startDate
+            container.endDate = el.endDate
+            container.contents = el.contents
+            container.fileName1 = el.fileName1
+            container.fileName2 = el.fileName2
+            container.viewCount = el.viewCount
+            container.title = el.title
+            container.userNameCreatedBy = el.userNameCreatedBy
+            container.userIdCreatedBy = el.userIdCreatedBy
+            container.statusCd = el.statusCd
+            container.noticeId = el.noticeId
+            return container
+          })
+          this.rows = this.rows.slice().sort((a, b) => a.noticeId < b.noticeId ? 1 : -1)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // table perpage
+    perPageHandler (option) {
+      console.log('option', option)
+      this.config.per_page = option
+    },

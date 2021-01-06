@@ -1,0 +1,53 @@
+
+import {itemApi} from '@/api'
+const itemStore = {
+  namespaced: true,
+  state: {
+    mainColumnDef: [
+      { label: '품목분류', name: 'depthFullName', sort: true },
+      { label: '품목ID', name: 'itemId', sort: true },
+      { label: '품목명', name: 'itemName', sort: true, row_classes: 'table-text-left' },
+      { label: '취급', name: 'itemHandling', sort: true, row_classes: 'table-text-center' },
+      { label: '과세구분(매출)', name: 'poserpTaxType', sort: true },
+      { label: '과세구분(매입)', name: 'itemTaxationPurchase', sort: true },
+      { label: '재고관리', name: 'itemRethinType', sort: true },
+      { label: '등록일자', name: 'itemCreatedate', sort: true }
+    ],
+    mainRowData: [],
+    categoryCodeList: [], /* 품목코드목록 */
+    itemDetail: {} /* 품목상세 */
+  },
+  getters: {
+    getMainColumnDef: state => state.mainColumnDef,
+    getMainRowData: state => state.mainRowData,
+    getCategoryCodeList: state => state.categoryCodeList,
+    getItemDetail: state => state.itemDetail
+  },
+  mutations: {
+    mainRowData: (state, payload) => { state.mainRowData = payload },
+    categoryCodeList: (state, payload) => { state.categoryCodeList = payload },
+    itemDetail: (state, payload) => { state.itemDetail = payload }
+  },
+  actions: {
+    setMainRowData: async ({commit}, payload) => {
+      // 품목리스트 조회
+      await itemApi.findItemList(payload)
+        .then(res => { commit('mainRowData', res) })
+        .catch(err => { console.log(err) })
+    },
+    setCategoryCodeList: async ({commit}, payload) => {
+      // 품목분류코드 조회
+      await itemApi.findCategoryCode(payload)
+        .then(res => { commit('categoryCodeList', res) })
+        .catch(err => { console.log(err) })
+    },
+    setItemDetail: async ({commit}, payload) => {
+      // 품목상세 조회
+      await itemApi.findItemDetail(payload)
+        .then(res => { commit('itemDetail', res) })
+        .catch(err => { console.log(err) })
+    }
+  }
+}
+
+export default itemStore

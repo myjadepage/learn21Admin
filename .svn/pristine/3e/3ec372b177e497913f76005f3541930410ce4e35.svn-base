@@ -1,0 +1,111 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ popupTitle }}</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+              <item-info></item-info>  <!-- 구매발주서 등록정보-->
+              <itme-add></itme-add> <!-- 구매발주서 품목리스트 -->
+            </div>
+
+             <div class="modal-footer">
+                <div class="row col">
+                    <div class="col-sm-6 d-flex justify-content-start no-padding-left">
+                        <button type="button" class="btn btn-outline-primary" @click="CLEAR">신규전표</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end no-padding-right">
+                        <button type="button" class="btn btn-primary margin-right-5" @click="saveNewInvoice">저장</button>
+                        <button type="button" class="btn btn-info margin-right-5" @click="openModalPopup('buyInvoicePrint')">인쇄</button>
+                        <button type="button" class="btn btn-secondary"  @click="$emit('close')">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <buy-invoice-print-popup title="구매발주서 인쇄" v-if="modalOpenFlag && modalPopupId === 'buyInvoicePrint'" @close="closeModalPopup"></buy-invoice-print-popup>
+</div>
+</template>
+
+<script>
+
+import BuyInvoicePrintPopup from '@/components/popup/print/BuyInvoicePrintPopup.vue'
+import ItmeAdd from '../buy/ItmeAdd.vue'
+import ItemInfo from '../buy/ItemInfo.vue'
+import { mapActions, mapMutations } from 'vuex'
+import { getPurchaseDetail } from '@/api'
+
+export default {
+  components: { BuyInvoicePrintPopup, ItmeAdd, ItemInfo },
+  name: 'productSelectPopup',
+  props: {
+    title: {
+      type: String,
+      require: true
+    },
+    modalParamObj: {
+      type: [Object, String]
+    }
+  },
+  data () {
+    return {
+      modalOpenFlag: false, // 모달창 openFlag
+      modalPopupId: '',
+      popupTitle: ''
+    }
+  },
+  mounted () {
+    if (this.modalParamObj === '') {
+      this.popupTitle = this.title
+    } else {
+      this.popupTitle = '구매발주서 보기'
+      this.getDetail(this.modalParamObj)
+    }
+  },
+  methods: {
+    // 구매 발주서 등록 api
+    ...mapMutations('itemInvoiceAddStore', ['CLEAR']),
+    ...mapActions('itemInvoiceAddStore', ['saveInvoice', 'viewItems', 'viewInfo']),
+    saveNewInvoice () {
+      this.saveInvoice()
+      this.$emit('close')
+    },
+    // 구매발주서 상세 상세보기
+    getDetail (data) {
+      getPurchaseDetail(data)
+        .then(res => {
+          this.viewItems(res.data.porderItems)
+          this.viewInfo(res.data.porderList)
+          console.log(res.data)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 모달팝업 open
+    openModalPopup (id) {
+      switch (id) {
+        case 'buyInvoicePrint': // 구매발주서 인쇄
+          this.modalPopupId = 'buyInvoicePrint'
+          break
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup (data) {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

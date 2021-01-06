@@ -1,0 +1,371 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ popupTitle }}</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="widget no-margin">
+                   <div class="widget-body no-padding">
+                      <table class="table table-bordered" summary="매입명세서 관리">
+                          <colgroup>
+                            <col width="5%">
+                            <col width="7%">
+                            <col width="15%">
+                            <col width="7%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="15%">
+                            <col width="7%">
+                            <col width="15%">
+                          </colgroup>
+                          <tbody>
+                            <tr>
+                                <th rowspan="3" class="bg-primary"> 발주 </th>
+                                    <th scope="row">발주일자</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-10">
+                                                <!-- 달력1개일때는 바로 datepicker 사용-->
+                                                <datepicker :value="state.indate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                            </div>
+                                            <div class="input-group col col-sm-2">
+                                                <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th scope="row">거래처</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                  <div class="input-group">
+                                                    <input type="text" class="form-control" placeholder="거래처검색" v-model="orderList.cuName">
+                                                    <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('vendorList')"><i class="la la-search"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th scope="row">입고요청</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-10">
+                                                <datepicker :value="state.outdate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                            </div>
+                                            <div class="input-group col col-sm-2">
+                                                <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th scope="row">공급가</th>
+                                    <td class="text-right">{{ totalSupplyPrice }}</td> <!--모든항목합계-->
+                            </tr>
+                            <tr>
+                                <th scope="row">담당자</th>
+                                <td colspan="5">
+                                    <div class="row">
+                                        <div class="col-sm-3">
+                                            <select class="form-control" v-model="orderList.dpoOrderName">
+                                                <option value="">선택</option>
+                                                <option value="홍길동">홍길동</option>
+                                                <option value="김길동">Relish</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row">부가세</th>
+                                <td class="text-right"> {{ totalTax }}</td> <!--모든항목합계-->
+                            </tr>
+                            <tr>
+                                <th scope="row">메모</th>
+                                <td colspan="3">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                             <input type="text" class="form-control" placeholder="" v-model="orderList.dpoMemo">
+                                         </div>
+                                     </div>
+                                 </td>
+                                 <th scope="row">합계수량</th>
+                                 <td class="text-right">{{ totalCount }}</td> <!--모든항목합계-->
+                                 <th scope="row">합계금액</th>
+                                 <td class="text-right">{{ totalPrice }}</td> <!--모든항목합계-->
+                             </tr>
+                          </tbody>
+                      </table>
+                   </div>
+                </div>
+
+                <!-- 구매발주서리스트 -->
+                <div class="widget">
+                    <div class="widget-body no-padding">
+                        <table id="spec-table" class="table table-bordered mb-0" summary="구매발주서리스트">
+                            <colgroup>
+                                <col width="5%">
+                                <col width=*>
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="25%">
+                                <col width="5%">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>품목명</th>
+                                    <th>수량</th>
+                                    <th>단가</th>
+                                    <th>공급가</th>
+                                    <th>부가세</th>
+                                    <th>합계금액</th>
+                                    <th>재고</th>
+                                    <th>비고</th>
+                                    <th>관리</th>
+                                </tr>
+                            </thead>
+                            <tbody v-if="row.length === 0">
+                                 <tr>
+                                    <td colspan="10">"품목을 선택 또는 추가하여 입력하시기 바랍니다."</td>
+                                </tr>
+                            </tbody>
+                            <tbody v-else>
+                                <tr v-for="(item, index) in row" :key="index">
+                                    <td> {{ index+1 }} </td>
+                                    <td>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" placeholder="품목검색" v-model="item.itemName">
+                                            <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('itemSelectSingle')"><i class="la la-search"></i></button>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control text-right" v-model="item.dpiStock"> <!-- 수량 -->
+                                    </td>
+                                    <td><input type="text" class="form-control text-right" v-model="item.dpiUnitPrice"></td> <!-- 단가 -->
+                                    <td>{{ item.dpiSupplyPrice }} <!---공급가-->
+                                    </td>
+                                    <td><input type="text" class="form-control text-right" v-model="item.dpiTax"></td> <!--부가세-->
+                                    <td>{{ item.dpiTotalPrice }}</td> <!--합계금액-->
+                                    <td>{{ item.dpiStock }}</td> <!--재고-->
+                                    <td>
+                                        <input type="text" class="form-control" placeholder="비고 내용 표기" v-model="item.dpiMemo">
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" @click="deleteRow(index)">-</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="widget-footer">
+                        <div class="d-flex align-items-stretch justify-content-between">
+                            <button class="btn btn-sm btn-outline-primary" @click="openModalPopup('itemSelect')">품목선택</button>
+                            <button class="btn btn-sm btn-primary" @click="addRow">항목 추가</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div class="modal-footer">
+                <div class="row col">
+                    <div class="col-sm-6 d-flex justify-content-start no-padding-left">
+                        <button type="button" class="btn btn-outline-primary">신규전표</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end no-padding-right">
+                        <button type="button" class="btn btn-primary margin-right-5" @click="handelSave">저장</button>
+                        <button type="button" class="btn btn-info margin-right-5" @click="openModalPopup('buyInvoicePrint')">인쇄</button>
+                        <button type="button" class="btn btn-secondary"  @click="$emit('close')">닫기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <vendor-list-popup v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+    <item-select-single-popup title="품목선택" v-if="modalOpenFlag && modalPopupId === 'itemSelectSingle'" @close="closeModalPopup"></item-select-single-popup>
+    <item-select-popup title="품목선택" v-if="modalOpenFlag && modalPopupId === 'itemSelect'" @close="closeModalPopup"></item-select-popup>
+    <vendor-list-popup title="거래처 선택" v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+    <buy-invoice-print-popup title="구매발주서 인쇄" v-if="modalOpenFlag && modalPopupId === 'buyInvoicePrint'" @close="closeModalPopup"></buy-invoice-print-popup>
+</div>
+</template>
+
+<script>
+import VendorListPopup from './common/VendorListPopup.vue'
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+import ItemSelectPopup from './common/ItemSelectPopup.vue'
+import BuyInvoicePrintPopup from '@/components/popup/print/BuyInvoicePrintPopup.vue'
+import { getPurchaseDetail, inputPurchaseInvoice } from '@/api'
+import ItemSelectSinglePopup from './common/ItemSelectSinglePopup.vue'
+
+export default {
+  components: { VendorListPopup, datepicker, ItemSelectPopup, BuyInvoicePrintPopup, ItemSelectSinglePopup },
+  name: 'productSelectPopup',
+  props: {
+    title: {
+      type: String,
+      require: true
+    },
+    modalParamObj: {
+      type: [Object, String]
+    }
+  },
+  data () {
+    return {
+      modalOpenFlag: false, // 모달창 openFlag
+      state: {
+        indate: new Date(),
+        outdate: new Date()
+      },
+      ko: ko,
+      popupTitle: '',
+      row: [],
+      orderList: {
+        rctCode: '',
+        dcuCode: '',
+        dpoSerialNo: '',
+        dpoOrderRegdate: '',
+        dpoWarehousingRegdate: '',
+        dpoState: '진행',
+        dpoIncome: '내수',
+        dpoMemo: '',
+        dpoOrderName: '',
+        dpoRegdate: '',
+        dpoLastdate: ''
+      }
+    }
+  },
+  mounted () {
+    if (this.modalParamObj === '') {
+      this.popupTitle = this.title
+    } else {
+      this.popupTitle = '구매발주서 수정'
+      this.getDetail(this.modalParamObj)
+    // 수정 api ---> 구매발주서 등록후 할것
+    }
+  },
+  computed: {
+    totalSupplyPrice () { // 모든항목 합계계산
+      return this.row.map(el => {
+        el.dpiSupplyPrice += el.dpiSupplyPrice
+      })
+    },
+    totalTax () { // 모든항목 합계계산
+      return this.row.map(el => {
+        el.dpiTax += el.dpiTax
+      })
+    },
+    totalCount () { // 모든항목 합계계산
+      return this.row.map(el => {
+        el.dpiCount += el.dpiCount
+      })
+    },
+    totalPrice () { // 모든항목 합계계산
+      return this.row.map(el => {
+        el.dpiTotalPrice += el.dpiTotalPrice
+      })
+    }
+  },
+  methods: {
+    // api
+    inputPurchaseInvoiceAdd (params) {
+      inputPurchaseInvoice(params)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getDetail () {
+      getPurchaseDetail()
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    addRow () { // 항목추가
+      this.row.push({
+        dpoCode: '',
+        itemIsbnNum: '7',
+        itemName: '',
+        itemStandard: '',
+        dpiCount: '0',
+        dpiEa: '',
+        dpiUnitPrice: '0',
+        dpiSupplyPrice: '0',
+        dpiTax: '0',
+        dpiTotalPrice: '0',
+        dpiStock: '500',
+        dpiRegdate: '',
+        dpiLastdat: ''
+      })
+    },
+    deleteRow (index) { // 항목삭제
+      this.row.splice(index, 1)
+    },
+    handelSave () {
+      // this.row, this.orderList ==> params
+      let params = {}
+      let porderList = {}
+      porderList.rctCode = '00211349'
+      porderList.dcuCode = this.orderList.dcuCode
+      porderList.dpoSerialNo = ''
+      porderList.dpoOrderRegdate = this.state.outdate
+      porderList.dpoWarehousingRegdate = this.state.indate
+      porderList.dpoState = '진행'
+      porderList.dpoIncome = '내수'
+      porderList.dpoMemo = this.orderList.dpoMemo
+      porderList.dpoOrderName = this.orderList.dpoOrderName
+      porderList.dpoRegdate = ''
+      porderList.dpoLastdate = ''
+      params.proderItems = this.row
+      params.porderList = porderList
+      console.log('params', params)
+      this.inputPurchaseInvoiceAdd(params)
+    },
+    // 모달팝업 open
+    openModalPopup (id) {
+      switch (id) {
+        case 'vendorList': // 거래처검색
+          this.modalPopupId = 'vendorList'
+          break
+        case 'itemSelect': // 품목 선택
+          this.modalPopupId = 'itemSelect'
+          break
+        case 'itemSelectSingle': // 품목 선택
+          this.modalPopupId = 'itemSelectSingle'
+          break
+        case 'buyInvoicePrint': // 구매발주서 인쇄
+          this.modalPopupId = 'buyInvoicePrint'
+          break
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup (data) {
+      if (data) {
+        // 거래처검색경우(거래처명, 거래처코드 가져오기)
+        console.log('modal', data.row)
+        this.orderList.dcuCode = data.row.dcuCode
+        this.orderList.cuCode = data.row.cuCode
+      }
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    },
+    getFormatDate (date) {
+      return this.$moment(date).format('YYYY-MM-DD')
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

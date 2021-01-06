@@ -1,0 +1,311 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+      <!-- modalPopup -->
+      <OrderInfoPopup v-if="modalOpenFlag && modalPopupId === 'OrderInfoPopup'"
+                      :modalParamObj="modalParamObj"
+                      @close="closeModalPopup" />
+      <OrderCancelPopup v-if="modalOpenFlag && modalPopupId === 'OrderCancelPopup'"
+                      :modalParamObj="modalParamObj"
+                      @close="closeModalPopup" />
+      <div class="col-xl-12">
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="주문 검색하기">
+                        <colgroup>
+                            <col width="12%">
+                            <col width="38%">
+                            <col width="12%">
+                            <col width="38%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">고객</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="searchParam.pcustomerNameType">
+                                                <option key="ORDER" value="ORDER">주문자</option>
+                                                <option key="RECEIVER" value="RECEIVER">수취인</option>
+                                                <option key="STUDENTID" value="STUDENTID">학생ID</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="searchParam.pcustomerName">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary" >연락처</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="searchParam.ptelNumberType">
+                                                <option key="TELL" value="TELL">전화번호</option>
+                                                <option key="PHONE" value="PHONE">휴대폰</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="searchParam.ptelNumber">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">주문번호</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="searchParam.porderNo" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary" >처리상태</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="searchParam.pstatusCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="접수" value="접수">접수</option>
+                                                <option key="회수지시" value="회수지시">회수지시</option>
+                                                <option key="처리완료" value="처리완료">처리완료</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">접수일자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-8">
+                                            <!-- date select component -->
+                                            <DateSelect @state-start-date="(date) => this.searchParam.pfromDate = date"
+                                                        @state-end-date="(date) => this.searchParam.ptoDate = date"
+                                                        :defStartDate="searchParam.pfromDate"
+                                                        :defEndDate="searchParam.ptoDate" />
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row"><span class="text-primary">예외구분/접수경로</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="searchParam.pexceptionTypeCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="취소" value="취소">취소</option>
+                                                <option key="반품" value="반품">반품</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="searchParam.preceiveTypeCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="상담" value="상담">상담</option>
+                                                <option key="FRONT" value="FRONT">FRONT</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="onClickSearch">검색</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+            <DataTableVue4
+                :columnDef="getColumnDef"
+                :rowData="getRowData"
+                :isPaging="true"
+                :btnList="[{btnName: '엑셀다운로드', onClick: () => { onClickExcel() }}]"
+                :rowEditorList="[{
+                                  type: 'LINK',
+                                  editColumn: 'orderNo',
+                                  onClick: (data) => {
+                                    openModalPopup('OrderInfoPopup',{orderNo: data.row.orderNo})
+                                  }
+                                },
+                                {
+                                  type: 'LINK',
+                                  editColumn: 'exceptionNo',
+                                  onClick: (data) => {
+                                    openModalPopup('OrderCancelPopup',{exceptionNo: data.row.exceptionNo})
+                                  }
+                                }]"
+            />
+
+            <!----선택된 주문 영역-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered totla-info" summary="선택 주문 리스트">
+                        <colgroup>
+                            <col width="15%">
+                            <col width="35">
+                            <col width="15%">
+                            <col width="35">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>주문기간</th>
+                                <td>{{searchParam.pfromDate}} ~ {{searchParam.ptoDate}}</td>
+                                <th>총주문금액</th>
+                                <td><b class="text-danger">{{numberWithCommas(getSummary.orderProductPriceTotalSum)}}</b>원</td>
+                            </tr>
+                            <tr>
+                                <th>배송비총액</th>
+                                <td><b class="text-danger">{{numberWithCommas(getSummary.deliveryPriceTotalSum)}}</b>원</td>
+                                <th>수수료총액</th>
+                                <td>{{numberWithCommas(getSummary.marginPriceTotalSum)}}원</td>
+                            </tr>
+                            <tr>
+                                <th>신용카드결제(건수)</th>
+                                <td>{{numberWithCommas(getSummary.creditPaymentTotal)}}원({{getSummary.creditTotal}}건)</td>
+                                <th>가상계좌입금(건수)</th>
+                                <td>결제완료 : {{numberWithCommas(getSummary.virtualPaymentTotal)}}원
+                                    ({{numberWithCommas(getSummary.virtualTotal)}}건),
+                                    입금대기:{{numberWithCommas(getSummary.waitVirtualPaymentTotal)}}원
+                                    ({{numberWithCommas(getSummary.waitVirtualTotal)}}건)</td>
+                            </tr>
+                            <tr>
+                                <th>총결제금액</th>
+                                <td><b class="text-danger">{{numberWithCommas(getSummary.paymentTotalSum)}}</b>원</td>
+                                <th></th>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import PageHeader from '@/mixin/pageHeader'
+import DateSelect from '@/components/parts/DateSelect'
+import OrderInfoPopup from '@/components/popup/OrderInfoPopup'
+import OrderCancelPopup from '@/components/popup/OrderCancelPopup'
+import DataTableVue4 from '@/components/DataTableVue4'
+import XLSX from 'xlsx'
+
+const store = 'orderCancelStore'
+export default {
+  name: 'orderCancelList',
+  mixins: [
+    PageHeader({title: '주문취소/반품 조회', groupName: '주문/배송관리'})
+  ],
+  components: { DateSelect, OrderInfoPopup, OrderCancelPopup, DataTableVue4 },
+  data: function () {
+    return {
+      columnDef: [
+        { label: '접수번호', name: 'exceptionNo', sort: true },
+        { label: '주문번호', name: 'orderNo', sort: true },
+        { label: '접수경로', name: 'exceptionReceiveType' },
+        { label: '예외구분', name: 'exceptionType' },
+        { label: '주문자', name: 'orderCustomerName', sort: true },
+        { label: '학생ID', name: 'customerLoginId' },
+        { label: '처리상태', name: 'exceptionStatus', sort: true },
+        { label: '예외접수일자', name: 'exceptionReceiveDate', sort: true, type: 'Date' },
+        { label: '접수자', name: 'orderReceiverName' },
+        { label: '처리완료일자', name: 'exceptionCompleteDate', sort: true, type: 'Date' },
+        { label: '처리자', name: 'chargeName' }
+      ],
+      searchParam: {
+        pfromDate: this.$moment().add(-7, 'days').format('YYYY-MM-DD'), // 조회기간from
+        ptoDate: this.$moment().format('YYYY-MM-DD'), // 조회기간to
+        pcustomerNameType: 'ORDER', // 고객타입
+        pcustomerName: '', // 고객명
+        ptelNumberType: 'TELL', // 연락처타입
+        ptelNumber: '', // 연락처
+        porderNo: '', // 주문번호
+        pstatusCd: '', // 처리상태
+        pexceptionTypeCd: '', // 예외구분
+        preceiveTypeCd: '' // 접수경로
+      },
+
+      modalOpenFlag: false, // 모달창 openFlag
+      modalPopupId: '', // 오픈할 모달창 id
+      modalParamObj: {} // 모달창 호출시 params
+    }
+  },
+  computed: {
+    ...mapGetters(store, [
+      'getRowData',
+      'getSummary'
+    ]),
+    getColumnDef: function () { return this.columnDef }
+  },
+  methods: {
+    ...mapActions(store, [
+      'actionFindOrderCancelList',
+      'actionFindOrderCancelSummary'
+    ]),
+    // 조회버튼 클릭
+    onClickSearch () {
+      this.actionFindOrderCancelList(this.searchParam) // 주문취소/반품정보 조회
+        .then(res => {
+          this.actionFindOrderCancelSummary(this.searchParam) // 주문취소/반품정보 Summary조회
+        })
+    },
+    // 엑셀다운로드
+    onClickExcel () {
+      // 컬럼명 변환
+      let column = this.getColumnDef
+      let rowData = this.getRowData
+      let row = []
+      rowData.forEach(x => {
+        let container = {}
+        Object.keys(x).forEach(o => {
+          if (column.find(z => z.name === o) !== undefined) {
+            container[column.find(z => z.name === o).label] = x[o]
+          }
+        })
+        row.push(container)
+      })
+      let dataWS = XLSX.utils.json_to_sheet(row)
+      let wb = XLSX.utils.book_new()
+      XLSX.utils.book_append_sheet(wb, dataWS, 'Sheet')
+      XLSX.writeFile(wb, this.$moment(new Date()).format('YYYY-MM-DD-h:mm:ss') + '.xlsx')
+    },
+    // 모달팝업 open
+    openModalPopup (id, o) {
+      if (id === 'OrderInfoPopup') {
+        // 주문서 기본정보 팝업
+        this.modalParamObj = o
+      }
+      if (id === 'OrderCancelPopup') {
+        // 주문서 상세팝업 오픈시
+        this.modalParamObj = o
+      }
+      this.modalPopupId = id
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup (data) {
+      if (this.modalPopupId === 'OrderInfoPopup') {
+        this.onClickSearch()
+      } else if (this.modalPopupId === 'OrderCancelPopup') {
+        this.onClickSearch()
+      }
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    },
+    // 숫자 콤마
+    numberWithCommas (data) {
+      if (isNaN(Number.parseInt(data))) {
+        return data
+      }
+      return Number.parseInt(data).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

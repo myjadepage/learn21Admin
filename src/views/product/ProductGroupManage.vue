@@ -1,0 +1,381 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+       <div class="col-sm-12">
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <div class="row">
+                       <!--대분류-->
+                       <div class="col-sm-4">
+                            <div class="widget item-classify">
+                                <div class="widget-body no-padding scroll-area">
+                                    <table id="table" class="table no-margin" summary="코드상세 대분류">
+                                        <thead>
+                                            <tr>
+                                                <th>대분류</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr draggable="true" @dragover.prevent @dragenter.prevent @dragleav.prevent @dragend.prevent
+                                            @dragstart='dragStart($event, index)' @drop="dragFinish($event, index, 'big')"
+                                            v-for="(o, index) in getBigCodeList" :key="o.categoryNo"
+                                             :class="o.isUsed === '0' ? 'table-danger' : ''">
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-8">
+                                                            <div class="input-group">
+                                                             <div class="styled-radio">
+                                                                <input type="radio"
+                                                                       name="rdoBigCode"
+                                                                       :id="'rdo_' + o.categoryNo"
+                                                                       :value="o.categoryNo"
+                                                                       @change="onChangeBigCode"
+                                                                       >
+                                                                       <label :for="'rdo_' + o.categoryNo"></label>
+                                                             </div>
+                                                                <input type="text" class="form-control" v-model="o.categoryName">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-sm btn-secondary"><i class="la la-arrows-alt"></i></button>
+                                                            <button type="button" class="btn btn-sm btn-secondary" @click="() => onClickDeleteBigCode(o.categoryNo)"><i class="la la-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="widget-footer item-classify">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" v-model="addBigCodeName">
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-end">
+                                            <button type="button" class="btn btn-block btn-sm btn-outline-primary" @click="onClickAddBigCode">추가</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--중분류-->
+                        <div class="col-sm-4">
+                            <div class="widget item-classify">
+                                <div class="widget-body no-padding scroll-area">
+                                    <table id="table" class="table no-margin" summary="코드상세 대분류">
+                                        <thead>
+                                            <tr>
+                                                <th>중분류</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr draggable="true" @dragover.prevent @dragenter.prevent @dragleav.prevent @dragend.prevent
+                                            @dragstart='dragStart($event, index)' @drop="dragFinish($event, index, 'mid')"
+                                            v-for="(o, index) in getMidCodeList" :key="o.categoryNo"
+                                            :class="o.isUsed === '0' ? 'table-danger' : ''">
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-8">
+                                                            <div class="input-group">
+                                                             <div class="styled-radio">
+                                                                <input type="radio"
+                                                                       name="rdoMidCode"
+                                                                       :id="'rdo_' + o.categoryNo"
+                                                                       :value="o.categoryNo"
+                                                                       @change="onChangeMidCode"
+                                                                       >
+                                                                       <label :for="'rdo_' + o.categoryNo"></label>
+                                                             </div>
+                                                                <input type="text" class="form-control" v-model="o.categoryName">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-sm btn-secondary"><i class="la la-arrows-alt"></i></button>
+                                                            <button type="button" class="btn btn-sm btn-secondary" @click="() => onClickDeleteMidCode(o.categoryNo)"><i class="la la-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="widget-footer item-classify">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" v-model="addMidCodeName">
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-end">
+                                            <button type="button" class="btn btn-block btn-sm btn-outline-primary" @click="onClickAddMidCode">추가</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--소분류-->
+                        <div class="col-sm-4">
+                            <div class="widget item-classify">
+                                <div class="widget-body no-padding scroll-area">
+                                    <table id="table" class="table no-margin" summary="품목상세 대분류">
+                                        <thead>
+                                            <tr>
+                                                <th>소분류</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr draggable="true" @dragover.prevent @dragenter.prevent @dragleav.prevent @dragend.prevent
+                                            @dragstart='dragStart($event, index)' @drop="dragFinish($event, index, 'small')"
+                                            v-for="(o, index) in getSmallCodeList" :key="o.categoryNo"
+                                            :class="o.isUsed === '0' ? 'table-danger' : ''">
+                                                <td>
+                                                    <div class="row">
+                                                        <div class="col-sm-8">
+                                                            <div class="input-group">
+                                                             <div class="styled-radio">
+                                                                <input type="radio"
+                                                                       name="rdoSmallCode"
+                                                                       :id="'rdo_' + o.categoryNo"
+                                                                       :value="o.categoryNo"
+                                                                       >
+                                                                        <label :for="'rdo_' + o.categoryNo"></label>
+                                                             </div>
+                                                                <input type="text" class="form-control" v-model="o.categoryName">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-4 d-flex justify-content-end">
+                                                            <button type="button" class="btn btn-sm btn-secondary"><i class="la la-arrows-alt"></i></button>
+                                                            <button type="button" class="btn btn-sm btn-secondary" @click="() => onClickDeleteSmallCode(o.categoryNo)"><i class="la la-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="widget-footer item-classify">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <input type="text" class="form-control" v-model="addSmallCodeName">
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-end">
+                                            <button type="button" class="btn btn-block btn-sm btn-outline-primary" @click="onClickAddSmallCode">추가</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="widget-footer">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start">
+                            <button type="button" class="btn btn-outline-primary" @click ="$router.push({name: 'productGroup'})">목록</button>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-end">
+                            <button type="button" class="btn btn-primary" @click="onClickSave">저장</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import pageHeader from '@/mixin/pageHeader'
+
+const productGroupStore = 'productGroupStore'
+export default {
+  mixins: [pageHeader({title: '상품분류등록/수정', groupName: '상품관리'})],
+  components: {
+  },
+  created () {
+    // 상품분류코드목록 조회
+    this.actionFindCategoryCodeList().then(res => {
+      this.actionSetBigCodeList(this.lodash.cloneDeep(res.filter(x => x.parentCategoryNo === '1'))) // 대분류코드
+    })
+  },
+  data () {
+    return {
+      addBigCodeName: '',
+      addMidCodeName: '',
+      addSmallCodeName: ''
+    }
+  },
+  computed: {
+    ...mapGetters(productGroupStore, [
+      'getCategoryCodeList', /* 상품코드목록 */
+      'getBigCodeList', /* 대분류 */
+      'getMidCodeList', /* 중분류 */
+      'getSmallCodeList' /* 소분류 */
+    ])
+  },
+  methods: {
+    ...mapActions(productGroupStore, [
+      'actionFindCategoryCodeList',
+      'actionSetBigCodeList',
+      'actionSetMidCodeList',
+      'actionSetSmallCodeList',
+      'actionSaveCategoryCodeList'
+    ]),
+    // 대분류코드 change
+    onChangeBigCode (e) {
+      this.actionSetSmallCodeList([])
+      this.actionSetMidCodeList(this.lodash.cloneDeep(this.getCategoryCodeList.filter(x => x.parentCategoryNo === e.target.value)))
+    },
+    // 중분류코드 change
+    onChangeMidCode (e) {
+      this.actionSetSmallCodeList(this.lodash.cloneDeep(this.getCategoryCodeList.filter(x => x.parentCategoryNo === e.target.value)))
+    },
+    // 대분류코드 삭제 버튼 click
+    onClickDeleteBigCode (o) {
+      this.actionSetBigCodeList(this.getBigCodeList.map((x, i) => {
+        x.isUsed = x.categoryNo === o ? '0' : x.isUsed
+        return x
+      }))
+    },
+    // 중분류코드 삭제 버튼 click
+    onClickDeleteMidCode (o) {
+      this.actionSetMidCodeList(this.getMidCodeList.map(x => {
+        x.isUsed = x.categoryNo === o ? '0' : x.isUsed
+        return x
+      }))
+    },
+    // 소분류코드 삭제 버튼 click
+    onClickDeleteSmallCode (o) {
+      this.actionSetSmallCodeList(this.getSmallCodeList.map(x => {
+        x.isUsed = x.categoryNo === o ? '0' : x.isUsed
+        return x
+      }))
+    },
+    // 대분류 추가
+    onClickAddBigCode () {
+      if (this.addBigCodeName.trim() === '') {
+        alert('품목명을 입력하세요.')
+        return
+      }
+      let addList = this.getBigCodeList
+      addList.push({
+        categoryNo: 'add_' + this.getBigCodeList.length,
+        categoryName: this.addBigCodeName,
+        parentCategoryNo: '1',
+        orderBy: this.getBigCodeList.length + 1,
+        isUsed: '1'
+      })
+      this.actionSetBigCodeList(addList)
+      this.addBigCodeName = ''
+    },
+    // 중분류 추가
+    onClickAddMidCode () {
+      if (document.querySelector("[name='rdoBigCode']:checked") === null) {
+        alert('대분류 코드를 선택하세요.')
+        return
+      }
+      if (document.querySelector("[name='rdoBigCode']:checked").value.indexOf('add') > -1) {
+        alert('추가한 대분류코드는 등록 이후 중분류코드 추가 가능합니다. ')
+        return
+      }
+      if (this.addMidCodeName.trim() === '') {
+        alert('품목명을 입력하세요.')
+        return
+      }
+      let addList = this.getMidCodeList
+      addList.push({
+        categoryNo: 'add_' + this.getMidCodeList.length,
+        categoryName: this.addMidCodeName,
+        parentCategoryNo: document.querySelector("[name='rdoBigCode']:checked").value,
+        orderBy: this.getMidCodeList.length + 1,
+        isUsed: '1'
+      })
+      this.actionSetMidCodeList(addList)
+      this.addMidCodeName = ''
+    },
+    // 소분류 추가
+    onClickAddSmallCode () {
+      if (document.querySelector("[name='rdoMidCode']:checked") === null) {
+        alert('중분류 코드를 선택하세요.')
+        return
+      }
+      if (document.querySelector("[name='rdoMidCode']:checked").value.indexOf('add') > -1) {
+        alert('추가한 중분류코드는 등록 이후 소분류코드 추가 가능합니다. ')
+        return
+      }
+      if (this.addSmallCodeName.trim() === '') {
+        alert('품목명을 입력하세요.')
+        return
+      }
+      let addList = this.getSmallCodeList
+      addList.push({
+        categoryNo: 'add_' + this.getSmallCodeList.length,
+        categoryName: this.addSmallCodeName,
+        parentCategoryNo: document.querySelector("[name='rdoMidCode']:checked").value,
+        orderBy: this.getSmallCodeList.length + 1,
+        isUsed: '1'
+      })
+      this.actionSetSmallCodeList(addList)
+      this.addSmallCodeName = ''
+    },
+    // 저장
+    onClickSave () {
+      let sumList = [...this.getBigCodeList, ...this.getMidCodeList, ...this.getSmallCodeList] // 합쳐서
+      sumList = sumList.filter(x => !(x.categoryNo.indexOf('add') > -1 && x.isUsed === '0')) // 잘못추가한거 빼고
+      let resultList = this.lodash.differenceWith(sumList, this.getCategoryCodeList, this.lodash.isEqual) // 원장이랑 비교
+      resultList.map(x => {
+        if (x.categoryNo.indexOf('add') > -1) {
+          x.categoryNo = null
+        }
+        return x
+      })
+      this.actionSaveCategoryCodeList(resultList)
+        .then(res => {
+          alert(res.message)
+          // 상품분류코드목록 조회
+          this.actionFindCategoryCodeList().then(res => {
+            this.actionSetBigCodeList(this.lodash.cloneDeep(res.filter(x => x.parentCategoryNo === '1'))) // 대분류코드
+          })
+          this.actionSetMidCodeList([])
+          this.actionSetSmallCodeList([])
+        })
+    },
+    dragStart (e, which) {
+      e.dataTransfer.dropAllowed = 'move'
+      e.dataTransfer.dropEffect = 'move'
+      this.dragging = which
+    },
+    dragFinish (e, to, area) {
+      this.moveItem(this.dragging, to, area)
+      e.target.style.marginTop = '2px'
+      e.target.style.marginBottom = '2px'
+    },
+    moveItem (from, to, area) {
+      if (area === 'big') {
+        this.getBigCodeList.splice(to, 0, this.getBigCodeList.splice(from, 1)[0])
+        this.getBigCodeList.map((o, i) => {
+          o.orderBy = i + 1
+          return o
+        })
+      } else if (area === 'mid') {
+        this.getMidCodeList.splice(to, 0, this.getMidCodeList.splice(from, 1)[0])
+        this.getMidCodeList.map((o, i) => {
+          o.orderBy = i + 1
+          return o
+        })
+      } else if (area === 'small') {
+        this.getSmallCodeList.splice(to, 0, this.getSmallCodeList.splice(from, 1)[0])
+        this.getSmallCodeList.map((o, i) => {
+          o.orderBy = i + 1
+          return o
+        })
+      }
+    }
+  },
+  mounted () {
+  }
+}
+</script>

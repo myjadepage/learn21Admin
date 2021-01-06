@@ -1,0 +1,143 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader v-bind:pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-sm-12">
+        <!-- 검색영역 시작-->
+        <div class="widget has-shadow">
+          <div class="widget-body">
+            <table class="table table-bordered" summary="거래처 검색하기">
+              <colgroup>
+                <col width="10%" />
+                <col width="40%" />
+                <col width="10%" />
+                <col width="40%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span class="text-primary">거래처명</span>
+                  </th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-4">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="검색어 입력"
+                          v-model="searchParam.puserCustomerName"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <th><span class="text-primary">거래처 구분</span></th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-3">
+                        <select class="form-control" v-model="searchParam.puserCustomerType">
+                          <option value="">전체</option>
+                          <option value="매입처">매입처</option>
+                          <option value="매출처">매출처</option>
+                        </select>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="text-center">
+              <button class="btn btn-primary" @click="searchBtn">검색</button>
+            </div>
+          </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+        <!-- 리스트영역 시작 -->
+        <data-table-vue-4
+                :columnDef="getColumnDef"
+                :rowData="rows"
+                :isPaging="true"
+                :btnList="[{btnName: '+ 신규등록',
+                            onClick: (data) => {
+                              this.$router.push({name: 'baseVendorInput'})
+                            }
+                          }]"
+                :rowEditorList="[{
+                      type: 'BUTTON',
+                      editColumn: 'buttons',
+                      label: '수정',
+                      onClick: (data) => {
+                        this.$router.push({name: 'baseVendorEidt',
+                                           params: {cuCode: data.row.cuCode}})
+                        }
+                    },
+                    {
+                      type: 'BUTTON',
+                      editColumn: 'buttons1',
+                      label: '삭제'
+                    }]" />
+
+        <!-- 리스트영역 끝 -->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import pageHeader from '@/mixin/pageHeader'
+import DataTableVue4 from '@/components/DataTableVue4.vue'
+
+const vendorStore = 'vendorStore'
+
+export default {
+  name: 'baseVendorList',
+  mixins: [pageHeader({title: '거래처 관리', groupName: '기초관리'})],
+  components: {DataTableVue4},
+  data: function () {
+    return {
+      searchParam: {
+        puserCustomerType: ''
+      },
+      rows: []
+    }
+  },
+  computed: {
+    ...mapGetters(vendorStore, [
+      'getColumnDef',
+      'getVendorInfo'
+    ])
+  },
+  mounted () {
+    this.getAgencyList()
+  },
+  methods: {
+    ...mapActions(vendorStore, [
+      'actionFindVendorList'
+    ]),
+    getAgencyList () {
+      this.actionFindVendorList(this.searchParam)
+        .then(res => {
+          console.log(res)
+          this.rows = res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    searchBtn () {
+      let params = {puserCustomerName: this.searchParam.puserCustomerName, puserCustomerType: this.searchParam.puserCustomerType}
+      this.actionFindVendorList(params)
+        .then(res => {
+          this.rows = res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+
+}
+</script>

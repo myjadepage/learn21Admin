@@ -1,0 +1,696 @@
+<template>
+<div id="orderInfoModal" class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">주문서 정보: {{ modalParamObj.orderNo }}</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="widget no-margin">
+                    <div class="widget-header">
+                        <ul class="nav nav-tabs nav-fill" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link  active" data-toggle="tab" href="#tab-order-1" role="tab" aria-controls="tab-order-1" aria-selected="true">주문서기본정보</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-order-2" role="tab" aria-controls="tab-order-2" aria-selected="false">배송정보</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-order-3" role="tab" aria-controls="tab-order-3" aria-selected="false">주문예외정보</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-order-4" role="tab" aria-controls="tab-order-4" aria-selected="false">SMS전송정보</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="widget-body tab-content">
+                        <!-- 주문서기본정보 tab -->
+                        <div class="tab-pane show active" id="tab-order-1" role="tabpanel">
+                            <h5><i class="la la-minus"></i>주문정보</h5>
+                            <table class="table table-bordered totla-info" summary="주문정보">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="23%">
+                                    <col width="10%">
+                                    <col width="23%">
+                                    <col width="10%">
+                                    <col width=*>
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th>주문번호/경로</th>
+                                        <td>{{ordOrder.orderNo}}/{{ordOrder.channelCd}}</td>
+                                        <th>회원ID</th>
+                                        <td>{{ordOrder.loginId}}</td>
+                                        <th>주문자</th>
+                                        <td>{{ordOrder.customerName}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>SMS연락처</th>
+                                        <td>{{ordOrder.telNum}}</td>
+                                        <th>주문자 E-mail</th>
+                                        <td>{{ordOrder.customerEmail}}</td>
+                                        <th>결제수단</th>
+                                        <td>{{ordOrder.paymentTypeCd}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>결제총액</th>
+                                        <td>{{ordOrder.paymentTotal}}</td>
+                                        <th>주문총액</th>
+                                        <td>{{ordOrder.itemTotal}}</td>
+                                        <th>배송비총액</th>
+                                        <td>{{ordOrder.deliveryCostTotal}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>주문일시</th>
+                                        <td>{{ordOrder.dateOrdered}}</td>
+                                        <th>주문상태</th>
+                                        <td>{{ordOrder.orderStatusCd}}</td>
+                                        <th></th>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class='em-separator separator-dotted'></div>
+
+                            <h5><i class="la la-minus"></i>주문 품목 정보</h5>
+                            <table class="table table-bordered" summary="주문품목정보">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width=*>
+                                    <col width="10%">
+                                    <col width="30%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                </colgroup>
+                                <thead>
+                                    <th>상품코드</th>
+                                    <th>주문상품</th>
+                                    <th>상품구분</th>
+                                    <th>공급처</th>
+                                    <th>판매가</th>
+                                    <th>수량</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(o, i) in ordOrderItemList" :key="i">
+                                        <td>{{o.productCode}}</td>
+                                        <td class="text-left">{{o.displayProductName}}</td>
+                                        <td>{{o.productTypeCd}}</td>
+                                        <td class="text-left">{{o.providerName}}</td>
+                                        <td class="text-right">{{o.unitPrice}}</td>
+                                        <td>{{o.qty}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    이버튼의 위치는 나중에 fixed
+                                    <button type="button" class="btn btn-danger" @click.prevent="openModalPopup('orderCancelApply')">반품접수</button>
+                                </div>
+                                <order-cancel-apply-popup v-if="modalOpenFlag && modalPopupId === 'orderCancelApply'" @close="closeModalPopup" />
+
+                            </div>
+                        </div>
+                        <!-- 배송정보 tab -->
+                        <div class="tab-pane" id="tab-order-2" role="tabpanel">
+                            <h5><i class="la la-minus"></i>배송지정보</h5>
+                            <table class="table table-bordered totla-info" summary="배송지정보">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="23%">
+                                    <col width="10%">
+                                    <col width="23%">
+                                    <col width="10%">
+                                    <col width=*>
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th>배송지확인</th>
+                                        <td>
+                                            <div class="col-sm-12 d-flex align-items-center">
+                                                <div class="styled-radio">
+                                                    <input type="radio" name="radio" id="radCodeAll-1" value="0" v-model="ordDeliveryOrder.ordGubun" readonly>
+                                                    <label for="radCodeAll-1">가맹점</label>
+                                                </div>
+                                                <div class="styled-radio">
+                                                    <input type="radio" name="radio" id="radCodeAll-2" value="1" v-model="ordDeliveryOrder.ordGubun" readonly>
+                                                    <label for="radCodeAll-2">택배</label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <th>수취인명</th>
+                                        <td>{{ordDeliveryOrder.receiver}}</td>
+                                        <th>수취인연락처</th>
+                                        <td>{{ordDeliveryOrder.receiverCellNum}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>배송지주소</th>
+                                        <td colspan="5">
+                                            <div class="row">
+                                                <div class="col-sm-10">
+                                                    <div class="row">
+                                                        <div class="col col-sm-2">
+                                                            <input type="text" class="form-control" placeholder="" v-model="ordDeliveryOrder.deliveryPostalCode">
+                                                        </div>
+                                                        <div class="col col-sm-2">
+                                                            <button class="btn btn-sm btn-secondary input-btn-util">주소검색</button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row  d-flex justify-content-start margin-top-5">
+                                                        <div class="col col-sm-5">
+                                                            <input type="text" class="form-control" v-model="ordDeliveryOrder.deliveryAddr1">
+                                                        </div>
+                                                        <div class="col col-sm-4">
+                                                            <input type="text" class="form-control" v-model="ordDeliveryOrder.deliveryAddr2">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2 d-flex justify-content-end align-items-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-primary">배송지 정보변경</button>
+                                                </div>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>배송 메모</th>
+                                        <td colspan="5">
+                                            <div class="row">
+                                                <div class="col-sm-10">
+                                                    <textarea class="form-control" v-model="ordDeliveryOrder.deliveryMemo" readonly></textarea>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class='em-separator separator-dotted'></div>
+
+                            <h5><i class="la la-minus"></i>배송 지시 정보</h5>
+                            <table class="table table-bordered totla-info" summary="배송지시정보">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="23%">
+                                    <col width="10%">
+                                    <col width="23%">
+                                    <col width="10%">
+                                    <col width=*>
+                                </colgroup>
+                                <thead>
+                                    <th>상품코드</th>
+                                    <th>주문상품</th>
+                                    <th>상품구분</th>
+                                    <th>공급처</th>
+                                    <th>판매가</th>
+                                    <th>수량</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(o,i) in ordDeliveryOrderItemList" :key="i">
+                                        <td>{{o.productCode}}</td>
+                                        <td>{{o.productName}}</td>
+                                        <td>{{o.productTypeCd}}</td>
+                                        <td>{{o.providerName}}</td>
+                                        <td class="text-right">{{o.unitPrice}}</td>
+                                        <td>{{o.qty}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- 주문예외정보 tab -->
+                        <div class="tab-pane" id="tab-order-3" role="tabpanel">
+                            <h5><i class="la la-minus"></i>주문예외정보</h5>
+                            <table class="table table-bordered" summary="주문품목정보">
+                                <colgroup>
+                                </colgroup>
+                                <thead>
+                                    <th>예외유형</th>
+                                    <th>접수일자</th>
+                                    <th>처리완료일자</th>
+                                    <th>처리상태</th>
+                                    <th>처리자</th>
+                                    <th>관리메모</th>
+                                    <th>택배사</th>
+                                    <th>송장번호</th>
+                                    <th>회수구분</th>
+                                    <th>회수일자</th>
+                                    <th>회수관리메모</th>
+                                    <th>상품코드</th>
+                                    <th>주문상품</th>
+                                    <th>상품구분</th>
+                                    <th>공급처</th>
+                                    <th>예외수량</th>
+                                    <th>양품회수</th>
+                                    <th>불량회수</th>
+                                    <th>LOSS비용</th>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(o,i) in orderExceptionDetail" :key="i">
+                                        <td>{{o.exceptionTypeCd}}</td>
+                                        <td>{{o.dateReceived}}</td>
+                                        <td class="text-center">{{o.dateCompleted}}</td>
+                                        <td>{{o.statusCd}}</td>
+                                        <td>{{o.chargeName}}</td>
+                                        <td>{{o.adminMemo}}</td>
+                                        <td>{{o.logisticsName}}</td>
+                                        <td>{{o.invoiceNo}}</td>
+                                        <td>{{o.recallTypeCd}}</td>
+                                        <td>{{o.dateRecall}}</td>
+                                        <td>{{o.recallMemo}}</td>
+                                        <td>{{o.productCode}}</td>
+                                        <td>{{o.displayProductName}}</td>
+                                        <td>{{o.productTypeCd}}</td>
+                                        <td>{{o.providerName}}</td>
+                                        <td>{{o.qty}}</td>
+                                        <td>{{o.normalRecallQty}}</td>
+                                        <td>{{o.brokenRecallQty}}</td>
+                                        <td>{{o.lossCost}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- SMS전송정보 tab -->
+                        <div class="tab-pane" id="tab-order-4" role="tabpanel">
+                            <h5><i class="la la-minus"></i>SMS전송</h5>
+                            <table class="table table-bordered totla-info" summary="SMS전송">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="40%">
+                                    <col width="10%">
+                                    <col width="40%">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"><span class="text-primary">전송번호</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" placeholder="" value="1670-5623">
+                                        </td>
+                                        <th scope="row"><span class="text-primary">작성자</span></th>
+                                        <td>홍길동</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><span class="text-primary">메시지</span></th>
+                                        <td>
+                                            <textarea class="form-control sms-num-area" placeholder="전송할 SMS 내용을 입력합니다."></textarea>
+                                            <small>0/80 Byte</small>
+                                        </td>
+                                        <th scope="row"><span class="text-primary">수신번호</span></th>
+                                        <td>
+                                            <textarea class="form-control sms-num-area" placeholder="">010-23610-1234
+                                            </textarea>
+                                            <small class="text-info">수신번호는 엔터(Enter)로 구분</small>
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>전송일자</th>
+                                        <td>2020-12-12 16:12</td>
+                                        <th>수신자</th>
+                                        <td>2명</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="text-center">
+                                <button class="btn btn-primary">SMS전송</button>
+                            </div>
+
+                            <div class='em-separator separator-dotted'></div>
+
+                            <h5><i class="la la-minus"></i>상담전송 목록</h5>
+                            <table class="table table-bordered " summary="상담전송">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="7%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width=*>
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                    <th>
+                                        <div class="styled-checkbox">
+                                            <input type="checkbox" name="checkbox" id="check-1">
+                                            <label for="check-1"></label>
+                                        </div>
+                                    </th>
+                                    <th>NO</th>
+                                    <th>문자구분</th>
+                                    <th>전송구분</th>
+                                    <th>주문번호</th>
+                                    <th>학생ID</th>
+                                    <th>전송내용</th>
+                                    <th>수신번호</th>
+                                    <th>전송일시</th>
+                                    <th>결과</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="styled-checkbox">
+                                                <input type="checkbox" name="checkbox" id="check-1">
+                                                <label for="check-1"></label>
+                                            </div>
+                                        </td>
+                                        <td>123456</td>
+                                        <td>SMS</td>
+                                        <td>일반</td>
+                                        <td>123456789</td>
+                                        <td>studkdjom</td>
+                                        <td class="text-left">[홍길동]님이 주문하신 물품이 배송을 시작하였습니다.</td>
+                                        <td>010-124-1234</td>
+                                        <td>2020-09-18 오후 5:25:11</td>
+                                        <td>성공</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class='em-separator separator-dotted'></div>
+
+                            <h5><i class="la la-minus"></i>주문전송 목록</h5>
+                            <table class="table table-bordered" summary="상담전송">
+                                <colgroup>
+                                    <col width="5%">
+                                    <col width="7%">
+                                    <col width="5%">
+                                    <col width="5%">
+                                    <col width="10%">
+                                    <col width="10%">
+                                    <col width=*>
+                                    <col width="10%">
+                                    <col width="15%">
+                                    <col width="5%">
+                                </colgroup>
+                                <thead>
+                                    <th>
+                                        <div class="styled-checkbox">
+                                            <input type="checkbox" name="checkbox" id="check-1">
+                                            <label for="check-1"></label>
+                                        </div>
+                                    </th>
+                                    <th>NO</th>
+                                    <th>문자구분</th>
+                                    <th>전송구분</th>
+                                    <th>주문번호</th>
+                                    <th>학생ID</th>
+                                    <th>전송내용</th>
+                                    <th>수신번호</th>
+                                    <th>전송일시</th>
+                                    <th>결과</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="styled-checkbox">
+                                                <input type="checkbox" name="checkbox" id="check-1">
+                                                <label for="check-1"></label>
+                                            </div>
+                                        </td>
+                                        <td>123456</td>
+                                        <td>SMS</td>
+                                        <td>일반</td>
+                                        <td>123456789</td>
+                                        <td>studkdjom</td>
+                                        <td class="text-left">[홍길동]님이 주문하신 물품이 배송을 시작하였습니다.</td>
+                                        <td>010-124-1234</td>
+                                        <td>2020-09-18 오후 5:25:11</td>
+                                        <td>성공</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 주문서 상담내용 -->
+                    <div class="widget-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered" summary="주문서 상담내용">
+                                    <colgroup>
+                                        <col width="10%">
+                                        <col width="30%">
+                                        <col width="10%">
+                                        <col width="15%">
+                                        <col width="10%">
+                                        <col width=*>
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th>상담유형</th>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col col-sm-6">
+                                                        <select class="form-control">
+                                                            <option>배송문의</option>
+                                                            <option>결제문의</option>
+                                                            <option>환불문의</option>
+                                                            <option>기타문의</option>
+                                                            <option>유통처리서</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col col-sm-6">
+                                                        <select class="form-control">
+                                                            <option>선택</option>
+                                                            <option>Ketchup</option>
+                                                            <option>Relish</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <th>접수자</th>
+                                            <td>홍길동(bsssas)</td>
+                                            <th>처리자지정</th>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <select class="form-control">
+                                                            <option>배송문의</option>
+                                                            <option>결제문의</option>
+                                                            <option>환불문의</option>
+                                                            <option>기타문의</option>
+                                                            <option>유통처리서</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>상담원처리내용</th>
+                                            <td colspan="5">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <textarea class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>고객상담내용</th>
+                                            <td colspan="5">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <textarea class="form-control" readonly>해당주문건의 고객 상담 상세 내용 확인이 가능합니다.</textarea>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer" style="justify-content:space-between;">
+                <button type="button" class="btn btn-danger">삭제</button>
+                <button type="button" class="btn btn-primary">저장</button>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import { getOrderDetail, getOrderDeliveryDetail, getOrderExceptionDetail } from '@/api'
+import OrderCancelApplyPopup from './OrderCancelApplyPopup.vue'
+
+export default {
+  components: { OrderCancelApplyPopup },
+  name: 'orderDetailPopup',
+  props: ['modalParamObj'],
+  data: function () {
+    return {
+      /* 주문서정보 */
+      ordOrder: {
+        orderGuid: '', /* 주문서GUID */
+        orderNo: '', /* 주문번호 */
+        dateOrdered: '', /* 주문일시 */
+        orderStatusCd: '', /* 주문상태 */
+        customerTypeCd: '', /* 고객구분 (회원/비회원) */
+        customerName: '', /* 주문자명 */
+        gender: '', /* 주문자 성별 (값 안들어옴) */
+        loginId: '', /* 회원ID */
+        pid: '', /* 주문자 주민번호 */
+        orderPwd: '', /* 주문비밀번호 */
+        telNum: '', /* 주문자연락처 */
+        cellNum: '', /* 주문자휴대폰 */
+        customerEmail: '', /* 주문자Email */
+        receiver: '', /* 수취인명 */
+        receiverTelNum: '', /* 수취인연락처 */
+        receiverCellNum: '', /* 수취인휴대폰 */
+        deliveryPostalCode: '', /* 배송지우편번호 */
+        deliveryAddr1: '', /* 배송지주소1 */
+        deliveryAddr2: '', /* 배송지주소2 */
+        deliveryMemo: '', /* 배송메모 */
+        paymentTypeCd: '', /* 결제수단구분 */
+        productSummary: '', /* 주문상품요약 */
+        itemTotal: '', /* 주문상품총액 */
+        deliveryCostTotal: '', /* 배송비총액 */
+        discountTotal: '', /* 즉시할인총액 */
+        usedMileage: '', /* 아이머니 사용금액 */
+        paymentTotal: '', /* 결제총액 */
+        adminMemo: '', /* 관리자메모 */
+        channelCd: '', /* 주문채널 경로 ID (CID) */
+        couponDiscount: '', /* 쿠폰사용금액 */
+        promotionDiscount: '', /* 프로모션할인금액 */
+        marginTotal: '', /* 수수료총액 */
+        orderTypeCd: '', /* 주문유형 (현재 사용안함) */
+        couponDiscountTypeCd: '', /*  */
+        couponDiscountDesc: '', /*  */
+        resultCode: '', /*  */
+        resultMsg: '', /*  */
+        errorMethod: '', /*  */
+        usedOcbPoint: '', /*  */
+        isOcbMileage: '', /*  */
+        ocbMileage: '', /*  */
+        memberGuid: '', /*  */
+        stdId: '', /*  */
+        stdName: '', /*  */
+        rctCode: '', /*  */
+        rctLink1: '', /*  */
+        rctLink2: '', /*  */
+        ordGubun: '', /*  */
+        pLoginId: '', /*  */
+        cashCellNum: '', /*  */
+        stfId: '', /*  */
+        arsTypeCd: '', /*  */
+        isRefund: '' /*  */
+      },
+      /* 주문품목정보 */
+      ordOrderItemList: [],
+      /* 배송지서정보 */
+      ordDeliveryOrder: {
+        deliveryOrderNo: '', /* 배송지시서 번호 */
+        orderGuid: '', /* 주문서GUID */
+        deliveryTypeCd: '', /* 배송구분 */
+        issueTypeCd: '', /* 발급구분 */
+        deliveryUnitNo: '', /* 물류단위번호 */
+        dateIssued: '', /* 발급일자 */
+        dateReceived: '', /* 배송접수일자 */
+        dateSent: '', /* 발송일자 */
+        dateCompleted: '', /* 배송완료일자 (사용안함) */
+        statusCd: '', /* 배송지시 상태 */
+        receiver: '', /* 수취인명 */
+        receiverTelNum: '', /* 수취인연락처 */
+        receiverCellNum: '', /* 수취인휴대폰 */
+        deliveryPostalCode: '', /* 배송지우편번호 */
+        deliveryAddr1: '', /* 배송지주소1 */
+        deliveryAddr2: '', /* 배송지주소2 */
+        logisticsNo: '', /* 택배사번호 */
+        logisticsName: '', /* 택배사명 */
+        deliveryMemo: '', /* 배송메모 */
+        productSummary: '', /* 배송상품요약정보 */
+        exceptionDesc: '', /* 배송예외시 설명 */
+        isCancel: '', /* 배송지시취소 여부 */
+        isReOrder: '', /* 재배송지시여부 */
+        isChangeAddress: '', /* 주소변경 여부 */
+        dateLastModified: '', /* 최종수정일 */
+        orderNo: '', /* 주문번호 */
+        providerNo: '', /* 공급처번호 - 사용안함 */
+        providerName: '', /* 공급처명 - 사용안함 */
+        deliveryUnitName: '', /* 물류단위명 */
+        customerTypeCd: '', /* 고객유형 */
+        customerName: '', /* 고객명 */
+        loginId: '', /* 회원ID */
+        customerEmail: '', /* 고객Email */
+        itemTotal: '', /* 배송항목 총 금액 */
+        deliveryCost: '', /* 배송비 */
+        orderPath: '', /*  */
+        refundOrderNo: '', /*  */
+        refundReason: '', /*  */
+        refundName: '', /*  */
+        refundTelNum: '', /*  */
+        refundCellNum: '', /*  */
+        refundPostalCode: '', /*  */
+        refundAddr1: '', /*  */
+        refundAddr2: '', /*  */
+        refundMemo: '', /*  */
+        ordGubun: '' /* 배송구분(0:가맹점, 1:택배) */
+      },
+      /* 배송지서 항목정보 */
+      ordDeliveryOrderItemList: [],
+      /* 주문예외정보 */
+      orderExceptionDetail: [],
+      // 모달
+      modalOpenFlag: false, // 모달창 openFlag
+      modalPopupId: '' // 오픈할 모달창 id
+    }
+  },
+  methods: {
+    getDetailData () {
+      // 주문서 기본정보 조회
+      getOrderDetail(this.modalParamObj.orderNo)
+        .then(res => {
+          this.ordOrder = res.ordOrder
+          this.ordOrderItemList = res.ordOrderItemList
+        })
+      // 배송정보 조회
+      getOrderDeliveryDetail(this.modalParamObj.orderNo)
+        .then(res => {
+          this.ordDeliveryOrder = res.ordDeliveryOrder
+          this.ordDeliveryOrderItemList = res.ordDeliveryOrderItemList
+        })
+      // 주문예외정보 조회
+      getOrderExceptionDetail(this.modalParamObj.orderGUID)
+        .then(res => {
+          this.orderExceptionDetail = res
+        })
+    },
+    // 모달팝업 open
+    openModalPopup (id) {
+      if (id === 'orderCancelApply') {
+        // 주문서 상세팝업 오픈시
+        this.modalPopupId = 'orderCancelApply'
+        // this.modalParamObj = {
+        //   orderNo: o.orderNo,
+        //   orderGUID: o.orderGUID
+        // }
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  },
+  mounted: function () {
+    this.getDetailData()
+  }
+}
+</script>
+
+<style>
+
+</style>

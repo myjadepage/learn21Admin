@@ -1,0 +1,120 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">매입확정</h4>
+                <button type="button" class="close" @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                        <div class="widget no-margin">
+                            <div class="widget-body no-padding">
+                                <table class="table table-bordered" summary="매입확정">
+                                    <colgroup>
+                                        <col width="20%">
+                                        <col width="80%">
+                                    </colgroup>
+
+                                    <tbody>
+                                        <tr>
+                                            <th>매입일자</th>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col col-sm-4">
+                                                        <datepicker :value="state.startdate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                                    </div>
+                                                    <div class="input-group col col-sm-2">
+                                                        <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>메모</th>
+                                            <td>
+
+                                                <textarea class="form-control" placeholder="">[일괄 매입 확정]메모를 입력하세요
+                                                        </textarea>
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="text-center">
+                                    <button class="btn btn-primary">일괄매입확정</button>
+                                </div>
+
+                                <div class="em-separator separator-dotted"></div>
+
+                                <table class="table table-bordered mt-5" summary="매입확정품목">
+                                    <colgroup>
+                                        <col width="10%">
+                                        <col width=*>
+                                        <col width="15%">
+                                        <col width="15%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>NO</th>
+                                            <th>품목명</th>
+                                            <th>입고수량</th>
+                                            <th>잔량</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="text-left">PB TOEFL JUNIOR SET (A</td>
+                                            <td>123</td>
+                                            <td class="text-right">13</td>
+                                        </tr>
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="text-left">PB TOEFL JUNIOR SET (A</td>
+                                            <td>123</td>
+                                            <td class="text-right">13</td>
+                                        </tr>
+                                        <tr>
+                                            <td>1</td>
+                                            <td class="text-left">PB TOEFL JUNIOR SET (A</td>
+                                            <td>123</td>
+                                            <td class="text-right">13</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+
+export default {
+  components: { datepicker },
+  data () {
+    return {
+      state: {
+        startdate: new Date()
+      },
+      ko: ko
+    }
+  },
+  methods: {
+    getFormatDate (date) {
+      return this.$moment(date).format('YYYY-MM-DD')
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

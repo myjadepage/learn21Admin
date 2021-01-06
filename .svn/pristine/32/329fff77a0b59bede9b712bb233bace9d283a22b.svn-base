@@ -1,0 +1,31 @@
+// date formatte 예시)2020-11-12
+// DateSelect.vue 같은 함수 사용 변경시 같이 변경할것
+
+export function getFormatDate (date) {
+  let temp = new Date(date)
+  let year = temp.getFullYear()
+  let month = temp.getMonth() + 1
+  month = month > 9 ? month : `0${month}`
+  let day = temp.getDate()
+  day = day > 9 ? day : `0${day}`
+  return `${year}-${month}-${day}`
+}
+
+export function filterSortNo (list) {
+  return list.slice().sort((a, b) => a.noticeId < b.noticeId ? 1 : -1)
+}
+
+// 폰번호 나누기
+export function phoneNum (num) {
+  num = num.replace(/[-]/g, '')
+  let cellPhone = {}
+  cellPhone.first = num.substr(0, 3)
+  cellPhone.sec = num.substr(3, 4)
+  cellPhone.third = num.substr(7)
+  return cellPhone
+}
+
+/**
+ * moment
+ * 1. {{ selectMember.dateCreated | moment('YYYY-MM-DD') }}
+*/

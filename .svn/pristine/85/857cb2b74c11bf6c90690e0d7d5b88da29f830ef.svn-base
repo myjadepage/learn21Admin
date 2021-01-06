@@ -1,0 +1,427 @@
+<template>
+        <div id="qaManageModal" class="modal-mask">
+             <div class="modal-wrapper">
+                 <div class="modal-dialog modal-item">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">{{ title }}</h4>
+                        <button type="button" class="close" @click="$emit('close')">
+                            <span aria-hidden="true">×</span>
+                            <span class="sr-only">close</span>
+                        </button>
+                     </div>
+
+            <div class="modal-body">
+
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered folding-switch">
+                        <a href="#collapseDeliverInfo" data-toggle="collapse">
+                            <h3>-배송정보</h3>
+                        </a>
+                    </div>
+                    <div class="widget-body collapse show" id="collapseDeliverInfo">
+                        <table class="table table-bordered" summary="배송정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>수취인</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" placeholder="" :value="ordDeliveryOrder.receiver">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th>연락처</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <input type="text" class="form-control" placeholder="" :value="ordDeliveryOrder.receiverCellNum">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th>휴대전화</th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-12">
+                                                <input type="text" class="form-control" placeholder="" :value="ordDeliveryOrder.receiverCellNum">
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>주소</th>
+                                    <td colspan="5">
+                                        <div class="row">
+                                            <div class="col col-sm-12">
+                                                <div class="row">
+                                                    <div class="col col-sm-2">
+                                                        <input type="text" class="form-control" placeholder="" :value="ordDeliveryOrder.deliveryPostalCode">
+                                                    </div>
+                                                    <div class="col col-sm-2">
+                                                        <button class="btn btn-sm btn-secondary input-btn-util">주소검색</button>
+                                                    </div>
+                                                </div>
+                                                <div class="row  d-flex justify-content-start margin-top-5">
+                                                    <div class="col col-sm-4">
+                                                        <input type="text" class="form-control" :value="ordDeliveryOrder.deliveryAddr1">
+                                                    </div>
+                                                    <div class="col col-sm-6">
+                                                        <input type="text" class="form-control" :value="ordDeliveryOrder.deliveryAddr2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>메모</th>
+                                    <td colspan="5">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <textarea rows="3" class="form-control" placeholder="" v-model="ordDeliveryOrder.deliveryMemo"></textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered folding-switch">
+                        <a href="#collapsePayInfo" data-toggle="collapse">
+                            <h3>-결제 정보</h3>
+                        </a>
+                    </div>
+                    <div class="widget-body collapse show" id="collapsePayInfo">
+                        <table class="table table-bordered" summary="결제정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>결제총액</th>
+                                    <td>{{ customerPaymentVO.paymentTotal }}원</td>
+                                    <th>상품총액</th>
+                                    <td>{{ customerPaymentVO.itemTotal}}원</td>
+                                    <th>배송비</th>
+                                    <td>{{ customerPaymentVO.deliveryCostTotal }}원</td>
+                                </tr>
+                                <tr>
+                                    <th>카드정보</th>
+                                    <td>{{ customerPaymentVO.cardName }} / {{ customerPaymentVO.installTerms}}개월</td>
+                                    <th>결제일</th>
+                                    <td>{{ customerPaymentVO.datePaid }}</td>
+                                    <th>승인번호</th>
+                                    <td>{{ customerPaymentVO.approvalNum }}</td>
+                                </tr>
+                                <tr>
+                                    <th>입금계좌</th>
+                                    <td>{{ customerPaymentVO.bankName }} / {{ customerPaymentVO.accountNum}}</td>
+                                    <th>결제일</th>
+                                    <td>{{ customerPaymentVO.datePaid }}</td>
+                                    <th>입금액</th>
+                                    <td>{{ customerPaymentVO.paymentTotal }}원</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered folding-switch">
+                        <a href="#collapseCashSpecInfo" data-toggle="collapse">
+                            <h3>-현금영수증 발행정보</h3>
+                        </a>
+                    </div>
+                    <div class="widget-body collapse show" id="collapseCashSpecInfo">
+                        <table class="table table-bordered" summary="현금영수증 발행정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>발행일시</th>
+                                    <td></td>
+                                    <th>금액</th>
+                                    <td></td>
+                                    <th>거래번호</th>
+                                    <td></td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered folding-switch">
+                        <a href="#collapseCunsultInfo" data-toggle="collapse">
+                            <h3>-상담접수</h3>
+                        </a>
+                    </div>
+                    <div class="widget-body collapse show" id="collapseCunsultInfo">
+                        <table class="table table-bordered mb-0" summary="상담접수">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><span class="text-primary">상담유형1</span></th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-12">
+                                                <select class="form-control" v-model="customerCounsel.counselTypeCd" @change="onCodeChange">
+                                                    <option value="">선택</option>
+                                                    <option v-for="(item, index) in this.bigCodeList" :key="index"  :value="item.cdName">
+                                                    {{item.cdName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th><span class="text-primary">상담유형2</span></th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-12">
+                                                <select class="form-control" v-model="customerCounsel.childCounselTypeCd">
+                                                    <option  value="">선택</option>
+                                                    <option v-for="(item, index) in this.midCodeList" :key="index"  :value="item.cdName">
+                                                    {{item.cdName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th><span class="text-primary">처리자 지정</span></th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-12">
+                                                <select class="form-control" v-model="customerCounsel.chargeName">
+                                                    <option value="">선택</option>
+                                                    <option v-for="(item, index) in this.userList" :key="index" >
+                                                        {{item.userName}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row"><span class="text-primary">접수자/확인자</span></th>
+                                    <td>{{ customerCounsel.receiveName }} / {{ customerCounsel.chargeName }}</td>
+                                    <th><span class="text-primary">처리상태</span></th>
+                                    <td>
+                                        <div class="row">
+                                            <div class="col col-sm-12">
+                                                <select class="form-control" v-model="customerCounsel.statusCd">
+                                                    <option>처리완료</option>
+                                                    <option>접수</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <th><span class="text-primary">처리일시</span></th>
+                                    <td> {{ customerCounsel.dateCompleted}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered" summary="상담접수">
+                            <tbody>
+                                <tr>
+                                    <th>고객 상담 내용</th>
+                                    <th>상담원 처리 내용</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <textarea class="form-control" v-model="customerCounsel.counselContents"></textarea>
+                                    </td>
+                                    <td>
+                                        <textarea class="form-control" v-model="customerCounsel.adminMemo"></textarea>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="text-center">
+                            <button class="btn btn-primary" @click="saveBtn">상담내용 저장</button>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-bordered mt-5" summary="고객상담 품목 리스트">
+                    <colgroup>
+                        <col width="3%">
+                        <col width="10%">
+                        <col width=*>
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>
+                                <div class="styled-checkbox margin-bottom-5">
+                                    <input type="checkbox" name="checkbox" id="check-1">
+                                    <label for="check-1"></label>
+                                </div>
+                            </th>
+                            <td>품목ID</td>
+                            <td>품목명</td>
+                            <td>단가</td>
+                            <td>할인율</td>
+                            <td>판매가</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-if="orderItemList.length === 0">
+                            <td colspan="6"> 주문한 품목이 없습니다.</td>
+                        </tr>
+                        <tr v-for="(item, index) in orderItemList" :key="index">
+                            <td>
+                                <div class="styled-checkbox margin-bottom-5">
+                                    <input type="checkbox" name="checkbox" id="check-1">
+                                    <label for="check-1"></label>
+                                </div>
+                            </td>
+                            <td>{{ item.productCode}}</td>
+                            <td>{{ item.productName }}</td>
+                            <td class="text-right">{{ item.unitPrice}}</td>
+                            <td class="text-right">{{ item.saleRate }}%</td>
+                            <td class="text-right">{{ item.totPrice}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer" style="justify-content: center;">
+                <div class="row col">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-dark" @click="$emit('close')">닫기</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <button type="button" class="btn btn-danger margin-right-5">주문예외접수</button>
+                        <button type="button" class="btn btn-primary">선택품목 재출고 요청</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+             </div>
+        </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import { customCounselDetail } from '@/api'
+
+const manToManStore = 'manToManStore'
+const customerCounselStore = 'customerCounselStore'
+
+export default {
+  name: 'qaManagePopup',
+  props: {
+    title: {
+      type: String,
+      require: true
+    },
+    modalParamObj: {
+      type: Object,
+      require: true
+    }
+  },
+  data () {
+    return {
+      ordDeliveryOrder: {},
+      customerCounsel: {},
+      customerPaymentVO: {},
+      orderItemList: [],
+      bigCodeList: [],
+      midCodeList: [],
+      userList: [],
+      param: {},
+      statusCd: ''
+    }
+  },
+  created () {
+    this.param.porderNo = this.modalParamObj.orderNo
+    this.param.pcounselNo = this.modalParamObj.counselNo
+    this.customCounseView(this.param)
+    this.bigCodeList = this.getManToManCode.filter(x => x.cgCode === '301')
+    this.midCodeList = this.getManToManCode.filter(x => x.cgCode === '302')
+  },
+  computed: {
+    ...mapGetters(manToManStore, [
+      'getManToManCode'
+    ])
+  },
+  methods: {
+    // api
+    customCounseView (param) {
+      customCounselDetail(param)
+        .then(res => {
+          console.log(res.data)
+          if (res.data.ordDeliveryOrder === null) {
+            this.ordDeliveryOrder = ''
+          } else {
+            this.ordDeliveryOrder = res.data.ordDeliveryOrder
+          }
+          if (res.data.customerPaymentVO === null) {
+            this.customerPaymentVO = ''
+          } else {
+            this.customerPaymentVO = res.data.customerPaymentVO
+          }
+          this.customerCounsel = res.data.customerCounsel
+          this.orderItemList = res.data.orderItemList
+          this.userList = res.data.user
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    ...mapActions(customerCounselStore, [
+      'actionFindCustomerCounselList',
+      'actionSaveCustomerCounsel'
+    ]),
+    onCodeChange () {
+      let bigCodeObj = this.getManToManCode.find(x => x.cgCode === '301' && x.cdName === this.customerCounsel.counselTypeCd)
+      this.midCodeList = this.getManToManCode.filter(x => x.cdRefcode === bigCodeObj.cdCode)
+      this.customerCounsel.childCounselTypeCd = ''
+    },
+    saveBtn () {
+      if (confirm('저장하시겠습니까?')) {
+        this.actionSaveCustomerCounsel(this.customerCounsel)
+        alert('저장되었습니다.')
+      }
+    }
+  }
+}
+</script>
+
+<style>
+</style>

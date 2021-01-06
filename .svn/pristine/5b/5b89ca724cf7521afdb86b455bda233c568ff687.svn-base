@@ -1,0 +1,39 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+import navToggle from './modules/NavToggle'
+import sideMenu from './modules/SideMenu.js'
+import itemStore from './base/ItemStore'
+import itemGroupStore from './base/ItemGroupStore'
+import itemInvoiceAddStore from './buy/itemInvoiceAddStore'
+import productGroupStore from './product/ProductGroupStore'
+import productManageStore from './product/ProductManageStore'
+import shopStore from './base/shopStore'
+import vendorStore from './base/vendorStore'
+import orderStore from './order/OrderStore'
+import orderCancelStore from './order/OrderCancelStore'
+import manToManStore from './cs/manToManStore'
+import customerCounselStore from './cs/customerCounselStore'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {},
+  mutations: {},
+  actions: {},
+  modules: {
+    navToggle,
+    sideMenu,
+    itemGroupStore,
+    itemStore,
+    itemInvoiceAddStore,
+    productGroupStore,
+    productManageStore,
+    shopStore,
+    vendorStore,
+    orderStore,
+    orderCancelStore,
+    manToManStore,
+    customerCounselStore
+  }
+})

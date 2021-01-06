@@ -1,0 +1,181 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-sm-12">
+        <!-- 검색영역 시작-->
+        <div class="widget has-shadow">
+          <div class="widget-body">
+            <table class="table table-bordered" summary="코드 검색하기">
+              <colgroup>
+                <col width="10%" />
+                <col width="40%" />
+                <col width="10%" />
+                <col width="40%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span class="text-primary">코드그룹 선택</span>
+                  </th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-4">
+                        <select class="form-control" v-model="selected">
+                          <option value="" disabled>선택하세요</option>
+                          <option  v-for="item in codegroup" :key="item.cgCode" :value="item.cgCode">[{{ item.cgCode }}] {{item.cgName}}</option>
+                        </select>
+                      </div>
+                    </div>
+                  </td>
+                  <th><span class="text-primary">코드 명</span></th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-4">
+                        <input type="text" class="form-control" placeholder="검색어 입력"
+                        v-model.lazy="searchText"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="text-center">
+              <button class="btn btn-primary" @click="seachBtn(searchText, selected)">조회</button>
+            </div>
+          </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+        <!-- 리스트영역 시작 -->
+        <div class="widget has-shadow">
+          <div class="widget-header bordered">
+            <div class="row">
+              <div
+                class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center"
+              >
+                <label class="col-sm-4">조회한 코드그룹 건수 : {{ tableList.length }}개</label>
+              </div>
+            </div>
+          </div>
+          <div class="widget-body">
+            <table
+              id="code_list-table"
+              class="table table-bordered"
+              summary="코드관리 리스트"
+            >
+              <colgroup>
+                <col width="10%" />
+                <col width="10%" />
+                <col width="10%" />
+                <col width="*" />
+                <col width="5%" />
+                <col width="7%" />
+                <col width="10%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>코드그룹</th>
+                  <th>상위 참조코드</th>
+                  <th>코드</th>
+                  <th>코드명</th>
+                  <th>순서</th>
+                  <th>사용여부</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-if="tableList.length == 0">
+                  <td colspan="7" class="text-center">조회할 "코드그룹"을 먼저 선택하고 조회하세요</td>
+                </tr>
+                <tr v-for="item in tableList" :key='item.index'>
+                  <td @click="$router.push({path: `code_detail/${item.cgCode}`})">{{ item.cgName }}</td>
+                  <td>-</td>
+                  <td>{{ item.cdCode}}</td>
+                  <td>{{ item.cdName }}</td>
+                  <td class="text-center">{{ item.cdOrder }}</td>
+                  <td class="text-center">{{ item.cdUseyn }}</td>
+                  <td>
+                    <div
+                      class="col-sm-12 d-flex align-items-center justify-content-md-end justify-content-center"
+                    >
+                      <button class="btn btn-sm btn-outline-dark" @click="codeEdit(item.index)">수정</button>
+                      <button class="btn btn-sm btn-danger" @click="codeDel(item.index)">삭제</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- 리스트영역 끝 -->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/paageHeader'
+import { getCodeList, getCodeGroup } from '@/api'
+
+export default {
+  name: 'baseCode',
+  mixins: [pageHeader({title: '코드관리', groupName: '기초관리'})],
+  data: function () {
+    return {
+      selected: '',
+      codegroup: [],
+      searchText: '',
+      tableList: []
+    }
+  },
+  created () {
+    this.getCodeGroupFind()
+  },
+  methods: {
+    // api
+    getCodeFind (cdName, cgCode) {
+      getCodeList(cdName, cgCode)
+        .then(res => {
+          this.tableList = res.data
+          if (this.tableList.length === 0) {
+            alert('검색된 코드가 없습니다.')
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getCodeGroupFind () {
+      getCodeGroup()
+        .then(res => {
+          console.log(res.data)
+          this.codegroup = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    seachBtn (cdName, cgCode) {
+      if (cgCode === '') {
+        alert('코드 그룹을 선택하세요')
+        return
+      }
+      // if (cdName === '') {
+      //   alert('코드명을 입력해주세요')
+      //   return
+      // }
+      this.getCodeFind(cdName, cgCode)
+    },
+    codeEdit (index) {
+      console.log('수정해야해')
+    },
+    codeDel (index) {
+      console.log('삭제해야해')
+    }
+  }
+}
+</script>

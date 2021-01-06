@@ -1,0 +1,26 @@
+import axios from 'axios'
+
+const config = {
+  // baseUrl: 'http://localhost:8443'
+  baseUrl: 'http://192.168.232.51:8443/booksadmin'
+}
+
+// 가맹점 검색
+export function getFcList (param) {
+  return axios
+    .get(`${config.baseUrl}/basic/franchisee/find/franchisee`, {
+      params: {
+        pfuCode: param.pfuCode,
+        pfuType: param.pfuType,
+        pfranchiseeName: param.pfranchiseeName,
+        pfranchiseeGroup: param.pfranchiseeGroup
+      }
+    })
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 가맹정 수정
+export function updateFc (param) {
+  return axios.post(`${config.baseUrl}/basic/franchisee/save`, param)
+}

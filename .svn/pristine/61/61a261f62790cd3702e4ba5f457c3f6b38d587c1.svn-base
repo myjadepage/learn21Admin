@@ -1,0 +1,124 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader v-bind:pageCurrentInfo="pageCurrentInfo" />
+      <div class="col-sm-12">
+        <!-- 검색영역 시작-->
+        <div class="widget has-shadow">
+          <div class="widget-body">
+            <table class="table table-bordered" summary="가맹점 검색하기">
+              <colgroup>
+                <col width="10%" />
+                <col width="40%" />
+                <col width="10%" />
+                <col width="40%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th scope="row">가맹점명</th>
+                  <td>
+                    <div class="row">
+                      <div class="col-sm-4">
+                        <input type="text" class="form-control" placeholder="검색어 입력" v-model="searchParam.pfranchiseeName"/>
+                      </div>
+                    </div>
+                  </td>
+                  <th>가맹점 그룹</th>
+                  <td>
+                    <div class="row">
+                      <div class="col-sm-3">
+                        <select class="form-control" :value="fcGroupList" @input="selectFcGroup" v-model="searchParam.pfranchiseeGroup">
+                          <option value="">선택하세요</option>
+                          <option value="청담어학원">청담어학원</option>
+                          <option value="APRIL">APRIL</option>
+                        </select>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <button type="button" class="btn btn-primary" @click="searchBtn">검색</button>
+            </div>
+          </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+         <DataTableVue4
+                :columnDef="getColumnDef"
+                :rowData="rows"
+                :isPaging="true"
+                :rowEditorList="[{
+                      type: 'BUTTON',
+                      editColumn: 'button',
+                      label: '수정',
+                      onClick: (data) => {
+                        this.$router.push({name: 'baseShopInput',
+                                           params: {fuCode: data.row.fuCode, fuType: data.row.fuType}})
+                        }
+                    }]" />
+      </div>
+      <!-- End Page Content -->
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+import DataTableVue4 from '@/components/DataTableVue4'
+import pageHeader from '@/mixin/pageHeader'
+
+const shopStore = 'shopStore'
+export default {
+  name: 'baseShopList',
+  mixins: [pageHeader({title: '가맹점 관리', groupName: '기초관리'})],
+  components: { DataTableVue4 },
+  data: function () {
+    return {
+      searchParam: {},
+      fcGroupList: [],
+      fcList: [],
+      rows: []
+    }
+  },
+  computed: {
+    ...mapGetters(shopStore, [
+      'getShopInfo',
+      'getColumnDef'
+    ])
+  },
+  mounted () {
+    this.getFranchise()
+  },
+  methods: {
+    // api
+    getFranchise () {
+      this.actionFindShopList(this.searchParam)
+        .then(res => {
+          this.rows = res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    selectFcGroup (e) {
+      console.log('event', e.target.value)
+    },
+    searchBtn () {
+      let params = {pfranchiseeName: this.searchParam.pfranchiseeName, pfranchiseeGroup: this.searchParam.pfranchiseeGroup}
+      this.actionFindShopList(params)
+        .then(res => {
+          this.rows = res
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    ...mapActions(shopStore, [
+      'actionFindShopList',
+      'actionSaveVendor'
+    ])
+  }
+}
+</script>

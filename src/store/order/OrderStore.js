@@ -1,0 +1,151 @@
+
+import {orderApi} from '@/api'
+const orderStore = {
+  namespaced: true,
+  state: {
+    rowData: [], // 주문서 Main 목록
+    orderSummary: {}, // 주문서 Main Summary
+    rctCodeList: [], // 가맹점(학원) 목록
+    orderDetail: {}, // 주문정보
+    orderItemList: {}, // 주문품목정보
+    deliveryOrder: {}, // 배송지 정보
+    deliveryOrderItemList: [], // 배송지시 항목 정보
+    orderExceptionDetail: [], // 주문예외정보
+    orderCounselList: [], // 주문서별 상담목록
+    userList: [] // 상담처리자 목록
+  },
+  getters: {
+    getRowData: state => state.rowData,
+    getOrderSummary: state => state.orderSummary,
+    getRctCodeList: state => state.rctCodeList,
+    getOrderDetail: state => state.orderDetail,
+    getOrderItemList: state => state.orderItemList,
+    getDeliveryOrder: state => state.deliveryOrder,
+    getDeliveryOrderItemList: state => state.deliveryOrderItemList,
+    getOrderExceptionDetail: state => state.orderExceptionDetail,
+    getOrderCounselList: state => state.orderCounselList,
+    getUserList: state => state.userList
+  },
+  mutations: {
+    SET_ROW_DATA: (state, data) => { state.rowData = data },
+    SET_ORDER_SUMMARY: (state, data) => { state.orderSummary = data },
+    SET_RCT_CODE_LIST: (state, data) => { state.rctCodeList = data },
+    SET_ORDER_DETAIL: (state, data) => { state.orderDetail = data },
+    SET_ORDER_ITEM_LIST: (state, data) => { state.orderItemList = data },
+    SET_DELIVERY_ORDER: (state, data) => { state.deliveryOrder = data },
+    SET_DELIVERY_ORDER_ITEM_LIST: (state, data) => { state.deliveryOrderItemList = data },
+    SET_ORDER_EXCEPTION_DETAIL: (state, data) => { state.orderExceptionDetail = data },
+    SET_ORDER_COUNSEL_LIST: (state, data) => { state.orderCounselList = data },
+    SET_USER_LIST: (state, data) => { state.userList = data }
+  },
+  actions: {
+    // 주문조회 화면의 메인그리드 조회
+    actionFindOrderList: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findOrderList(data)
+          .then(res => {
+            commit('SET_ROW_DATA', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 주문조회 화면의 메인Summary 조회
+    actionFindOrderSummary: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findOrderSummary(data)
+          .then(res => {
+            commit('SET_ORDER_SUMMARY', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 가맹점(학원) 목록 조회
+    actionFindFranchiseeList: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findFranchiseeList(data)
+          .then(res => {
+            commit('SET_RCT_CODE_LIST', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 주문서 기본정보 조회
+    actionFindOrderDetail: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findOrderDetail(data)
+          .then(res => {
+            commit('SET_ORDER_DETAIL', res.ordOrder)
+            commit('SET_ORDER_ITEM_LIST', res.ordOrderItemList)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 배송정보 조회
+    actionFindOrderDeliveryDetail: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findOrderDeliveryDetail(data)
+          .then(res => {
+            commit('SET_DELIVERY_ORDER', res.ordDeliveryOrder === null ? {} : res.ordDeliveryOrder)
+            commit('SET_DELIVERY_ORDER_ITEM_LIST', res.ordDeliveryOrderItemList)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 주문예외정보 조회
+    actionFindOrderExceptionDetail: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findOrderExceptionDetail(data)
+          .then(res => {
+            commit('SET_ORDER_EXCEPTION_DETAIL', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 주문배송지 주소 저장
+    actionSaveAddrDelivery: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.saveAddrDelivery(data)
+          .then(res => { resolve(res) })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 주문서별 상담목록 조회
+    actionFindOrderCounselList: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findOrderCounselList(data)
+          .then(res => {
+            commit('SET_ORDER_COUNSEL_LIST', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // admin user 조회 - 상담처리자 목록
+    actionFindUserList: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.findUserList()
+          .then(res => {
+            commit('SET_USER_LIST', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 주문서별 상담정보 저장
+    actionSaveOrderCounsel: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        orderApi.saveOrderCounsel(data)
+          .then(res => { resolve(res) })
+          .catch(err => { reject(err) })
+      })
+    }
+  }
+}
+
+export default orderStore

@@ -1,0 +1,177 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+      <div class="col-sm-12">
+        <div class="widget has-shadow">
+            <div class="widget-body">
+                <table class="table table-bordered" summary="공지사항관리 검색하기">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="40%">
+                        <col width="10%">
+                        <col width="40%">
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th scope="row"><span class="text-primary">검색어</span></th>
+                            <td>
+                                <div class="row">
+                                    <div class="col col-sm-3">
+                                        <select class="form-control">
+                                            <option>검색구분</option>
+                                            <option>제목</option>
+                                            <option>내용</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </td>
+                            <th><span class="text-primary">게시일자</span></th>
+                            <td>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <div class="input-group">
+                                            <datepicker :value="state.startdate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                            <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                            <span class="input-group-addon">~</span>
+                                            <datepicker :value="state.enddate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                            <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <button class="btn btn-primary">검색</button>
+                </div>
+            </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+        <!-- 리스트영역 시작 -->
+        <div class="widget has-shadow">
+            <div class="widget-header bordered">
+                <div class="row">
+                    <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                        <select class="form-control col-sm-2">
+                                            <option>표시갯수</option>
+                                            <option>10개</option>
+                                            <option>20개</option>
+                                            <option>30개</option>
+                                        </select>
+                        <label class="col-sm-4">조회건수 : {{ noticeListInfo.length }}개</label>
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                        <button class="btn btn-outline-danger" @click="$router.push('manage/manage_notice_input')">+ 신규</button>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-body">
+                <table id="notice-list-table" class="table table-bordered" summary="공지사항보기 리스트">
+                    <colgroup>
+                        <col width="5%">
+                        <col width=*>
+                        <col width="15%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>제목</th>
+                            <th>게시기간</th>
+                            <th>상태</th>
+                            <th>등록자</th>
+                            <th>조회수</th>
+                            <th>등록일자</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in filterNoticeSortedNo()" :key="index">
+                            <td> {{ item.noticeId }}</td>
+                            <td class="text-left">{{ item.title}}</td>
+                            <td>{{ item.startDate }} ~ {{ item.endDate }}</td>
+                            <td>{{ item. statusCd }}</td>
+                            <td>{{ item.userNameCreatedBy }}</td>
+                            <td>{{ item.viewCount }}</td>
+                            <td>{{ getFormatDate(item.dateCreated) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+import PageHeader from '@/components/PageHeader'
+import { getNoticeList } from '@/api'
+
+export default {
+  name: 'noticeList',
+  components: {
+    PageHeader,
+    datepicker
+  },
+  data: function () {
+    return {
+      pageCurrentInfo: {
+        title: '공지사항 관리',
+        groupName: '운영 관리'
+      },
+      modal: false,
+      noticeListInfo: [],
+      state: {
+        startdate: '',
+        enddate: ''
+      },
+      ko: ko
+    }
+  },
+  created () {
+    this.getNotice()
+  },
+  methods: {
+    getNotice () {
+      getNoticeList()
+        .then(res => {
+          console.log('notice3', res)
+          this.noticeListInfo = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    filterNoticeSortedNo () {
+      return this.noticeListInfo.slice().sort((a, b) => a.noticeId > b.noticeId ? 1 : -1)
+    },
+    getFormatDate (date) {
+      let temp = new Date(date)
+      let year = temp.getFullYear()
+      let month = temp.getMonth() + 1
+      let day = temp.getDate()
+      console.log('year', year + '-' + month + '-' + day)
+      return year + '-' + month + '-' + day
+    }
+  }
+}
+</script>
+
+<style>
+.vdp-datepicker {
+    width: 150px;
+}
+.form-control:disabled, .form-control[readonly] {
+    background-color: #fff;
+}
+
+</style>

@@ -1,0 +1,46 @@
+<template>
+  <ul class="collapse list-unstyled">
+      <li v-for="item in items" :key="item.index" :class="{show: showActive}">
+        <!-- <router-link :to="item.path" @click.native="addTabPageClick($event, item.path)">{{ item.title }}</router-link> -->
+        <router-link :to="item.path">{{ item.title }}</router-link>
+      </li>
+    <!-- <li><router-link to="/base/shop_list">가맹점 관리</router-link></li>
+    <li>
+      <router-link to="/base/vendor_list" >거래처 관리</router-link>
+    </li>
+    <li><router-link to="/base/items">품목 관리</router-link></li>
+    <li><router-link to="/base/code">코드 관리</router-link></li>
+    <li>
+      <router-link to="/base/code_detail">코드 상세 관리</router-link>
+    </li>
+    <li>
+      <router-link to="/base/code_group">코드 그룹 관리</router-link>
+    </li> -->
+   </ul>
+</template>
+
+<script>
+export default {
+  name: 'siddbarMenu',
+  props: ['items'],
+  data: function () {
+    return {
+      showActive: false
+    }
+  },
+  computed: {
+    // showActive2 () {
+    //   return this.$route.path.includes(`/base`) ? 'true' : 'false'
+    // }
+  },
+  methods: {
+    addTabPageClick (event, path) {
+      // this.$emit('addTab', path)
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

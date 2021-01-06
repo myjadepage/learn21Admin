@@ -1,0 +1,344 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-xl-12">
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="주문 검색하기">
+                        <colgroup>
+                            <col width="12%">
+                            <col width="38%">
+                            <col width="12%">
+                            <col width="38%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">고객</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pcustomerNameType">
+                                                <option key="ORDER" value="ORDER">주문자</option>
+                                                <option key="RECEIVER" value="RECEIVER">수취인</option>
+                                                <option key="STUDENTID" value="STUDENTID">학생ID</option>
+                                                <option key="STUDENTNAME" value="STUDENTNAME">학생명</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="pcustomerName" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary" >연락처</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="ptelNumberType">
+                                                <option key="ORDER" value="ORDER">주문자</option>
+                                                <option key="RECEIVER" value="RECEIVER">수취인</option>
+                                                <option key="STUDENT" value="STUDENT">학생</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="ptelNumber" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">조회기간</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pdateType">
+                                                <option key="ORDER" value="ORDER">주문일자</option>
+                                                <option key="SENT" value="SENT">배송일자</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-8">
+                                            <!-- date select component -->
+                                            <DateSelect @state-start-date="setPfromDate"
+                                                        @state-end-date="setPtoDate"
+                                                        :defStartDate="pfromDate"
+                                                        :defEndDate="ptoDate"
+                                                        />
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row"><span class="text-primary">주문경로/주문번호</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pchannelCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="COBS" value="COBS">COBS</option>
+                                                <option key="FRONT" value="FRONT">FRONT</option>
+                                                <option key="ALLM" value="ALLM">ALLM</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="porderNo" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">회원구분</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pcustomerTypeCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="회원" value="회원">회원</option>
+                                                <option key="비회원" value="비회원">비회원</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">결제수단/주문상태</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="ppaymentTypeCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="신용카드" value="신용카드">신용카드</option>
+                                                <option key="가상계좌" value="가상계좌">가상계좌</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="porderStatusCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="주문접수" value="주문접수">주문접수</option>
+                                                <option key="주문취소" value="주문취소">주문취소</option>
+                                                <option key="입금대기" value="입금대기">입금대기</option>
+                                                <option key="결제완료" value="결제완료">결제완료</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="searchBtn">검색</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                            <select class="form-control col-sm-2">
+                                <option>표시갯수</option>
+                                <option>10개</option>
+                                <option>20개</option>
+                                <option>30개</option>
+                            </select>
+                            <label class="col-sm-4">조회건수 : 20개</label>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                            <button type="button"
+                                    class="btn btn-outline-primary btn_excel"
+                                    id="btnExcel"
+                                    @click="excelBtn">엑셀다운로드</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table id="sorting-table" class="table table-bordered" summary="주문서보기 리스트">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">NO</th>
+                                <th scope="col">주문번호</th>
+                                <th scope="col">주문자명<br>(수취인명)</th>
+                                <th scope="col">주문상태</th>
+                                <th scope="col">주문품목</th>
+                                <th scope="col">주문총액</th>
+                                <th scope="col">배송비</th>
+                                <th scope="col">결제총액</th>
+                                <th scope="col">결제수단</th>
+                                <th scope="col">주문일자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(o, i) in getOrderRowData" :key="i">
+                                <td> {{ i+1 }}</td>
+                                <td> {{ o.orderNo }}</td>
+                                <td> {{ o.customerName }}</td>
+                                <td> {{ o.orderStatusCd }}</td>
+                                <td><router-link :to="`code_detail/${item.cgCode}`">{{ o.productSummary }}</router-link></td>
+                                <td> {{ o.itemTotal }}</td>
+                                <td> {{ o.deliveryCostTotal }}</td>
+                                <td> {{ o.paymentTotal }}</td>
+                                <td> {{ o.paymentTypeCd }}</td>
+                                <td> {{ o.orderPaidDate }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+
+            <!----선택된 주문 영역-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered totla-info" summary="선택 주문 리스트">
+                        <colgroup>
+                            <col width="15%">
+                            <col width="35">
+                            <col width="15%">
+                            <col width="35">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>주문기간</th>
+                                <td>{{pfromDate}} ~ {{ptoDate}}</td>
+                                <th>총주문금액</th>
+                                <td><b class="text-danger">{{orderSummary.itemTotalSum}}</b>원</td>
+                            </tr>
+                            <tr>
+                                <th>배송비총액</th>
+                                <td><b class="text-danger">{{orderSummary.deliveryCostTotalSum}}</b>원</td>
+                                <th>수수료총액</th>
+                                <td>{{orderSummary.marginTotalSum}}원</td>
+
+                            </tr>
+                            <tr>
+                                <th>신용카드결제(건수)</th>
+                                <td>{{orderSummary.creditPaymentTotal}}원({{orderSummary.creditTotal}}건)</td>
+                                <th>가상계좌입금(건수)</th>
+                                <td>결제완료 : {{orderSummary.virtualPaymentTotal}}원({{orderSummary.virtualTotal}}건), 입금대기:{{orderSummary.waitVirtualPaymentTotal}}원({{orderSummary.waitVirtualTotal}}건)</td>
+                            </tr>
+                            <tr>
+                                <th>총결제금액</th>
+                                <td><b class="text-danger">{{orderSummary.paymentTotalSum}}</b>원</td>
+                                <th></th>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import PageHeader from '@/mixin/pageHeader'
+import DateSelect from '@/components/parts/DateSelect'
+import { getOrderList, getSummaryList } from '@/api'
+
+export default {
+  name: 'orderList',
+  mixins: [
+    PageHeader({title: '주문서조회', groupName: '주문/배송관리'})
+  ],
+  components: {
+    DateSelect
+  },
+  computed: {
+    // 주문서 데이터 가공
+    getOrderRowData: function () {
+      this.orderRowData.map(x => {
+        x.orderPaidDate = x.dateOrdered + ' (' + x.datePaid + ')'
+        return x
+      })
+      return this.orderRowData
+    }
+  },
+  data: function () {
+    return {
+      orderRowData: [], // 주문서 목록
+      orderSummary: { // 주문서 Summary
+        itemTotalSum: '', // 총 주문금액
+        deliveryCostTotalSum: '', // 배송비총액
+        marginTotalSum: '', // 수수료총액
+        creditPaymentTotal: '', // 신용카드 결재금액
+        creditTotal: '', // 신용카드 결재건수
+        virtualPaymentTotal: '', // 가상계좌 결재완료금액
+        virtualTotal: '', // 가상계좌 결재완료건수
+        waitVirtualPaymentTotal: '', // 가상계좌 입금대기금액
+        waitVirtualTotal: '', // 가상계좌 입금대기건수
+        paymentTotalSum: '' // 총결제금액
+      },
+      pcustomerNameType: 'ORDER', // 고객타입
+      pcustomerName: '', // 고객명
+      ptelNumberType: 'ORDER', // 연락처타입
+      ptelNumber: '', // 연락처
+      pchannelCd: '', // 주문경로
+      porderNo: '', // 조문번호
+      pdateType: 'ORDER', // 조회기간타입
+      pfromDate: this.$moment().add(-7, 'days').format('YYYY-MM-DD'), // 조회기간from
+      ptoDate: this.$moment().format('YYYY-MM-DD'), // 조회기간to
+      pcustomerTypeCd: '', // 회원구분
+      porderStatusCd: '', // 주문상태
+      ppaymentTypeCd: '' // 결제수단
+    }
+  },
+  methods: {
+    setPfromDate (date) { this.pfromDate = date },
+    setPtoDate (date) { this.ptoDate = date },
+    // 조회버튼 클릭
+    searchBtn () {
+      let paramObj = {
+        pcustomerNameType: this.pcustomerNameType,
+        pcustomerName: this.pcustomerName,
+        ptelNumberType: this.ptelNumberType,
+        ptelNumber: this.ptelNumber,
+        pchannelCd: this.pchannelCd,
+        porderNo: this.porderNo,
+        pdateType: this.pdateType,
+        pfromDate: this.pfromDate,
+        ptoDate: this.ptoDate,
+        pcustomerTypeCd: this.pcustomerTypeCd,
+        porderStatusCd: this.porderStatusCd,
+        ppaymentTypeCd: this.ppaymentTypeCd
+      }
+      // 주문서 조회
+      getOrderList(paramObj)
+        .then(res => {
+          this.orderRowData = res.data
+          getSummaryList(paramObj)
+            .then(response => {
+              this.orderSummary = response.data
+            }
+            ).catch(err => console.log(err))
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 엑셀다운로드
+    excelBtn () {
+      console.log('orderRowData', this.orderRowData)
+    }
+
+  }
+}
+</script>
+
+<style>
+
+</style>

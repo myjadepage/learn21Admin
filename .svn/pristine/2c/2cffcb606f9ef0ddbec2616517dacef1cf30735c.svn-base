@@ -1,0 +1,21 @@
+<template>
+  <ul class="collapse">
+      <li v-for="(item, index) in items" :key="index">
+        <router-link :to="item.path">{{ item.title }}</router-link>
+      </li>
+   </ul>
+</template>
+
+<script>
+export default {
+  name: 'siddbarMenu',
+  props: ['items'],
+  data: function () {
+    return {}
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

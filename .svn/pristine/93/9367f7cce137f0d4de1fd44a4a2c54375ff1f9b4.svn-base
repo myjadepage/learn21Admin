@@ -1,0 +1,246 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Container from '@/components/container/Container'
+import SignIn from './../views/SignIn'
+
+// import { RouterTabRoutes } from 'vue-router-tab'
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/SignIn',
+    name: 'signIn',
+    component: SignIn,
+    meta: {
+      authRequired: true
+    }
+  },
+  {
+    path: '/',
+    redirect: '/dashboard',
+    name: 'Home',
+    component: Container,
+    children: [
+      // ...RouterTabRoutes,
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard'),
+        meta: {
+          title: '대시보드'
+        }
+      },
+      {
+        path: 'base/shop_list',
+        name: 'baseShopList',
+        component: () => import('@/views/base/BaseShopList'),
+        meta: {
+          title: '가맹점관리'
+        }
+      },
+      {
+        path: 'base/shop_input',
+        name: 'baseShopInput',
+        component: () => import('@/views/base/BaseShopInput'),
+        meta: {
+          title: '가맹점등록/수정'
+        }
+      },
+      {
+        path: 'base/vendor_list',
+        name: 'baseVendorList',
+        component: () => import('@/views/base/BaseVendorList'),
+        meta: {
+          title: '거래처관리'
+        }
+      },
+      {
+        path: 'base/vendor_input',
+        name: 'baseVendorInput',
+        component: () => import('@/views/base/BaseVendorInput'),
+        meta: {
+          title: '거래처등록/수정'
+        }
+      },
+      {
+        path: 'base/items',
+        name: 'baseItems',
+        component: () => import('@/views/base/BaseItems'),
+        meta: {
+          title: '품목관리'
+        }
+      },
+      {
+        path: 'base/items_input',
+        name: 'baseItemsInput',
+        component: () => import('@/views/base/BaseItemsInput'),
+        meta: {
+          title: '품목등록'
+        }
+      },
+      {
+        path: 'base/code',
+        name: 'baseCode',
+        component: () => import('@/views/base/BaseCode'),
+        meta: {
+          title: '코드관리'
+        }
+      },
+      {
+        path: 'base/code_detail/:cgCode',
+        name: 'baseCodeDetail',
+        component: () => import('@/views/base/BaseCodeDetail'),
+        props: true,
+        meta: {
+          title: '코드상세관리'
+        }
+      },
+      {
+        path: 'buy/list',
+        name: 'buyList',
+        component: () => import('@/views/buy/BuyList'),
+        meta: {
+          title: '구매발주서'
+        }
+      },
+      {
+        path: 'buy/confirm',
+        name: 'buyConfirm',
+        component: () => import('@/views/buy/BuyConfirm'),
+        meta: {
+          title: '매입확정'
+        }
+      },
+      {
+        path: 'buy/spec_list',
+        name: 'buySpecList',
+        component: () => import('@/views/buy/BuySpecList'),
+        meta: {
+          title: '매입명세서'
+        }
+      },
+      {
+        path: 'buy/search',
+        name: 'buySearch',
+        component: () => import('@/views/buy/BuySearch'),
+        meta: {
+          title: '매입조회'
+        }
+      },
+      {
+        path: 'buy/invoice',
+        name: 'buyInvoice',
+        component: () => import('@/views/buy/BuyInvoice'),
+        meta: {
+          title: '매입처원장'
+        }
+      },
+      {
+        path: 'buy/not_in',
+        name: 'buyNotIn',
+        component: () => import('@/views/buy/BuyNotIn'),
+        meta: {
+          title: '매입고현황'
+        }
+      },
+      {
+        path: 'sales/spec_list',
+        name: 'saleSpecList',
+        component: () => import('@/views/sales/SaleSpecList'),
+        meta: {
+          title: '매출명세서'
+        }
+      },
+      {
+        path: 'order/order_list',
+        name: 'orderList',
+        component: () => import('@/views/order/OrderList'),
+        meta: {
+          title: '주문서조회'
+        }
+      },
+      {
+        path: 'order/cancel_list',
+        name: 'orderCancelList',
+        component: () => import('@/views/order/OrderCancelList'),
+        meta: {
+          title: '주문취소/반품 조회'
+        }
+      },
+      {
+        path: 'order/refund_list',
+        name: 'orderRefundList',
+        component: () => import('@/views/order/OrderRefundList'),
+        meta: {
+          title: '환불 관리'
+        }
+      },
+      {
+        path: 'cs/qa_list',
+        name: 'qaList',
+        component: () => import('@/views/cs/MantomanList'),
+        meta: {
+          title: '1:1'
+        }
+      },
+      {
+        path: 'cs/cs_manage',
+        name: 'csManage',
+        component: () => import('@/views/cs/CsManage'),
+        meta: {
+          title: '고객상담'
+        }
+      },
+      {
+        path: 'cs/sms_list',
+        name: 'smsList',
+        component: () => import('@/views/cs/SmsList'),
+        meta: {
+          title: 'SMS전송결과'
+        }
+      },
+      {
+        path: 'manage/notice_list',
+        name: 'noticeList',
+        component: () => import('@/views/manage/NoticeList'),
+        meta: {
+          title: '공지사항'
+        }
+      },
+      {
+        path: 'manage/notice_input',
+        name: 'noticeInput',
+        component: () => import('@/views/manage/NoticeInput'),
+        meta: {
+          title: '공지사항등록'
+        }
+      },
+      {
+        path: 'manage/faq_list',
+        name: 'faqList',
+        component: () => import('@/views/manage/FaqList'),
+        meta: {
+          title: 'FAQ'
+        }
+      },
+      {
+        path: 'member/user_manage',
+        name: 'userManage',
+        component: () => import('@/views/member/UserManage'),
+        meta: {
+          title: '직원관리'
+        }
+      }
+    ]
+  }
+]
+
+const router = new VueRouter({
+  mode: 'history',
+  scrollBehavior: () => ({ y: 0 }),
+  base: '/',
+  routes
+})
+
+export default router

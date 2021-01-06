@@ -1,0 +1,98 @@
+<template>
+    <div class="widget has-shadow">
+        <div class="widget-header bordered">
+            <div class="row">
+                <div class="col-sm-6 d-flex align-items-center justify-content-start">
+                    <div class="dropdown show vbt-per-page-dropdown col-sm-2">
+                        <a class="btn btn-block dropdown-toggle form-control" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{configVue4.per_page}}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a v-for="(option, key, index) in configVue4.per_page_options" :key="index" class="dropdown-item" href="" @click.prevent="perPageHandler(option)" v-bind:class="{ active:  (option == configVue4.per_page)}">
+                                {{option}}
+                            </a>
+                        </div>
+                    </div>
+                    <label class="col-sm-4 table-len-label">조회건수 : {{ getRowData.length }}개</label>
+                </div>
+                <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                    <button type="button" class="btn btn-outline-danger" @click="$router.push({name: 'faqInput'})">+ 신규</button>
+                </div>
+            </div>
+        </div>
+        <div class="widget-body">
+            <v-table :rows="getRowData" :columns="getColumnDef" :config="configVue4" :classes="classes">
+            <template slot="empty-results">
+                조회된 데이터가 없습니다.
+            </template>
+            <template slot="title" slot-scope="props">
+                <a href="#" @click.prevent="$router.push({name: 'faqInput'})">{{ props.cell_value }}</a>
+            </template>
+            </v-table>
+
+        </div>
+    </div>
+</template>
+
+<script>
+import VueBootstrap4Table from 'vue-bootstrap4-table'
+export default {
+  name: 'DataTableVue4',
+  components: {
+    VTable: VueBootstrap4Table // table 이름변경 <v-table></v-table>
+  },
+  props: {
+    columnDef: {
+      type: Array,
+      required: true,
+      default: () => []
+    },
+    rowData: {
+      type: Array,
+      default: () => []
+    },
+    isPaging: {
+      type: Boolean,
+      default: true
+    },
+    isCheckbox: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data: function () {
+    return {
+      configVue4: {
+        pagination: this.isPaging,
+        pagination_info: false,
+        num_of_visibile_pagination_buttons: 10,
+        checkbox_rows: this.isCheckbox,
+        highlight_row_hover: true,
+        rows_selectable: false,
+        multi_column_sort: false,
+        card_mode: false,
+        selected_rows_info: false,
+        per_page: 20,
+        per_page_options: [20, 50, 100],
+        show_reset_button: false,
+        show_refresh_button: false,
+        global_search: {
+          placeholder: '',
+          visibility: false,
+          case_sensitive: false
+        }
+      },
+      classes: {
+        table: 'table table-bordered'
+      }
+    }
+  },
+  computed: {
+    getColumnDef: function () { return this.columnDef },
+    getRowData: function () { return this.rowData }
+  },
+  methods: {
+
+  }
+}
+</script>

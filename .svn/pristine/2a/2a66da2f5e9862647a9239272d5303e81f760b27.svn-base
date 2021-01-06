@@ -1,0 +1,20 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/paageHeader'
+
+export default {
+  name: 'buySearch',
+  mixins: [pageHeader({title: '매입조회', groupName: '구매관리'})]
+}
+</script>
+
+<style>
+
+</style>

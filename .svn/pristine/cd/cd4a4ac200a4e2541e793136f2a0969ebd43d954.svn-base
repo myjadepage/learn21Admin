@@ -1,0 +1,467 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+              <div class="col-sm-12">
+
+            <!-- 작성영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="품목 등록">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">분류</span></th>
+                                <td colspan="7">
+                                    <div class="row">
+                                        <div class="col col-sm-2">
+                                            <select class="form-control">
+                                                <option>대분류 선택</option>
+                                                <option>대분류 1</option>
+                                                <option>대분류 2</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-2">
+                                            <select class="form-control">
+                                                <option>중분류 선택</option>
+                                                <option>중분류 1</option>
+                                                <option>중분류 2</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-2">
+                                            <select class="form-control">
+                                                <option>소분류 선택</option>
+                                                <option>소분류 1</option>
+                                                <option>소분류 2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">품목명</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemName" placeholder="">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">품목코드</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemId" placeholder="자동 생성입니다.">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">관리 번호</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.iedtBarcode" placeholder="">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">규격</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemStandard" placeholder="">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">저자/출판사</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">저자</span>
+                                                <input type="text" class="form-control" v-model="itemDetail.itemAuthor" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <div class="input-group">
+                                                    <span class="input-group-addon">출판사</span>
+                                                    <input type="text" class="form-control" v-model="itemDetail.itemManufacture" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">브랜드</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="itemDetail.itemBrandNo">
+                                                <option>선택하세요</option>
+                                                <option>대분류 1</option>
+                                                <option>대분류 2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">Year/Pages</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">Year</span>
+                                                <input type="text" class="form-control" v-model="itemDetail.itemYear" placeholder="">
+                                            </div>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">Pages</span>
+                                                <input type="text" class="form-control" v-model="itemDetail.itemPage" placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">옵션정보</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-6">
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="font-weight:bold">CD</span>
+                                                 <div class="styled-radio">
+                                                    <input type="radio" name="rdoCd" id="rdoCd-1" value="Y" v-model="itemDetail.itemCdYn">
+                                                    <label for="rdoCd-1">있음</label>
+                                                 </div>
+                                                 <div class="styled-radio">
+                                                    <input type="radio" name="rdoCd" id="rdoCd-2" value="N" v-model="itemDetail.itemCdYn">
+                                                    <label for="rdoCd-2">없음</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col col-sm-6">
+                                            <div class="input-group">
+                                                <span class="input-group-addon" style="font-weight:bold">EBOOK</span>
+                                                <div class="styled-radio">
+                                                    <input type="radio" name="rdoEbook" id="rdoEbook-1" value="Y" v-model="itemDetail.itemEbookYn">
+                                                    <label for="rdoEbook-1">있음</label>
+                                                </div>
+                                                <div class="styled-radio">
+                                                    <input type="radio" name="rdoEbook" id="rdoEbook-2" value="N" v-model="itemDetail.itemEbookYn">
+                                                    <label for="rdoEbook-2">없음</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">품목구분</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoStb" id="rdoStb-1" value="0" v-model="itemDetail.itemIsStb">
+                                                <label for="rdoStb-1">일반</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoStb" id="rdoStb-2" value="1" v-model="itemDetail.itemIsStb">
+                                                <label for="rdoStb-2">STB</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">선택상품</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoSelected" id="rdoSelected-1" value="N" v-model="itemDetail.itemSelectedYn">
+                                                <label for="rdoSelected-1">일반</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoSelected" id="rdoSelected-2" value="Y" v-model="itemDetail.itemSelectedYn">
+                                                <label for="rdoSelected-2">선택</label>
+                                            </div>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemSelectedTxt">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">반품유형</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoRefund" id="rdoRefund-1" value="Y" v-model="itemDetail.itemRefundType">
+                                                <label for="rdoRefund-1">가능</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoRefund" id="rdoRefund-2" value="N" v-model="itemDetail.itemRefundType">
+                                                <label for="rdoRefund-2">불가능</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">이전내역 중복체크</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoDuplicate" id="rdoDuplicate-1" value="Y" v-model="itemDetail.itemDuplicateYn">
+                                                <label for="rdoDuplicate-1">체크</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoDuplicate" id="rdoDuplicate-2" value="N" v-model="itemDetail.itemDuplicateYn">
+                                                <label for="rdoDuplicate-2">제외</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">판매여부</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoUseYn" id="rdoUseYn-1" value="Y" v-model="itemDetail.itemUseYn">
+                                                <label for="rdoUseYn-1">판매</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoUseYn" id="rdoUseYn-2" value="N" v-model="itemDetail.itemUseYn">
+                                                <label for="rdoUseYn-2">미판매</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">품목이미지</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">공급처</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="itemDetail.itemProviderNo">
+                                                <option>선택 해주세요</option>
+                                                <option>공급처 1</option>
+                                                <option>공급처 2</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">재고관리 여부</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoRethinkCheck" id="rdoRethinkCheck-1" value="Y" v-model="itemDetail.itemRethinkCheck">
+                                                <label for="rdoRethinkCheck-1">관리</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoRethinkCheck" id="rdoRethinkCheck-2" value="N" v-model="itemDetail.itemRethinkCheck">
+                                                <label for="rdoRethinkCheck-2">미관리</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">취급여부</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoHandling" id="rdoHandling-1" value="취급" v-model="itemDetail.itemHandling">
+                                                <label for="rdoHandling-1">취급</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoHandling" id="rdoHandling-2" value="단종" v-model="itemDetail.itemHandling">
+                                                <label for="rdoHandling-2">단종</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoHandling" id="rdoHandling-3" value="품절" v-model="itemDetail.itemHandling">
+                                                <label for="rdoHandling-3">품절</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row"><span class="text-primary">재고구분</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="itemDetail.itemRethinType">
+                                                <option key="" value="">전체</option>
+                                                <option key="STB" value="STB">S.T.B</option>
+                                                <option key="제품" value="제품">제품</option>
+                                                <option key="상품" value="상품">상품</option>
+                                                <option key="반제품" value="반제품">반제품</option>
+                                                <option key="사은품" value="사은품">사은품</option>
+                                                <option key="선급리스자산" value="선급리스자산">선급리스자산</option>
+                                                <option key="윤용리스자산" value="윤용리스자산">윤용리스자산</option>
+                                            </select>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">과세구분(매출)</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoPoserpTax" id="rdoPoserpTax-1" value="0" v-model="itemDetail.poserpTaxType">
+                                                <label for="rdoPoserpTax-1">과세</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoPoserpTax" id="rdoPoserpTax-2" value="1" v-model="itemDetail.poserpTaxType">
+                                                <label for="rdoPoserpTax-2">면세</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">과세구분(매입)</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoTaxationPurchase" id="rdoTaxationPurchase-1" value="0" v-model="itemDetail.itemTaxationPurchase">
+                                                <label for="rdoTaxationPurchase-2">과세</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="rdoTaxationPurchase" id="rdoTaxationPurchase-1" value="1" v-model="itemDetail.itemTaxationPurchase">
+                                                <label for="rdoTaxationPurchase-2">면세</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">입고단가</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemImportPrice">
+                                        </div>
+
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">소비자가</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemSaleprice">
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <th scope="row"><span class="text-primary">메모</span></th>
+                                <td colspan="3">
+                                    <div class="row">
+                                        <div class="col col-sm-12">
+                                            <input type="text" class="form-control" v-model="itemDetail.itemNote">
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="widget-footer">
+                    <div class="row col">
+                        <div class="col-sm-6">
+                            <button type="button" class="btn btn-outline-primary" @click="$router.push({name: 'baseItems'})">목록</button>
+                            <button type="button" class="btn btn-outline-danger" v-show="itemDetail.idNum !== ''">삭제</button>
+                            <button type="button" class="btn btn-outline-primary">신규품목</button>
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary">저장</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 입력폼 끝-->
+
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+// import { mapGetters, mapActions } from 'vuex'
+import pageHeader from '@/mixin/pageHeader'
+
+export default {
+  name: 'baseItemsInput',
+  mixins: [pageHeader({title: '품목등록', groupName: '기초관리'})],
+  data () {
+    return {
+      itemDetail: {
+        idNum: '', /* 품목상세 코드 */
+        itemId: '', /* 품목 코드 */
+        itemName: '', /* 품목명 */
+        icCodeNo: '', /* 품목 분류 코드 */
+        iedtBarcode: '', /* 관리번호 */
+        itemStandard: '', /* 규격 */
+        itemProviderNo: '', /* 공급처 */
+        providerName: '', /* 공급처명 */
+        itemRethinkCheck: '', /* 재고관리여부 */
+        itemHandling: '', /* 취급여부 */
+        itemRethinType: '', /* 재고구분 */
+        poserpTaxType: '', /* 과세구분(매출) */
+        itemTaxationPurchase: '', /* 과세구분(매입) */
+        itemImportPrice: '', /* 입고 단가 */
+        itemSaleprice: '', /* 소비자가 */
+        itemNote: '', /* 메모 */
+        cuRegdate: '', /* 생성 날짜 */
+        cuLastdate: '', /* 수정 날짜 */
+        itemUseYn: '', /* 사용여부 */
+        itemAuthor: '', /* 저자 */
+        itemManufacture: '', /* 제조사(출판사) */
+        itemBrandNo: '', /* 브랜드번호 */
+        itemYear: '', /* year */
+        itemPage: '', /* page */
+        itemCdYn: '', /* cd */
+        itemEbookYn: '', /* ebook */
+        itemIsStb: '', /* STB */
+        itemSelectedYn: '', /* 선택 */
+        itemSelectedTxt: '', /* 선택TEXT */
+        itemRefundType: '', /* 반품유형 */
+        itemDuplicateYn: '' /* 이전내역 중복체크 */
+      }
+    }
+  },
+  created () {
+    // itemApi.getItemDetail(this.$route.params.itemId)
+    //   .then(res => {
+    //     this.itemDetail = res
+    //   })
+  }
+}
+</script>
+
+<style>
+
+</style>

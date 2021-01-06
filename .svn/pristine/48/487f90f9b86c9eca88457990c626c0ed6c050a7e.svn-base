@@ -1,0 +1,180 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+      <div class="col-sm-12">
+        <div class="widget has-shadow">
+            <div class="widget-body">
+                <table class="table table-bordered" summary="공지사항관리 검색하기">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="30%">
+                        <col width="10%">
+                        <col width=*>
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th scope="row"><span class="text-primary">검색어</span></th>
+                            <td>
+                                <div class="row">
+                                    <div class="col col-sm-4">
+                                        <select class="form-control" v-model="selected">
+                                            <option value="">검색구분</option>
+                                            <option value="title">제목</option>
+                                            <option value="contents">내용</option>
+                                        </select>
+                                    </div>
+                                    <div class="col col-sm-89">
+                                          <input type="text" class="form-control" placeholder="" v-model="searchKeyword">
+                                    </div>
+                                </div>
+                            </td>
+                            <th><span class="text-primary">게시일자</span></th>
+                            <td>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group">
+                                          <!-- date select component -->
+                                          <DateSelect @state-start-date="startDate" @state-end-date="endDate"></DateSelect>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-center">
+                    <button class="btn btn-primary" @click="searchBtn()">검색</button>
+                </div>
+            </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+        <!-- 리스트영역 시작 -->
+        <div class="widget has-shadow">
+            <div class="widget-header bordered">
+                <div class="row">
+                    <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                        <select class="form-control col-sm-2">
+                                            <option>표시갯수</option>
+                                            <option>10개</option>
+                                            <option>20개</option>
+                                            <option>30개</option>
+                                        </select>
+                        <label class="col-sm-4">조회건수 : {{ noticeListInfo.length }}개</label>
+                    </div>
+                    <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                        <button class="btn btn-outline-danger" @click="$router.push({name: 'noticeInput'})">+ 신규</button>
+                    </div>
+                </div>
+            </div>
+            <div class="widget-body">
+                <table id="notice-list-table" class="table table-bordered" summary="공지사항보기 리스트">
+                    <colgroup>
+                        <col width="5%">
+                        <col width=*>
+                        <col width="15%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="7%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>제목</th>
+                            <th>게시기간</th>
+                            <th>상태</th>
+                            <th>등록자</th>
+                            <th>조회수</th>
+                            <th>등록일자</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in filterNoticeSortedNo()" :key="index">
+                            <td> {{ item.noticeId }}</td>
+                            <td class="text-left">{{ item.title}}</td>
+                            <td>{{ item.startDate }} ~ {{ item.endDate }}</td>
+                            <td>{{ item. statusCd }}</td>
+                            <td>{{ item.userNameCreatedBy }}</td>
+                            <td>{{ item.viewCount }}</td>
+                            <td>{{ getFormatDate(item.dateCreated) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import dateSelect from '@/mixin/dateSelect'
+import { getNoticeList } from '@/api'
+
+export default {
+  name: 'noticeList',
+  mixins: [
+    pageHeader({title: '공지사항 관리', groupName: '운영관리'}),
+    dateSelect
+  ],
+  data: function () {
+    return {
+      modal: false,
+      noticeListInfo: [],
+      selected: '',
+      searchKeyword: ''
+    }
+  },
+  created () {
+    this.getNotice()
+  },
+  methods: {
+    getNotice (param) {
+      getNoticeList(param)
+        .then(res => {
+          this.noticeListInfo = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    filterNoticeSortedNo () {
+      return this.noticeListInfo.slice().sort((a, b) => a.noticeId < b.noticeId ? 1 : -1)
+    },
+    getFormatDate (date) {
+      let temp = new Date(date)
+      let year = temp.getFullYear()
+      let month = temp.getMonth() + 1
+      month = month >= 10 ? month : '0' + month
+      let day = temp.getDate()
+      day = day >= 10 ? day : '0' + day
+      return year + '-' + month + '-' + day
+    },
+    searchBtn () {
+      let param = {
+        searchStartDate: this.state.startdate,
+        searchEndDate: this.state.enddate,
+        searchType: this.selected,
+        searchKeyword: this.searchKeyword
+      }
+      if (param.searchType === '') {
+        alert('검색타입을 선택하세요')
+        return
+      }
+      if (param.searchStartDate === '' || param.searchEndDate === '') {
+        param.searchStartDate = null
+        param.searchEndDate = null
+      }
+      this.getNotice(param)
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

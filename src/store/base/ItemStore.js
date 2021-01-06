@@ -1,0 +1,175 @@
+import { itemApi } from '@/api'
+const itemStore = {
+  namespaced: true,
+  state: {
+    columnDef: [
+      {
+        label: '품목분류',
+        name: 'depthFullName',
+        sort: true,
+        row_classes: 'table-text-left'
+      },
+      { label: '품목ID', name: 'itemId', sort: true },
+      {
+        label: '품목명',
+        name: 'itemName',
+        sort: true,
+        row_classes: 'table-text-left'
+      },
+      {
+        label: '취급',
+        name: 'itemHandling',
+        sort: true,
+        row_classes: 'table-text-center'
+      },
+      { label: '과세구분(매출)', name: 'itemTaxationSales', sort: true },
+      { label: '과세구분(매입)', name: 'itemTaxationPurchase', sort: true },
+      { label: '재고관리', name: 'itemRethinType', sort: true },
+      { label: '등록일자', name: 'itemRegdate', sort: true, type: 'Date' }
+    ],
+    rowData: [],
+    categoryCodeList: [] /* 품목코드목록 */,
+    bigCodeList: [] /* 대분류 */,
+    midCodeList: [] /* 중분류 */,
+    smallCodeList: [] /* 소분류 */,
+    itemDetail: {} /* 품목상세 */,
+    venBrandList: [] /* 브랜드 */,
+    venProviderList: [] /* 공급처 */
+  },
+  getters: {
+    getColumnDef: state => state.columnDef,
+    getRowData: state => state.rowData,
+    getCategoryCodeList: state => state.categoryCodeList,
+    getBigCodeList: state => state.bigCodeList,
+    getMidCodeList: state => state.midCodeList,
+    getSmallCodeList: state => state.smallCodeList,
+    getItemDetail: state => state.itemDetail,
+    getVenBrandList: state => state.venBrandList,
+    getVenProviderList: state => state.venProviderList
+  },
+  mutations: {
+    SET_ROW_DATA: (state, payload) => {
+      state.rowData = payload
+    },
+    SET_CATEGORY_CODE_LIST: (state, payload) => {
+      state.categoryCodeList = payload
+    },
+    SET_BIG_CODE_LIST: (state, data) => {
+      state.bigCodeList = data
+    },
+    SET_MID_CODE_LIST: (state, data) => {
+      state.midCodeList = data
+    },
+    SET_SMALL_CODE_LIST: (state, data) => {
+      state.smallCodeList = data
+    },
+    SET_ITEM_DETAIL: (state, payload) => {
+      state.itemDetail = payload
+    },
+    SET_VEN_BRAND_LIST: (state, payload) => {
+      state.venBrandList = payload
+    },
+    SET_VEN_PROVIDER_LIST: (state, payload) => {
+      state.venProviderList = payload
+    }
+  },
+  actions: {
+    // 품목리스트 조회
+    actionFindItemList: ({ commit }, data) => {
+      return new Promise(function (resolve, reject) {
+        itemApi
+          .findItemList(data)
+          .then(res => {
+            commit('SET_ROW_DATA', res)
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    },
+    // 품목분류코드 조회
+    actionFindCategoryCode: ({ commit }, data) => {
+      return new Promise(function (resolve, reject) {
+        itemApi
+          .findCategoryCode(data)
+          .then(res => {
+            commit('SET_CATEGORY_CODE_LIST', res)
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    },
+    // 대분류코드 리스트 SET
+    actionSetBigCodeList: ({ commit }, data) => {
+      commit('SET_BIG_CODE_LIST', data)
+    },
+    // 중분류코드 리스트 SET
+    actionSetMidCodeList: ({ commit }, data) => {
+      commit('SET_MID_CODE_LIST', data)
+    },
+    // 소분류코드 리스트 SET
+    actionSetSmallCodeList: ({ commit }, data) => {
+      commit('SET_SMALL_CODE_LIST', data)
+    },
+    // 품목상세 조회
+    actionFindItemDetail: ({ commit }, data) => {
+      return new Promise(function (resolve, reject) {
+        itemApi
+          .findItemDetail(data)
+          .then(res => {
+            commit('SET_ITEM_DETAIL', res)
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    },
+    // 브랜드 조회
+    actionFindBrand: ({ commit }, data) => {
+      return new Promise(function (resolve, reject) {
+        itemApi
+          .findBrand(data)
+          .then(res => {
+            commit('SET_VEN_BRAND_LIST', res)
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    },
+    // 공급처 조회
+    actionFindProvider: ({ commit }, data) => {
+      return new Promise(function (resolve, reject) {
+        itemApi
+          .findProvider(data)
+          .then(res => {
+            commit('SET_VEN_PROVIDER_LIST', res)
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    },
+    // 품목 저장
+    actionSaveItem: ({ commit }, data) => {
+      return new Promise(function (resolve, reject) {
+        itemApi
+          .saveItem(data)
+          .then(res => {
+            resolve(res)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+    }
+  }
+}
+
+export default itemStore

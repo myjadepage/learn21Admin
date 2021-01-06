@@ -1,0 +1,48 @@
+import axios from 'axios'
+
+const config = {
+  // baseUrl: 'http://localhost:8443'
+  baseUrl: 'http://192.168.232.51:8443/booksadmin'
+}
+
+// 상품관리 화면의 메인그리드 조회
+export function findProductList (paramObj) {
+  return axios.post(`${config.baseUrl}/product/find`, paramObj)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 상품관리 대/중/소 코드 조회 (대:1, 중/소: parent코드)
+export function findCategoryCodeList (params) {
+  return axios.get(`${config.baseUrl}/product/category/find/code`, params)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 공급처 조회
+export function findProvider () {
+  return axios.get(`${config.baseUrl}/utility/provider/find`)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 상품관리 화면의 Detail 조회
+export function findProductDetail (paramObj) {
+  return axios.get(`${config.baseUrl}/product/find/` + paramObj)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 상품관리 화면의 Detail 저장
+export function saveProductByItem (paramObj) {
+  return axios.post(`${config.baseUrl}/product/save`, paramObj)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 상품관리 화면의 상품정보 일괄변경
+export function saveBatch (paramObj) {
+  return axios.post(`${config.baseUrl}/product/save/batch`, paramObj)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}

@@ -1,0 +1,300 @@
+import axios from 'axios'
+import * as codeApi from './base/CodeApi'
+import * as itemGroupApi from './base/ItemGroupApi'
+import * as itemApi from './base/ItemApi'
+import * as productGroupApi from './product/ProductGroupApi'
+import * as productManageApi from './product/ProductManageApi'
+import * as shopApi from './base/ShopApi'
+import * as vendorApi from './base/VendorApi'
+
+export {
+  codeApi,
+  itemGroupApi,
+  itemApi,
+  productGroupApi,
+  productManageApi,
+  shopApi,
+  vendorApi
+}
+
+// sidebar menu item
+export function getMenuItemList () {
+  return axios.get(`${process.env.BASE_URL}/basic/menu/find`)
+}
+
+// 파일등록
+export function saveFile (param) {
+  return axios.post(`${process.env.BASE_URL}/utility/file/save`, param, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+// ********************************************************
+// #region 기초관리
+// ********************************************************
+
+// 가맹점 검색
+// export function getFcList () {
+//   return axios.get(`${config.baseUrl}/basic/franchisee/find/franchisee`)
+// }
+// 가맹정수정
+// export function updateFc () {
+//   return axios.get(`${config.baseUrl}/basic/franchisee/save`)
+// }
+
+// 거래처 검색
+// export function getAcList () {
+//   return axios.get(`${config.baseUrl}/basic/userCustomer/find/userCustomer`)
+// }
+
+// 거래처 추가삭제
+// export function updateAc () {
+//   return axios.get(`${config.baseUrl}/basic/userCustomer/sava/userCustomer`)
+// }
+
+// #endregion
+// ********************************************************
+
+// ********************************************************
+// #region  구매관리
+// ********************************************************
+
+// 구매발주서
+export function getPurchaseList () {
+  return axios.get(`${process.env.BASE_URL}/Purchase/find/PurchaseInvoice`)
+}
+
+// 매입확정1
+export function getPurchaseConfirm (params) {
+  if (params) {
+    return axios.get(
+      `${process.env.BASE_URL}/Purchase/find/PurchaseConfirm`,
+      params
+    )
+  } else {
+    return axios.get(`${process.env.BASE_URL}/Purchase/find/PurchaseConfirm`)
+  }
+}
+// 매입확정2 입고추가하기
+export function savePurcahseAdd (params) {
+  return axios.post(
+    `${process.env.BASE_URL}/Purchase/save/PurchaseConfirm`,
+    params
+  )
+}
+// 매입확정3 매입확정버튼
+export function savePurcahseConfirm (params) {
+  return axios.post(
+    `${process.env.BASE_URL}/Purchase/Confirm/PurchaseConfirm`,
+    params
+  )
+}
+
+// 거래처별 매입 조회
+export function getPurchaseAccount () {
+  return axios.get(
+    `${process.env.BASE_URL}/Purchase/find/PurchaseLookupAccount`
+  )
+}
+
+// 품목별 매입조회
+export function getPurchaseItem () {
+  return axios.get(`${process.env.BASE_URL}/Purchase/find/PurchaseLookupItem`)
+}
+
+// 기간별 매입조회
+export function getPurchasePeriod () {
+  return axios.get(`${process.env.BASE_URL}/Purchase/find/PurchaseLookupPeriod`)
+}
+
+// 매입명세서
+export function getPurchaseStatement () {
+  return axios.get(`${process.env.BASE_URL}/Purchase/find/PurchaseStatement`)
+}
+
+// ********************************************************
+// #region  주문/배송관리
+// ********************************************************
+
+// 주문관리
+export function getOrderList (param) {
+  return axios
+    .post(`${process.env.BASE_URL}/order/find`, param)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 주문서 summary
+export function getOrderSummary (param) {
+  return axios
+    .post(`${process.env.BASE_URL}/order/find/summary`, param)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 주문서 기본정보 조회
+export function getOrderDetail (param) {
+  return axios
+    .get(`${process.env.BASE_URL}/order/find/orderDetail?orderNo=` + param)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 배송정보 조회
+export function getOrderDeliveryDetail (param) {
+  return axios
+    .get(`${process.env.BASE_URL}/order/find/deliveryDetail?orderNo=` + param)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 주문예외정보 조회
+export function getOrderExceptionDetail (param) {
+  return axios
+    .get(
+      `${process.env.BASE_URL}/order/find/exceptionDetail?orderGuid=` + param
+    )
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 주문취소/반품정보 조회
+export function getOrderCancelList (param) {
+  return axios.post(`${process.env.BASE_URL}/order/cancel/find`, param)
+}
+
+// 주문취소/반품정보 Summary조회
+export function getOrderCancelSummary (param) {
+  return axios.post(`${process.env.BASE_URL}/order/cancel/find/summary`, param)
+}
+
+// 주문취소/반품정보 Detail조회
+export function getOrderCancelDetail (param) {
+  return axios
+    .get(
+      `${process.env.BASE_URL}/order/cancel/find/detail?pexceptionNo=` + param
+    )
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 환불관리 조회
+export function getOrderRefundList (param) {
+  return axios.post(`${process.env.BASE_URL}/order/refund/find`, param)
+}
+
+// 환불관리 Summary조회
+export function getOrderRefundSummary (param) {
+  return axios.post(`${process.env.BASE_URL}/order/refund/find/summary`, param)
+}
+// #endregion
+// ********************************************************
+
+/*************************
+ *******상담관리**********
+ ***************************/
+export function getManToManList () {
+  return axios.get(`${process.env.BASE_URL}/counsel/manToMan/find/all`, {})
+}
+// #endregion
+// ********************************************************
+
+// ********************************************************
+// #region 운영관리
+// ********************************************************
+
+// 공지관리
+export function getNoticeList (param) {
+  if (param == null) {
+    return axios.get(`${process.env.BASE_URL}/operation/notice/find/list`)
+  } else {
+    return axios.get(`${process.env.BASE_URL}/operation/notice/find/list`, {
+      params: {
+        psearchStartDate: param.searchStartDate,
+        psearchEndDate: param.searchEndDate,
+        psearchType: param.searchType,
+        psearchKeyword: param.searchKeyword,
+        pnoticeNo: param.pnoticeNo
+      }
+    })
+  }
+}
+
+// 공지등록
+export function inputNotice (param) {
+  return axios.post(`${process.env.BASE_URL}/operation/notice/save`, param, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  })
+}
+
+// faq
+export function getFaqList (param) {
+  if (param == null) {
+    return axios.get(`${process.env.BASE_URL}/operation/faq/find/list`)
+  } else {
+    return axios.get(`${process.env.BASE_URL}/operation/faq/find/list`, {
+      params: {
+        psearchStartDate: param.searchStartDate,
+        psearchEndDate: param.searchEndDate,
+        psearchType: param.searchType,
+        psearchKeyword: param.searchKeyword,
+        pfaqNo: param.pfaqNo
+      }
+    })
+  }
+}
+
+// faq등록
+export function inputFaq (param) {
+  return axios.post(`${process.env.BASE_URL}/operation/faq/save`, param)
+}
+
+/*************************
+ ******* 상담관리**********
+ ***************************/
+// 고객상담관리
+export function customCounsel (param) {
+  return axios.post(`${process.env.BASE_URL}/counsel/customer/find/all`, {
+    params: {}
+  })
+}
+// 고객상담상세
+export function customCounselDetail (param) {
+  return axios.get(`${process.env.BASE_URL}/counsel/customer/view`, {
+    params: {
+      porderNo: param.porderNo,
+      pcounselNo: param.pcounselNo
+    }
+  })
+}
+
+// #endregion
+// ********************************************************
+
+// ********************************************************
+// #region 공통
+// ********************************************************
+
+// 직원관리
+export function userList (param) {
+  return axios.get(`${process.env.BASE_URL}/common/user/find/all`, {
+    params: param
+  })
+}
+
+// login
+export function sigin (info) {
+  return axios.post(`${process.env.BASE_URL}/common/signin`, info)
+}
+// export function sigin (param) {
+//   return axios({
+//     method: 'post',
+//     url: `${process.env.BASE_URL}/common/signin`,
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     data: param
+//   })
+// }
+
+// #endregion
+// ********************************************************

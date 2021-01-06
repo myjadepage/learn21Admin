@@ -1,0 +1,29 @@
+
+import {codeApi} from '@/api'
+const codeStore = {
+  namespaced: true,
+  state: {
+    codeGroupList: [] /* 코드그룹 */
+  },
+  getters: {
+    getCodeGroupList: state => state.codeGroupList
+  },
+  mutations: {
+    SET_CODE_GROUP_LIST: (state, data) => { state.codeGroupList = data }
+  },
+  actions: {
+    // 품목분류코드 조회
+    actionFindCodeGroup: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        codeApi.findCodeGroup(data)
+          .then(res => {
+            commit('SET_CODE_GROUP_LIST', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    }
+  }
+}
+
+export default codeStore

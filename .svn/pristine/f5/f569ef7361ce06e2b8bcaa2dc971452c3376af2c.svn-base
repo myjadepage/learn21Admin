@@ -1,0 +1,341 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-xl-12">
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="주문 검색하기">
+                        <colgroup>
+                            <col width="12%">
+                            <col width="38%">
+                            <col width="12%">
+                            <col width="38%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">고객</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pcustomerNameType">
+                                                <option key="ORDER" value="ORDER">주문자</option>
+                                                <option key="RECEIVER" value="RECEIVER">수취인</option>
+                                                <option key="STUDENTID" value="STUDENTID">학생ID</option>
+                                                <option key="STUDENTNAME" value="STUDENTNAME">학생명</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="pcustomerName" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary" >연락처</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="ptelNumberType">
+                                                <option key="TELL" value="TELL">전화번호</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="ptelNumber" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">주문번호</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" v-model="porderNo" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary" >처리상태</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pstatusCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="접수" value="접수">접수</option>
+                                                <option key="처리중" value="처리중">처리중</option>
+                                                <option key="회수지시" value="회수지시">회수지시</option>
+                                                <option key="회수중" value="회수중">회수중</option>
+                                                <option key="회수완료" value="회수완료">회수완료</option>
+                                                <option key="처리완료" value="처리완료">처리완료</option>
+                                                <option key="접수취소" value="접수취소">접수취소</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">접수일자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-8">
+                                            <!-- date select component -->
+                                            <DateSelect @state-start-date="setPfromDate"
+                                                        @state-end-date="setPtoDate"
+                                                        :defStartDate="pfromDate"
+                                                        :defEndDate="ptoDate"
+                                                        />
+                                        </div>
+                                    </div>
+                                </td>
+                                <th scope="row"><span class="text-primary">예외구분/접수경로</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="pexceptionTypeCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="취소" value="취소">취소</option>
+                                                <option key="반품" value="반품">반품</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <select class="form-control" v-model="preceiveTypeCd">
+                                                <option key="" value="">전체</option>
+                                                <option key="상담" value="상담">상담</option>
+                                                <option key="FRONT" value="FRONT">FRONT</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="searchBtn">검색</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                            <select class="form-control col-sm-2">
+                                <option>표시갯수</option>
+                                <option>10개</option>
+                                <option>20개</option>
+                                <option>30개</option>
+                            </select>
+                            <label class="col-sm-4">조회건수 : 20개</label>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                            <button type="button"
+                                    class="btn btn-outline-primary btn_excel"
+                                    id="btnExcel"
+                                    @click="excelBtn">엑셀다운로드</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table id="sorting-table" class="table table-bordered" summary="주문서보기 리스트">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="7%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">NO</th>
+                                <th scope="col">접수번호</th>
+                                <th scope="col">주문번호</th>
+                                <th scope="col">접수경로</th>
+                                <th scope="col">예외구분</th>
+                                <th scope="col">주문자</th>
+                                <th scope="col">학생ID</th>
+                                <th scope="col">처리상태</th>
+                                <th scope="col">접수일자</th>
+                                <th scope="col">접수자</th>
+                                <th scope="col">처리완료일자</th>
+                                <th scope="col">처리자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(o, i) in orderRowData" :key="i">
+                                <td> {{ i+1 }}</td>
+                                <td><a href="#" @click="orderCancelPopup(o.orderNo, i)">{{ o.exceptionNo }}</a></td>
+                                <td> {{ o.orderNo }}</td>
+                                <td> {{ o.receiveTypeCd }}</td>
+                                <td> {{ o.exceptionTypeCd }}</td>
+                                <td> {{ o.orderCustomerName }}</td>
+                                <td> {{ o.loginId }}</td>
+                                <td> {{ o.statusCd }}</td>
+                                <td> {{ o.dateReceived }}</td>
+                                <td> {{ o.receiveName }}</td>
+                                <td> {{ o.dateCompleted }}</td>
+                                <td> {{ o.chargeName }}</td>
+                                <OrderCancelPopup title="주문취소/반품 접수" @close="closeModal" v-if="selectedId === i && modal"></OrderCancelPopup>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+
+            <!----선택된 주문 영역-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered totla-info" summary="선택 주문 리스트">
+                        <colgroup>
+                            <col width="15%">
+                            <col width="35">
+                            <col width="15%">
+                            <col width="35">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th>주문기간</th>
+                                <td>{{pfromDate}} ~ {{ptoDate}}</td>
+                                <th>총주문금액</th>
+                                <td><b class="text-danger">{{orderSummary.itemTotalSum}}</b>원</td>
+                            </tr>
+                            <tr>
+                                <th>배송비총액</th>
+                                <td><b class="text-danger">{{orderSummary.deliveryCostTotalSum}}</b>원</td>
+                                <th>수수료총액</th>
+                                <td>{{orderSummary.marginTotalSum}}원</td>
+
+                            </tr>
+                            <tr>
+                                <th>신용카드결제(건수)</th>
+                                <td>{{orderSummary.creditPaymentTotal}}원({{orderSummary.creditTotal}}건)</td>
+                                <th>가상계좌입금(건수)</th>
+                                <td>결제완료 : {{orderSummary.virtualPaymentTotal}}원({{orderSummary.virtualTotal}}건), 입금대기:{{orderSummary.waitVirtualPaymentTotal}}원({{orderSummary.waitVirtualTotal}}건)</td>
+                            </tr>
+                            <tr>
+                                <th>총결제금액</th>
+                                <td><b class="text-danger">{{orderSummary.paymentTotalSum}}</b>원</td>
+                                <th></th>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import PageHeader from '@/mixin/pageHeader'
+import popup from '@/mixin/popup.js'
+import DateSelect from '@/components/parts/DateSelect'
+import OrderCancelPopup from '@/components/popup/OrderCancelPopup'
+import { getOrderCancelList, getOrderCancelSummary } from '@/api'
+
+export default {
+  name: 'orderCancelList',
+  mixins: [
+    PageHeader({title: '주문취소/반품 조회', groupName: '주문/배송관리'}),
+    popup
+  ],
+  components: {
+    DateSelect,
+    OrderCancelPopup
+  },
+  computed: {
+    // 주문서 데이터 가공
+    getOrderRowData: function () {
+      this.orderRowData.map(x => {
+        x.orderPaidDate = x.dateOrdered + ' (' + x.datePaid + ')'
+        return x
+      })
+      return this.orderRowData
+    }
+  },
+  data: function () {
+    return {
+      selectedId: '',
+      orderRowData: [], // 주문서 목록
+      orderSummary: { // 주문서 Summary
+        itemTotalSum: '', // 총 주문금액
+        deliveryCostTotalSum: '', // 배송비총액
+        marginTotalSum: '', // 수수료총액
+        creditPaymentTotal: '', // 신용카드 결재금액
+        creditTotal: '', // 신용카드 결재건수
+        virtualPaymentTotal: '', // 가상계좌 결재완료금액
+        virtualTotal: '', // 가상계좌 결재완료건수
+        waitVirtualPaymentTotal: '', // 가상계좌 입금대기금액
+        waitVirtualTotal: '', // 가상계좌 입금대기건수
+        paymentTotalSum: '' // 총결제금액
+      },
+      pcustomerNameType: 'ORDER', // 고객타입
+      pcustomerName: '', // 고객명
+      ptelNumberType: 'TELL', // 연락처타입
+      ptelNumber: '', // 연락처
+      porderNo: '', // 주문번호
+      pstatusCd: '', // 처리상태
+      pfromDate: this.$moment().add(-7, 'days').format('YYYY-MM-DD'), // 조회기간from
+      ptoDate: this.$moment().format('YYYY-MM-DD'), // 조회기간to
+      pexceptionTypeCd: '', // 예외구분
+      preceiveTypeCd: '' // 접수경로
+    }
+  },
+  methods: {
+    setPfromDate (date) { this.pfromDate = date },
+    setPtoDate (date) { this.ptoDate = date },
+    // 조회버튼 클릭
+    searchBtn () {
+      let paramObj = {
+        pcustomerNameType: this.pcustomerNameType,
+        pcustomerName: this.pcustomerName,
+        ptelNumberType: this.ptelNumberType,
+        ptelNumber: this.ptelNumber,
+        porderNo: this.porderNo,
+        pstatusCd: this.pstatusCd,
+        pfromDate: this.pfromDate,
+        ptoDate: this.ptoDate,
+        pexceptionTypeCd: this.pexceptionTypeCd,
+        preceiveTypeCd: this.preceiveTypeCd
+      }
+      // 주문서 조회
+      getOrderCancelList(paramObj)
+        .then(res => {
+          this.orderRowData = res.data
+          getOrderCancelSummary(paramObj)
+            .then(response => {
+              this.orderSummary = response.data
+            }
+            ).catch(err => console.log(err))
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 엑셀다운로드
+    excelBtn () {
+      console.log('orderRowData', this.orderRowData)
+    },
+    // 반품접수 팝업
+    orderCancelPopup (item, index) {
+      this.selectedId = index
+      this.modal = true
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

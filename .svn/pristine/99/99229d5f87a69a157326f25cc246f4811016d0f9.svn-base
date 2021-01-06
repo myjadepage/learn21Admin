@@ -1,0 +1,292 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-sm-12">
+
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="고객상담 검색하기">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">고객 검색</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="searchParam.custom">
+                                              <option key="LoginId" value="LoginId">고객ID</option>
+                                              <option key="CustomerName" value="CustomerName">고객명</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" placeholder="검색어 입력" v-model="searchParam.customType">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">접수자/처리자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" placeholder="접수자명 입력" v-model="searchParam.ReceiveName">
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" placeholder="처리자명 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">주문번호</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="주문번호 입력" v-model="searchParam.OrderNo">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">상담유형</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="searchParam.CounselTypeCd">
+                                                <option key="" value="">상담유형1</option>
+                                                <option key="" value="">Ketchup</option>
+                                                <option key="" value="">Relish</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="searchParam.ChildCounselTypeCd">
+                                                <option key="" value="">상담유형2</option>
+                                                <option key="" value="">Ketchup</option>
+                                                <option key="" value="">Relish</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">접수일자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <!-- date select component -->
+                                            <DateSelect @state-start-date="startDate" @state-end-date="endDate"
+                                            :defStartDate="pfromDate"
+                                            :defEndDate="ptoDate"></DateSelect>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th>상태</th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="StatusCd" id="StatusCd-1">
+                                                <label for="StatusCd-1">전체</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="StatusCd" id="StatusCd-2">
+                                                <label for="StatusCd-2">접수</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="StatusCd" id="StatusCd-3">
+                                                <label for="StatusCd-3">답변완료</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="searchBtn()">검색</button>
+                    </div>
+
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                        <select class="form-control col-sm-2">
+                            <option>표시갯수</option>
+                            <option>10개</option>
+                            <option>20개</option>
+                            <option>30개</option>
+                        </select>
+                        <label class="col-sm-4">조회건수 : {{ counselList.length }}개</label>
+                    </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table id="qa-manage-table" class="table table-bordered" summary="상담보기 리스트">
+                        <colgroup>
+                            <col width="5%">
+                            <col width="7%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="7%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">NO</th>
+                                <th scope="col">주문번호</th>
+                                <th scope="col">상담내용</th>
+                                <th scope="col">주문자명</th>
+                                <th scope="col">접수자</th>
+                                <th scope="col">접수일자</th>
+                                <th scope="col">상담유형1</th>
+                                <th scope="col">상담유형2</th>
+                                <th scope="col">처리자</th>
+                                <th scope="col">처리일자</th>
+                                <th scope="col">상태</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in counselList" :key="index">
+                                <td>{{ item.counselNo }}</td>
+                                <td> {{ item.orderNo }}</td>
+                                <td class="text-left"><a href="#" @click.prevent="qaManageClick(item, index)" class="ellepsis" style="width:240px">{{ item.counselContents }}</a>
+                                <!--  고객상담 상세팝업 -->
+                                <QaManagePopup title="고객상담 상세" @close="closeModal" v-if="selectedId === index && modal" :selCon="selCon"></QaManagePopup>
+                                </td>
+                                <td>{{ item.customerName }}</td>
+                                <td>{{ item.receiveName }}</td>
+                                <td>{{ item.dateReceived}}</td>
+                                <td>{{ item.counselTypeCd }}</td>
+                                <td>{{ item.childCounselTypeCd }}</td>
+                                <td>{{ item.chargeName }}</td>
+                                <td>{{ item.dateCompleted }}</td>
+                                <td class="text-danger">{{ item.statusCd }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import QaManagePopup from '@/components/popup/QaManagePopup'
+import pageHeader from '@/mixin/pageHeader'
+import dateSelect from '@/mixin/dateSelect'
+import { getFormatDate } from '@/assets/script.js'
+import { customCounsel } from '@/api'
+
+export default {
+  mixins: [
+    pageHeader({title: '고객상담관리', groupName: '상담관리'}),
+    dateSelect
+  ],
+  components: {
+    QaManagePopup
+  },
+  data: function () {
+    return {
+      modal: false,
+      counselList: [],
+      selectedId: '',
+      selCon: {},
+      searchParam: {
+        custom: '',
+        customType: '',
+        ReceiveName: '',
+        OrderNo: '',
+        CounselTypeCd: '',
+        ChildCounselTypeCd: '',
+        StatusCd: ''
+      }
+    }
+  },
+  created () {
+    this.getCounselList()
+  },
+  methods: {
+    qaManageClick (item, index) {
+      this.selectedId = index
+      this.selCon = item
+      this.modal = true
+    },
+    closeModal () {
+      this.modal = false
+    },
+    getCounselList (param) {
+      customCounsel(param)
+        .then(res => {
+          this.counselList = res.data.map((el) => {
+            const container = {}
+            if (el.dateCompleted === null) {
+              container.dateCompleted = ''
+            } else {
+              container.dateCompleted = getFormatDate(el.dateCompleted)
+            }
+            if (el.dateReceived === null) {
+              container.dateReceived = ''
+            } else {
+              container.dateReceived = getFormatDate(el.dateReceived)
+            }
+            container.counselContents = el.counselContents
+            container.counselNo = el.counselNo
+            container.orderNo = el.orderNo
+            container.customerName = el.customerName
+            container.receiveName = el.receiveName
+            container.counselTypeCd = el.counselTypeCd
+            container.childCounselTypeCd = el.childCounselTypeCd
+            container.chargeName = el.chargeName
+            container.statusCd = el.statusCd
+            return container
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    fitersort () {
+      this.counselList.slice().sort((a, b) => a.counselNo < b.counselNo ? 1 : -1)
+    },
+    searchBtn () {
+      let param = {
+        searchStartDate: this.state.startdate,
+        searchEndDate: this.state.enddate,
+        pchargeName: this.searchParam.ChargeName,
+        pchildCounselType: this.searchParam,
+        pcounselStatus: this.searchParam,
+        pcounselType: this.searchParam,
+        preceiveName: this.searchParam.ReceiveName,
+        pwriterKeyword: '',
+        pwriterType: ''
+      }
+      if (param.searchStartDate === '' || param.searchEndDate === '') {
+        param.searchStartDate = null
+        param.searchEndDate = null
+      }
+      this.getCounselList(param)
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,29 @@
+import axios from 'axios'
+
+const config = {
+  // baseUrl: 'http://localhost:8443'
+  baseUrl: 'http://192.168.232.51:8443/booksadmin'
+}
+
+// 거래처 검색
+export function getAcList (params) {
+  return axios
+    .get(`${config.baseUrl}/basic/userCustomer/find/userCustomer`, {
+      params: {
+        puserCustomerName: params.puserCustomerName,
+        puserCustomerType: params.puserCustomerType,
+        pcuCode: params.pcuCode
+      }
+    })
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 거래처 업데이트
+export function updateAc (params) {
+  console.log(params)
+  return axios.post(
+    `${config.baseUrl}/basic/userCustomer/sava/userCustomer`,
+    params
+  )
+}

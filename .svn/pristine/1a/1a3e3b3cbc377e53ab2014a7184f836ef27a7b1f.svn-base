@@ -1,0 +1,55 @@
+<template>
+  <div class="input-group">
+    <datepicker :value="startDate" @selected="getStartDate($event)" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+    <span class="input-group-addon"><i class="la la-calendar"></i></span>
+    <span class="input-group-addon">~</span>
+    <datepicker :value="state.enddate" @selected="getEndtDate($event)" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+    <span class="input-group-addon"><i class="la la-calendar"></i></span>
+  </div>
+</template>
+
+<script>
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+export default {
+  name: 'dateSelect',
+  components: {
+    datepicker
+  },
+  data: function () {
+    return {
+      state: {
+        startdate: '',
+        enddate: ''
+      },
+      ko: ko
+    }
+  },
+  methods: {
+    getFormatDate (date) {
+      let temp = new Date(date)
+      let year = temp.getFullYear()
+      let month = temp.getMonth() + 1
+      let day = temp.getDate()
+      if (day < 10) {
+        day = '0' + day
+      }
+      return year + '-' + month + '-' + day
+    },
+    getStartDate (e) {
+      let tempDate = this.getFormatDate(e)
+      this.$emit('state-start-date', tempDate)
+    },
+    getEndtDate (e) {
+      let tempDate = this.getFormatDate(e)
+      this.$emit('state-end-date', tempDate)
+    }
+  }
+}
+</script>
+
+<style scoped>
+.vdp-datepicker {
+    width: 150px;
+}
+</style>

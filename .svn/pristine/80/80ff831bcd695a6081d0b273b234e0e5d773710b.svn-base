@@ -1,0 +1,99 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ title }}</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="widget mb-0">
+                    <div class="widget-body pb-0">
+                        <table class="table table-bordered" summary="상품분류">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="40%">
+                                <col width="10%">
+                                <col width="40%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">분류코드</th>
+                                    <td class="text-left"><input type="text" class="form-control" value="BA1"></td>
+                                    <th>분류명</th>
+                                    <td class="text-left"><input type="text" class="form-control" value="TOEFL Junior"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">상품수</th>
+                                    <td class="text-left">15개</td>
+                                    <th>매장번호</th>
+                                    <td class="text-left"><input type="text" class="form-control" value="1211"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">사용여부</th>
+                                    <td class="text-left">
+                                         <div class="row">
+                                            <div class="col-sm-12 d-flex align-items-center">
+                                                    <div class="styled-radio">
+                                                        <input type="radio" id="radio-1" value="">
+                                                        <label for="radio-1">사용</label>
+                                                    </div>
+                                                    <div class="styled-radio">
+                                                        <input type="radio" id="radio-2" value="">
+                                                        <label for="radio-2">미사용</label>
+                                                    </div>
+                                            </div>
+                                         </div>
+                                    </td>
+                                    <th></th>
+                                    <td class="text-left"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+              <div class="modal-footer" style="justify-content: center;">
+                <div class="row col">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-dark" @click="$emit('close')">닫기</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary margin-right-5" @click="handleClick">수정</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+export default {
+  name: 'groupingDetailViewPopup',
+  props: {
+    title: {
+      type: String,
+      require: true
+    }
+  },
+  data () {
+    return {
+      param: {}
+    }
+  },
+  methods: {
+    handleClick () {
+      confirm('입력한 내용으로 저장하시겠습니까?')
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,260 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ title }}</h4>
+                <button type="button" class="close"  @click="$emit('closeSelect', '')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+             <div class="row">
+                <div class="col col-sm-6">
+                    <!-- 검색영역 시작-->
+                    <div class="widget no-margin">
+                        <div class="widget-body no-padding">
+                            <table class="table table-bordered item-select" summary="품목 검색하기">
+                                <colgroup>
+                                    <col width="20%" />
+                                    <col width="*" />
+                                    <col width="15%" />
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row"><span class="text-primary">품목대분류</span></th>
+                                        <td>
+                                            <select class="form-control" v-model="searchParam.pbigCode" @change="changeCboBigCode">
+                                                <option value=''>전체</option>
+                                                <option v-for="x in bigCodeList" :key="x.icCodeNo" :value="x.icCodeNo">{{x.icCodeName}}</option>
+                                            </select>
+                                        </td>
+                                        <td rowspan="3">
+                                            <button class="btn btn-primary btn-item"  @click="onClickSearch">검색</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><span class="text-primary">품목중분류</span></th>
+                                        <td>
+                                            <select class="form-control"  v-model="searchParam.pmidCode">
+                                                <option value=''>전체</option>
+                                                <option v-for="x in midCodeList" :key="x.icCodeNo" :value="x.icCodeNo">{{x.icCodeName}}</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row"><span class="text-primary">품목명</span></th>
+                                        <td>
+                                            <input type="text" class="form-control" placeholder="검색할 품목명 입력" v-model="searchParam.pitemName" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                            <!-- 검색영역 끝-->
+
+                    <div class="widget">
+                        <div class="widget-body no-padding">
+                            <vue-bootstrap-4-table  :rows="rowData" :columns="columns" :config="config" :classes="classes" :show-loader="showLoader">
+                                <template slot="empty-results">
+                                   선택할 품목을 먼저 조회한 후 "+" 버튼을 통해 목록에 담으세요
+                                </template>
+                                <template slot="depthFullname" slot-scope="props">
+                                    {{ props.row.depthFullName }}
+                                    <b class="item-name"> {{ props.row.itemName}}</b>
+                                </template>
+                                <template slot="button" slot-scope="props">
+                                     <button class="btn btn-sm btn-outline-dark" @click="selectRow(props.row)"> + </button>
+                                </template>
+                            </vue-bootstrap-4-table>
+                        </div>
+                    </div>
+                </div>
+
+                        <div class="col col-sm-6">
+                            <div class="widget">
+                                <div class="widget-body explain-wrap">
+                                    <h4><i class="la la-exclamation-triangle"></i>선택한 품목</h4>
+                                    <p>선택한 품목을 확인하고 하단의 “선택완료” 버튼을 클릭하면 해당 품목이 일괄 선택됩니다. <br>
+                                    잘못 선택한 품목 “-” 버튼을 통해 제거합니다</p>
+                                </div>
+                            </div>
+
+                            <div class="widget">
+                                <div class="widget-body no-padding">
+                                   <vue-bootstrap-4-table :rows="selectDataRow" :columns="columns" :config="config2" :classes="classes" >
+                                        <template slot="empty-results">
+                                        선택할 품목을 먼저 조회한 후 "+" 버튼을 통해 목록에 담으세요
+                                        </template>
+                                        <template slot="depthFullname" slot-scope="props">
+                                            {{ props.row.depthFullName }}
+                                            <b class="item-name"> {{ props.row.itemName}}</b>
+                                        </template>
+                                         <template slot="button" slot-scope="props">
+                                            <button class="btn btn-sm btn-outline-danger" @click="deleteRow(props.row.index)"> - </button>
+                                        </template>
+                                   </vue-bootstrap-4-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="col-sm-6 d-flex justify-content-between">
+                    <span>선택한 품목 : <b class="text-danger">{{ selectDataRow.length }}건</b></span>
+                    <button type="button" class="btn btn-primary" @click="selecAllDone">선택완료</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import {itemApi} from '@/api'
+import VueBootstrap4Table from 'vue-bootstrap4-table'
+
+export default {
+  name: 'ItemSelectPopup',
+  components: {
+    VueBootstrap4Table
+  },
+  props: {
+    title: {
+      type: String,
+      require: true
+    },
+    modalParamObj: {
+      type: Object, String
+    }
+  },
+  data () {
+    return {
+      modalOpenFlag: false,
+      modalPopupId: '',
+      rowData: [],
+      selectDataRow: [],
+      columns: [
+        {label: 'NO', name: 'index', sort: true, row_classes: 'w80'},
+        {label: '품목ID', name: 'itemId', sort: true, row_classes: 'w100'},
+        {label: '[품목분류]품목명', name: 'depthFullname', sort: true, row_classes: 'table-text-left'},
+        {label: '선택', name: 'button', sort: false, row_classes: 'w50'}
+      ],
+      columns2: [
+        {label: 'NO', name: 'index', sort: true, row_classes: 'w80'},
+        {label: '품목ID', name: 'itemId', sort: true, row_classes: 'w100'},
+        {label: '[품목분류]품목명', name: 'depthFullname', sort: true, row_classes: 'table-text-left'},
+        {label: '선택', name: 'button', sort: false, row_classes: 'w50'}
+      ],
+      config: {
+        pagination: true,
+        pagination_info: false,
+        num_of_visibile_pagination_buttons: 10,
+        highlight_row_hover: true,
+        multi_column_sort: false,
+        card_mode: false,
+        per_page: 20,
+        per_page_options: [20, 50, 100],
+        show_reset_button: false,
+        show_refresh_button: false,
+        global_search: {
+          placeholder: '',
+          visibility: false,
+          case_sensitive: false
+        },
+        loaderText: ''
+      },
+      config2: {
+        pagination: false,
+        pagination_info: false,
+        num_of_visibile_pagination_buttons: 10,
+        highlight_row_hover: false,
+        multi_column_sort: false,
+        card_mode: false,
+        per_page: 20,
+        per_page_options: [20, 50, 100],
+        show_reset_button: false,
+        show_refresh_button: false,
+        global_search: {
+          placeholder: '',
+          visibility: false,
+          case_sensitive: false
+        }
+      },
+      classes: {
+        table: 'table table-bordered'
+      },
+      showLoader: false,
+      categoryCodeList: [], /* 품목코드목록 */
+      bigCodeList: [], /* 대분류 */
+      midCodeList: [], /* 중분류 */
+      searchParam: {
+        pitemName: '', /* 품목명 */
+        pbigCode: '', /* 대분류코드 */
+        pmidCode: '', /* 중분류코드 */
+        pitemUseYn: 'Y' /* 사용여부 */
+      }
+    }
+  },
+  created () {
+    // 품목코드목록 조회
+    itemApi.findCategoryCode()
+      .then(res => {
+        this.showLoader = true
+        this.categoryCodeList = res
+        this.bigCodeList = res.filter(x => x.icParentNo === null)
+        this.showLoader = false
+      })
+      .catch(err => {
+        console.error(err)
+        this.showLoader = false
+      })
+  },
+  methods: {
+    // 품목 대분류 selectBox Change
+    changeCboBigCode () {
+      this.searchParam.pmidCode = ''
+      this.midCodeList = this.categoryCodeList.filter(x => x.icParentNo === this.searchParam.pbigCode)
+    },
+    // 조회
+    onClickSearch () {
+      this.showLoader = true
+      itemApi.findItemList(this.searchParam)
+        .then(res => {
+          this.rowData = res.map((el, index) => {
+            const container = {}
+            container.index = index + 1
+            container.depthFullName = el.depthFullName
+            container.itemName = el.itemName
+            container.itemId = el.itemId
+            return container
+          })
+          this.showLoader = false
+        })
+        .catch(err => {
+          this.showLoader = false
+          console.error(err)
+        })
+    },
+    selectRow (data) {
+      if (this.selectDataRow.some(e => e === data)) return false
+      this.selectDataRow.push(data)
+      console.log(this.selectDataRow)
+    },
+    deleteRow (index) {
+      console.log('index', index)
+      this.selectDataRow.splice(index - 1, 1)
+    },
+    selecAllDone () {
+      this.$emit('closeSelect', this.selectDataRow)
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

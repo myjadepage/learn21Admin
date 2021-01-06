@@ -1,0 +1,230 @@
+<template>
+  <div id="stockShopInputModal" class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">가맹점 물류이동</h4>
+                <button type="button" class="close" @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+
+                        <div class="widget no-margin">
+                            <div class="widget-body no-padding">
+                                <table class="table table-bordered" summary="가맹점 물류이동">
+                                    <colgroup>
+                                        <col width="5%">
+                                        <col width="7%">
+                                        <col width="15%">
+                                        <col width="8%">
+                                        <col width="17%">
+                                        <col width="7%">
+                                        <col width=*>
+                                        <col width="7%">
+                                        <col width="15%">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <th rowspan="3" class="bg-primary">편집</th>
+                                            <th scope="row"><span class="text-primary">전표일자</span></th>
+                                            <td>
+                                                <div class="row">
+                                                <div class="col col-sm-10">
+                                                    <datepicker :value="state.startdate" :format="getFormatDate" :language="ko" placeholder="날짜선택" input-class="form-control"></datepicker>
+                                                </div>
+                                                <div class="input-group col col-sm-2">
+                                                    <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                                </div>
+                                                </div>
+                                            </td>
+                                            <th scope="row"><span class="text-primary">이동 가맹점</span></th>
+                                            <td>
+
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" placeholder="가맹점">
+                                                    <button type="button" class="btn btn-sm btn-secondary"><i class="la la-search"></i></button>
+                                                </div>
+                                            </td>
+                                            <th scope="row"><span class="text-primary">이동전<br>물류창고</span></th>
+                                            <td>
+
+                                                <select class="form-control">
+                                                            <option>선택</option>
+                                                            <option>홍길동</option>
+                                                            <option>Relish</option>
+                                                        </select>
+
+                                            </td>
+                                            <th scope="row"><span class="text-primary">공급가</span></th>
+                                            <td class="text-right">15,200</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th scope="row"><span class="text-primary">담당자</span></th>
+                                            <td colspan="3">
+
+                                                <select class="form-control">
+                                                            <option>선택</option>
+                                                            <option>홍길동</option>
+                                                            <option>Relish</option>
+                                                        </select>
+
+                                            </td>
+                                            <th scope="row"><span class="text-primary">이동후<br>물류창고</span></th>
+                                            <td>
+
+                                                <select class="form-control">
+                                                            <option>선택</option>
+                                                            <option>홍길동</option>
+                                                            <option>Relish</option>
+                                                        </select>
+
+                                            </td>
+                                            <th scope="row"><span class="text-primary">부가세</span></th>
+                                            <td class="text-right">0</td>
+
+                                        </tr>
+                                        <tr>
+                                            <th scope="row"><span class="text-primary">메모</span></th>
+                                            <td colspan="3">
+                                                <input type="text" class="form-control" placeholder="7.17일 주문서">
+                                            </td>
+                                            <th scope="row"><span class="text-primary">합계수량</span></th>
+                                            <td class="text-right">15</td>
+                                            <th scope="row"><span class="text-primary">합계금액</span></th>
+                                            <td class="text-right">15,200</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- 리스트 -->
+                        <div class="widget">
+                            <div class="widget-body no-padding">
+                                <table id="spec-table" class="table table-bordered" summary="가맹점물류이동 리스트">
+                                    <colgroup>
+                                        <col width="7%">
+                                        <col width="15%">
+                                        <col width=*>
+                                        <col width="10%">
+                                        <col width="10%">
+                                        <col width="10%">
+                                        <col width="7%">
+                                    </colgroup>
+                                    <thead>
+                                        <tr>
+                                            <th>NO</th>
+                                            <th>관리코드</th>
+                                            <th>품목</th>
+                                            <th>수량</th>
+                                            <th>단가</th>
+                                            <th>합계금액</th>
+                                            <th>삭제</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>ECN-0199-2015-74</td>
+                                            <td>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" value="[ITEM ID] 품목명01">
+                                                    <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('itemSelectSingle')"><i class="la la-search"></i></button>
+                                                   <item-select-single-popup v-if="modalOpenFlag && modalPopupId === 'itemSelectSingle'" @close="closeModalPopup"></item-select-single-popup>
+                                            </div>
+
+                                            </td>
+                                            <td class="text-right">2</td>
+                                            <td class="text-right">1300</td>
+                                            <td class="text-right">1300</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-danger">-</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="widget-footer">
+                                <div class="d-flex align-items-stretch justify-content-between">
+                                    <button class="btn btn-sm btn-outline-primary" @click="openModalPopup('itemSelect')">품목선택</button>
+                                    <button class="btn btn-sm btn-primary">항목 추가</button>
+                                </div>
+                                <item-select-popup title="품목선택" v-if="modalOpenFlag && modalPopupId === 'itemSelect'" @close="closeModalPopup"></item-select-popup>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer" style="justify-content: center;">
+                <div class="row col">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-primary" @click="$emit('close')">닫기</button>
+                        <button type="button" class="btn btn-outline-primary">신규전표</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <button type="button" class="btn btn-info margin-right-5" @click="openModalPopup('logisticsPrint')">인쇄</button>
+                        <button type="button" class="btn btn-secondary" >저장</button>
+                    </div>
+                    <logistics-print-popup v-if="modalOpenFlag && modalPopupId === 'logisticsPrint'" @close="closeModalPopup"></logistics-print-popup>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import datepicker from 'vuejs-datepicker'
+import { ko } from 'vuejs-datepicker/dist/locale'
+import ItemSelectPopup from './common/ItemSelectPopup.vue'
+import ItemSelectSinglePopup from '@/components/popup/common/ItemSelectSinglePopup'
+import LogisticsPrintPopup from './print/LogisticsPrintPopup.vue'
+
+export default {
+  components: { datepicker, ItemSelectPopup, LogisticsPrintPopup, ItemSelectSinglePopup },
+  data () {
+    return {
+      state: {
+        startdate: new Date()
+      },
+      ko: ko,
+      modalOpenFlag: false
+    }
+  },
+  methods: {
+    getFormatDate (date) {
+      return this.$moment(date).format('YYYY-MM-DD')
+    },
+    // 모달팝업 open
+    openModalPopup (id) {
+      switch (id) {
+        case 'itemSelectSingle': // 품목단일 선택
+          this.modalPopupId = 'itemSelectSingle'
+          break
+        case 'itemSelect': // 품목 선택
+          this.modalPopupId = 'itemSelect'
+          break
+        case 'logisticsPrint': // 가맹점 물류이동 인쇄
+          this.modalPopupId = 'logisticsPrint'
+          break
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

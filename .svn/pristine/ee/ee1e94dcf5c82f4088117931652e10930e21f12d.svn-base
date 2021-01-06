@@ -1,0 +1,131 @@
+<template>
+  <div class="default-sidebar">
+    <nav
+      class="side-navbar box-scroll sidebar-scroll" :class="{ shrinked: isShrinked }">
+      <ul id="pageMove">
+        <li>
+          <a href="#dropdown-base" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-leaf"></i><span>{{ getBigTitleBase }}</span></a>
+          <SidebarMenu id="dropdown-base" :items="items.base"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-buy" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-shopping-cart"></i><span>{{ getBigTitleBuy }}</span></a>
+          <SidebarMenu id="dropdown-buy" :items="items.buy"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-sales" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-calculator"></i><span>{{ getBigTitleSales }}</span></a>
+           <SidebarMenu id="dropdown-sales" :items="items.sales"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-order" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-bus"></i><span>{{ getBigTitleOrder }}</span></a>
+           <SidebarMenu id="dropdown-order" :items="items.order"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-stock" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-cubes"></i><span>{{ getBigTitleStock }}</span></a>
+          <SidebarMenu id="dropdown-stock" :items="items.stock"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-goods" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-book"></i><span>{{ getBigTitleGoods }}</span></a>
+          <SidebarMenu id="dropdown-goods" :items="items.goods"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-cs" aria-expanded="false" data-toggle="collapse"
+            ><i class="la la-edit"></i><span>{{ getBigTitleCs }}</span></a>
+           <SidebarMenu id="dropdown-cs" :items="items.cs"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-manage" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-file-text"></i><span>{{ getBigTitleManage }}</span></a>
+          <SidebarMenu id="dropdown-manage" :items="items.manage"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-member" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-users"></i><span>{{ getBigTitleMember }}</span></a>
+          <SidebarMenu id="dropdown-member" :items="items.member"></SidebarMenu>
+        </li>
+        <li>
+          <a href="#dropdown-statistics" aria-expanded="false" data-toggle="collapse">
+            <i class="la la-signal"></i><span>{{ getBigTitleStatistics }}</span></a>
+          <SidebarMenu id="dropdown-statistics" :items="items.statistics"></SidebarMenu>
+        </li>
+      </ul>
+      <ul class="side-bottom-info">
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+        <li style="">
+          <p>34</p>
+          <span>결제 수</span>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</template>
+
+<script>
+import $ from 'jquery'
+import SidebarMenu from './sidebar/SidebarMenu'
+import { mapActions, mapGetters, mapState } from 'vuex'
+
+export default {
+  components: { SidebarMenu },
+  name: 'SideBar',
+  data: function () {
+    return {}
+  },
+  mounted () {
+    this.setMenuList()
+    this.makeScroll()
+    this.makeCollapse()
+  },
+  computed: {
+    ...mapGetters('navToggle', ['isShrinked']),
+    ...mapState('sideMenu', ['items']),
+    ...mapGetters('sideMenu', ['getBigTitleBase', 'getBigTitleBuy', 'getBigTitleSales',
+      'getBigTitleOrder', 'getBigTitleStock', 'getBigTitleGoods', 'getBigTitleCs', 'getBigTitleManage',
+      'getBigTitleMember', 'getBigTitleStatistics'])
+  },
+  methods: {
+    toggleMenu (id) {
+      this.id = id
+    },
+    // 대메뉴 api
+    ...mapActions('sideMenu', ['setMenuList']),
+    // scroll
+    makeScroll () {
+      $('.sidebar-scroll').niceScroll({
+        cursorcolor: 'transparent',
+        cursorborder: 'transparent',
+        cursoropacitymax: 0,
+        boxzoom: false,
+        autohidemode: 'hidden',
+        cursorfixedheight: 80
+      })
+    },
+    // collapse
+    makeCollapse () {
+      $('.side-navbar li a').click(function () {
+        $('.collapse').collapse('hide')
+      })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

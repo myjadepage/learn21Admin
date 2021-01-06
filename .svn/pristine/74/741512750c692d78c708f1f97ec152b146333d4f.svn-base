@@ -1,0 +1,137 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader v-bind:pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-sm-12">
+        <!-- 검색영역 시작-->
+        <div class="widget has-shadow">
+          <div class="widget-body">
+            <table class="table table-bordered" summary="거래처 검색하기">
+              <colgroup>
+                <col width="10%" />
+                <col width="40%" />
+                <col width="10%" />
+                <col width="40%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span class="text-primary">거래처명</span>
+                  </th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-4">
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="검색어 입력"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                  <th><span class="text-primary">거래처 구분</span></th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-3">
+                        <select class="form-control">
+                          <option>전체</option>
+                          <option>매입처</option>
+                          <option>매출처</option>
+                        </select>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="text-center">
+              <button class="btn btn-primary">검색</button>
+            </div>
+          </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+        <!-- 리스트영역 시작 -->
+        <data-table-vue-4
+                :columnDef="columns"
+                :rowData="rows"
+                :isPaging="true"
+                :btnList="[{btnName: '+ 신규등록',
+                            onClick: (data) => {
+                              this.$router.push({name: 'baseVendorInput',
+                                                 params: {type: 1}})
+                            }
+                          }]"
+                :btnLinkedList="[{
+                      column: 'buttons',
+                      label: '수정',
+                      paramColumn: 'cuCode',
+                      onClick: (data) => {
+                        this.$router.push({name: 'baseShopInput',
+                                           params: {cuCode: data}})
+                        }
+                    }]" />
+
+        <!-- 리스트영역 끝 -->
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import DataTableVue4 from '@/components/DataTableVue4.vue'
+import {getAcList} from '@/api'
+
+export default {
+  name: 'baseVendorList',
+  mixins: [pageHeader({title: '거래처 관리', groupName: '기초관리'})],
+  components: {DataTableVue4},
+  data: function () {
+    return {
+      rows: [],
+      columns: [
+        {label: 'No', name: 'index', sort: true},
+        {label: '구분', name: 'cuType', sort: true},
+        {label: '거래처명', name: 'cuName', sort: true, row_classes: 'table-text-left'},
+        {label: '사업자번호', name: 'cuOfiiceNumber', sort: true},
+        {label: '대표자', name: 'cuCeoName', sort: true},
+        {label: '전화', name: 'cuTel', sort: true},
+        {label: 'FAX', name: 'cuFax', sort: true},
+        {label: '지역', name: 'cuArea', sort: true},
+        {label: '거래처 그룹', name: 'dcuCode', sort: true},
+        {label: '관리', name: 'buttons', sort: true}
+      ]
+    }
+  },
+  mounted () {
+    this.getAgencyList()
+  },
+  methods: {
+    getAgencyList () {
+      getAcList()
+        .then(res => {
+          this.rows = res.data.map((el, index) => {
+            const container = {}
+            container.index = index + 1
+            container.cuCode = el.cuCode // 코드
+            container.cuType = el.cuType // 구분
+            container.cuName = el.cuName // 거래처명
+            container.cuOfiiceNumber = el.cuOfiiceNumber // 사업자번호
+            container.cuCeoName = el.cuCeoName // 대표자명
+            container.cuTel = el.cuTel // 전화
+            container.cuFax = el.cuFax // 팩스
+            container.cuArea = el.cuArea // 지역
+            container.dcuCode = el.dcuCode // 거래처그룹
+            return container
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+}
+</script>

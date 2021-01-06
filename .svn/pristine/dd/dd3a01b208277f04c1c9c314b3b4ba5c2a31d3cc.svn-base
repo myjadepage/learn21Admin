@@ -1,0 +1,155 @@
+<template>
+ <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+              <div class="col-sm-12">
+
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="상품분류">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">상품분류선택</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <select class="form-control">
+                                                <option>전체</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">상품분류명</span></th>
+                                <td>
+                                     <div class="row">
+                                        <div class="col-sm-4">
+                                            <input type="text" class="form-control" placeholder="검색어 입력">
+                                        </div>
+                                     </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary">검색</button>
+                    </div>
+
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                            <select class="form-control col-sm-2">
+                                                <option>표시갯수</option>
+                                                <option>10개</option>
+                                                <option>20개</option>
+                                                <option>30개</option>
+                                            </select>
+                            <label class="col-sm-4">조회건수 : 20개</label>
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-end">
+                            <button class="btn btn-outline-primary" @click="$router.push({name: 'groupingManage'})">상품분류관리</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table id="cs-sms-table" class="table table-bordered" summary="상품분류 리스트">
+                        <colgroup>
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="10%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">대분류</th>
+                                <th scope="col">중분류</th>
+                                <th scope="col">소분류</th>
+                                <th scope="col">분류코드</th>
+                                <th scope="col">사용</th>
+                                <th scope="col">상품수</th>
+                                <th scope="col">관리</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>청담</td>
+                                <td>중분류1</td>
+                                <td>소분류1</td>
+                                <td>BA1</td>
+                                <td>o</td>
+                                <td><button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('groupingView')">보기</button></td>
+                                <td><button type="button" class="btn btn-sm btn-primary" @click="openModalPopup('groupingDetailView')">수정</button></td>
+                                <grouping-product-view-popup title="상품분류별 상품조회" v-if="modalOpenFlag && modalPopupId === 'groupingView'" @close="closeModalPopup"></grouping-product-view-popup>
+                                <grouping-detail-view-popup title="상품분류상세" v-if="modalOpenFlag && modalPopupId === 'groupingDetailView'" @close="closeModalPopup"></grouping-detail-view-popup>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+    </div>
+ </div>
+</template>
+
+<script>
+import VueBootstrap4Table from 'vue-bootstrap4-table'
+import pageHeader from '@/mixin/pageHeader'
+import GroupingProductViewPopup from '@/components/popup/GroupingProductViewPopup.vue'
+import GroupingDetailViewPopup from '@/components/popup/GroupingDetailViewPopup.vue'
+
+export default {
+  name: 'grouping',
+  mixins: [
+    pageHeader({title: '상품분류 관리', groupName: '상품관리'})
+  ],
+  components: {
+    VTable: VueBootstrap4Table,
+    GroupingProductViewPopup,
+    GroupingDetailViewPopup
+  },
+  data () {
+    return {
+      modalOpenFlag: false, // 모달창 openFlag
+      modalPopupId: '' // 오픈할 모달창 id
+    }
+  },
+  methods: {
+    openModalPopup (id) {
+      if (id === 'groupingView') {
+        // 주문서 상세팝업 오픈시
+        this.modalPopupId = 'groupingView'
+      } else if (id === 'groupingDetailView') {
+        this.modalPopupId = 'groupingDetailView'
+      }
+      this.modalOpenFlag = true
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

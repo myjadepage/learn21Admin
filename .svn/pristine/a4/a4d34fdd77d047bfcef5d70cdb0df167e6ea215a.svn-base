@@ -1,0 +1,374 @@
+<template>
+    <div class="container-fluid">
+        <div class="row">
+        <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+            <div class="col-sm-12">
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!-- 검색영역 끝-->
+                                <div class="widget">
+                                    <div class="widget-body no-padding">
+                                        <table class="table table-bordered no-margin totla-info" summary="상품등록">
+                                            <colgroup>
+                                                <col width="10%">
+                                                <col width="40%">
+                                                <col width="10%">
+                                                <col width="40%">
+                                            </colgroup>
+
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">품목명</th>
+                                                    <td>i-Spring Level 2C Homework Book</td>
+                                                    <th>품목ID</th>
+                                                    <td>PD3456789</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>품목단가</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">정가</span>
+                                                                    <input type="text" class="form-control text-right" value="15,000">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">정가</span>
+                                                                    <input type="text" class="form-control text-right" value="15,000">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <th>ISBN</th>
+                                                    <td>
+                                                        <input type="text" class="form-control" value="9782548235721">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>저자/출판사</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">저자</span>
+                                                                    <input type="text" class="form-control" value="(주)청담러닝">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">출판사</span>
+                                                                    <input type="text" class="form-control" value="learn21">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <th>브랜드</th>
+                                                    <td>
+                                                        <input type="text" class="form-control" value="청담러닝">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Year/Pages</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">Year</span>
+                                                                    <input type="text" class="form-control" value="2010/10">
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-4">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon">Pages</span>
+                                                                    <input type="text" class="form-control" value="196">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <th>옵션정보</th>
+                                                    <td>
+                                                         <div class="row">
+                                                            <div class="col-sm-6 d-flex align-items-center">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="las la-square-full"></i><strong>CD</strong></span>
+                                                                    <div class="styled-radio">
+                                                                        <input type="radio" name="radio" id="rad-1">
+                                                                        <label for="rad-1">있음</label>
+                                                                    </div>
+                                                                    <div class="styled-radio">
+                                                                        <input type="radio" name="radio" id="rad-2">
+                                                                        <label for="rad-2">없음</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-sm-6 d-flex align-items-center">
+                                                                <div class="input-group">
+                                                                    <span class="input-group-addon"><i class="las la-square-full"></i><strong>Ebook</strong></span>
+                                                                    <div class="styled-radio">
+                                                                        <input type="radio" name="radio" id="rad-1">
+                                                                        <label for="rad-1">있음</label>
+                                                                    </div>
+                                                                    <div class="styled-radio">
+                                                                        <input type="radio" name="radio" id="rad-2">
+                                                                        <label for="rad-2">없음</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th ope="row">상품구분</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 d-flex align-items-center">
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-1">
+                                                                    <label for="rad-1">일반</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">STB</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <th ope="row">선택상품</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 d-flex align-items-center">
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-1">
+                                                                    <label for="rad-1">일반</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">선택</label>
+                                                                </div>
+                                                                <input type="text" class="form-control col-sm-4 margin-left-5">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">반품유형</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 d-flex align-items-center">
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-1">
+                                                                    <label for="rad-1">가능</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">불가능</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <th scope="row">이전내역 중복체크</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 d-flex align-items-center">
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-1">
+                                                                    <label for="rad-1">체크</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">제외</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">과세구분(매출)</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 d-flex align-items-center">
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-1">
+                                                                    <label for="rad-1">과세</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">면세</label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                     <th scope="row">판매여부</th>
+                                                    <td>
+                                                        <div class="row">
+                                                            <div class="col-sm-12 d-flex align-items-center">
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-1">
+                                                                    <label for="rad-1">판매</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">미판매</label>
+                                                                </div>
+                                                                <div class="styled-radio">
+                                                                    <input type="radio" name="radio" id="rad-2">
+                                                                    <label for="rad-2">일시품절</label>
+                                                                </div>
+                                                                 <input type="text" class="form-control col-sm-4 margin-left-5">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>검색어 키워드</th>
+                                                    <td>
+                                                        <input type="text" class="form-control" placeholder="/로 구분하여 키워드 복수 입력 가능">
+                                                    </td>
+                                                     <th scope="row">상품 이미지</th>
+                                                    <td>
+                                                        <div class="row d-flex align-items-center justify-content-start">
+                                                            <div class="col col-sm-6">
+                                                                <!--fileupload-->
+                                                                <file-upload id="file" @file2="clickFile"></file-upload>
+                                                            </div>
+                                                            <div class="col col-sm-6">
+                                                                 <button type="button" class="btn btn-secondary">미리보기</button>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th>상품부가정보</th>
+                                                    <td colspan="3">
+                                                        <input type="text" class="form-control" placeholder="">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="widget">
+                                    <div class="widget-header no-padding margin-bottom-5">
+                                        <div class="row">
+                                            <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                                                <h5>상품-등록정보</h5>
+                                            </div>
+                                            <div class="col-sm-6 d-flex align-items-center justify-content-end">
+                                                <button type="button" class="btn btn-outline-primary" @click="addRow">+ 상품추가</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="widget-body no-padding">
+                                        <table class="table table-bordered mb-0" summary="품목정보">
+                                            <colgroup>
+                                                <col width="12%">
+                                                <col width=*>
+                                                <col width="12%">
+                                                <col width="12%">
+                                                <col width="12%">
+                                                <col width="12%">
+                                                <col width="12%">
+
+                                            </colgroup>
+                                            <thead>
+                                                <tr>
+                                                    <th>상품코드</th>
+                                                    <th>표시상품명</th>
+                                                    <th>상품분류</th>
+                                                    <th>물류정보</th>
+                                                    <th>정가</th>
+                                                    <th>할인율</th>
+                                                    <th>판매가</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(row, index) in rows" :key="index">
+                                                    <td>
+                                                        <input type="text" class="form-control" value="PD34567892" disabled>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control" placeholder="" value="i-Spring Level 2C Homework Book">
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control">
+                                                            <option>분류선택</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <select class="form-control">
+                                                            <option>선택</option>
+                                                        </select>
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control-plaintext text-right" value="13,000">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control text-right" value="0%">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" class="form-control text-right" value="15,000">
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget-footer">
+                        <div class="row">
+                            <div class="col-sm-6 d-flex align-items-center justify-content-md-start">
+                                <button type="button" class="btn btn-outline-primary" @click="$router.push({name: 'productManage'})">목록</button>
+                                <button type="button" class="btn btn-outline-danger">삭제</button>
+                            </div>
+                            <div class="col-sm-6 d-flex align-items-center justify-content-md-end">
+                                <button type="button" class="btn btn-primary">저장</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import FileUpload from '@/components/parts/FileUpload.vue'
+
+export default {
+  mixins: [pageHeader({titFileUploadle: '상품등록/수정', groupName: '상품관리'})],
+  components: {
+    FileUpload
+  },
+  data () {
+    return {
+      rows: [{name: 'aaa'}],
+      file: ''
+    }
+  },
+  methods: {
+    clickFile (e) {
+      this.file = e
+    },
+    addRow () {
+      console.log('한줄추가')
+      this.rows.push({
+        name: 'name' // 예시
+      })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

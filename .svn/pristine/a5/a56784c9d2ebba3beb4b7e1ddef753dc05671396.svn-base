@@ -1,0 +1,94 @@
+
+import {productManageApi} from '@/api'
+const productManageStore = {
+  namespaced: true,
+  state: {
+    columnDef: [
+      { label: '상품코드', name: 'productCode', sort: true },
+      { label: '상품명', name: 'productName', sort: true, row_classes: 'table-text-left' },
+      { label: '품목ID', name: 'itemId', sort: true },
+      { label: '정상가', name: 'originPrice', sort: true, row_classes: 'table-text-right', type: 'Number' },
+      { label: '판매가', name: 'listPrice', sort: true, row_classes: 'table-text-right', type: 'Number' },
+      { label: '할인율', name: 'discountRate', sort: true, row_classes: 'table-text-right' },
+      { label: '분류', name: 'depthFullname', sort: true, row_classes: 'table-text-left' },
+      { label: '판매', name: 'statusCd', sort: true },
+      { label: '공급처', name: 'providerName', sort: true },
+      { label: '등록일자', name: 'dateSystemRegister', sort: true, type: 'Date' }
+    ],
+    rowData: [],
+    categoryCodeList: [], /* 품목코드목록 */
+    bicCodeList: [], /* 대분류 */
+    midCodeList: [], /* 중분류 */
+    venProviderList: [], /* 공급처 */
+    itemDetail: {} /* 품목상세 */
+  },
+  getters: {
+    getColumnDef: state => state.columnDef,
+    getRowData: state => state.rowData,
+    getCategoryCodeList: state => state.categoryCodeList,
+    getBicCodeList: state => state.bicCodeList,
+    getMidCodeList: state => state.midCodeList,
+    getItemDetail: state => state.itemDetail,
+    getVenProviderList: state => state.venProviderList
+  },
+  mutations: {
+    SET_ROW_DATA: (state, payload) => { state.rowData = payload },
+    SET_CATEGORY_CODE_LIST: (state, payload) => { state.categoryCodeList = payload },
+    SET_BIG_CODE_LIST: (state, data) => { state.bicCodeList = data },
+    SET_MID_CODE_LIST: (state, data) => { state.midCodeList = data },
+    SET_ITEM_DETAIL: (state, payload) => { state.itemDetail = payload },
+    SET_VEN_PROVIDER_LIST: (state, payload) => { state.venProviderList = payload }
+  },
+  actions: {
+    // 상품리스트 조회
+    actionFindProductList: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        productManageApi.findProductList(data)
+          .then(res => {
+            commit('SET_ROW_DATA', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 상품분류코드 조회
+    actionFindCategoryCode: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        productManageApi.findCategoryCodeList(data)
+          .then(res => {
+            commit('SET_CATEGORY_CODE_LIST', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 대분류코드 리스트 SET
+    actionSetBicCodeList: ({commit}, data) => { commit('SET_BIG_CODE_LIST', data) },
+    // 중분류코드 리스트 SET
+    actionSetMidCodeList: ({commit}, data) => { commit('SET_MID_CODE_LIST', data) },
+    // 공급처 조회
+    actionFindProvider: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        productManageApi.findProvider(data)
+          .then(res => {
+            commit('SET_VEN_PROVIDER_LIST', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    },
+    // 품목상세 조회
+    actionFindItemDetail: ({commit}, data) => {
+      return new Promise(function (resolve, reject) {
+        productManageApi.findItemDetail(data)
+          .then(res => {
+            commit('SET_ITEM_DETAIL', res)
+            resolve(res)
+          })
+          .catch(err => { reject(err) })
+      })
+    }
+  }
+}
+
+export default productManageStore

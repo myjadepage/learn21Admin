@@ -1,0 +1,130 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">품목선택</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <!-- 검색영역 시작-->
+                <div class="widget no-margin">
+                                <div class="widget-body no-padding">
+                                    <table class="table table-bordered item-select" summary="품목 검색하기">
+                                        <colgroup>
+                                            <col width="20%" />
+                                            <col width="*" />
+                                            <col width="15%" />
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row" class="text-left">품목대분류</th>
+                                                <td>
+                                                    <select class="form-control" v-model="searchParam.pbigCode" @change="changeCboBigCode">
+                                                        <option value=''>전체</option>
+                                                        <option v-for="x in bigCodeList" :key="x.icCodeNo" :value="x.icCodeNo">{{x.icCodeName}}</option>
+                                                    </select>
+                                                </td>
+                                                <td rowspan="3">
+                                                    <button class="btn btn-primary btn-item" @click="onClickSearch">검색</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="text-left">품목중분류</th>
+                                                <td>
+                                                    <select class="form-control" v-model="searchParam.pmidCode">
+                                                        <option value=''>전체</option>
+                                                        <option v-for="x in midCodeList" :key="x.icCodeNo" :value="x.icCodeNo">{{x.icCodeName}}</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="text-left">품목명</th>
+                                                <td>
+                                                    <input type="text" class="form-control" v-model="searchParam.pitemName" placeholder="검색할 품목명 입력" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                </div>
+                <!-- 검색영역 끝-->
+                <DataTableVue4
+                    :columnDef="columnDef"
+                    :rowData="rowData"
+                    :isPaging="true"
+                    :perPage=10
+                    :rowEditorList="[{
+                                    type: 'LINK',
+                                    editColumn: 'itemName',
+                                    onClick: (data) => {
+                                        this.$emit('close', data.row)
+                                    }
+                                }]"
+                />
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import {itemApi} from '@/api'
+import DataTableVue4 from '@/components/DataTableVue4'
+
+export default {
+  name: 'ItemSelectSinglePopup',
+  props: ['modalParamObj'],
+  components: {
+    DataTableVue4
+  },
+  created () {
+    // 품목코드목록 조회
+    itemApi.findCategoryCode()
+      .then((res) => {
+        this.categoryCodeList = res
+        this.bigCodeList = res.filter(x => x.icParentNo === null)
+      })
+      .catch(err => { console.error(err) })
+  },
+  data () {
+    return {
+      columnDef: [
+        { label: '품목ID', name: 'itemId' },
+        { label: '품목분류', name: 'depthFullName', row_classes: 'table-text-left' },
+        { label: '품목명', name: 'itemName', row_classes: 'table-text-left' }
+      ],
+      rowData: [],
+      categoryCodeList: [], /* 품목코드목록 */
+      bigCodeList: [], /* 대분류 */
+      midCodeList: [], /* 중분류 */
+      searchParam: {
+        pitemName: '', /* 품목명 */
+        pbigCode: '', /* 대분류코드 */
+        pmidCode: '', /* 중분류코드 */
+        pitemUseYn: 'Y' /* 사용여부 */
+      }
+    }
+  },
+  methods: {
+    // 품목 대분류 selectBox Change
+    changeCboBigCode () {
+      this.searchParam.pmidCode = ''
+      this.midCodeList = this.categoryCodeList.filter(x => x.icParentNo === this.searchParam.pbigCode)
+    },
+    // 조회
+    onClickSearch () {
+      itemApi.findItemList(this.searchParam)
+        .then(res => { this.rowData = res })
+        .catch(err => { console.error(err) })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

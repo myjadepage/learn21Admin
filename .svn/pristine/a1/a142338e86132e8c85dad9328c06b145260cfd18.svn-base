@@ -1,0 +1,310 @@
+<template>
+                  <div class="tab-pane show active">
+                    <!-- tab-stock-1-->
+                    <div class="widget has-shadow">
+                        <div class="widget-body">
+                            <table class="table table-bordered" summary="거래처별 매출 검색하기">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="40%">
+                                    <col width="10%">
+                                    <col width="40%">
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <th><span class="text-primary">조회기간</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <DateSelect @state-start-date="startDate" @state-end-date="endDate"
+                                            :defStartDate="pfromDate"
+                                            :defEndDate="ptoDate"></DateSelect>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <th scope="row"><span class="text-primary">가맹점</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col col-sm-5">
+                                                    <select class="form-control">
+                                                        <option>그룹</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col col-sm-5">
+                                                    <select class="form-control">
+                                                        <option>가맹점</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th><span class="text-primary">품목 / 담당자</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col col-sm-5">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" placeholder="품목검색">
+                                                         <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('itemSelectSingle')"><i class="la la-search"></i></button>
+                                                        <item-select-single-popup v-if="modalOpenFlag && modalPopupId === 'itemSelectSingle'" @close="closeModalPopup"></item-select-single-popup>
+                                                    </div>
+                                                </div>
+                                                <div class="col col-sm-3">
+                                                    <select class="form-control">
+                                                        <option>담당자</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <th scope="row"><span class="text-primary">거래처</span></th>
+                                        <td>
+                                            <div class="row">
+                                                <div class="col-sm-5">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" placeholder="거래처검색">
+                                                         <button type="button" class="btn btn-sm btn-secondary" @click="openModalPopup('vendorList')"><i class="la la-search"></i></button>
+                                                         <vendor-list-popup title="거래처검색" v-if="modalOpenFlag && modalPopupId === 'vendorList'" @close="closeModalPopup"></vendor-list-popup>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="text-center">
+                                <button class="btn btn-primary">조회</button>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- 1. 거래처별 매출 리스트영역 시작 -->
+                    <div class="widget has-shadow">
+                        <div class="widget-header bordered">
+                            <div class="row">
+                                <div
+                                    class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                                    <select class="form-control col-sm-2">
+                                        <option>표시갯수</option>
+                                        <option>10개</option>
+                                        <option>20개</option>
+                                        <option>30개</option>
+                                    </select>
+                                    <label class="col-sm-4">조회건수 : 20개</label>
+                                </div>
+                                <div
+                                    class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                                    <button class="btn btn-outline-primary  btn_excel">엑셀다운로드</button>
+                                    <button class="btn btn-outline-secondary" @click="openModalPopup('salesSearchVendorPrint')">인쇄</button>
+                                </div>
+                                <sales-search-vendor-print-popup v-if="modalOpenFlag && modalPopupId === 'salesSearchVendorPrint'" @close="closeModalPopup"></sales-search-vendor-print-popup>
+                            </div>
+                        </div>
+                        <div class="widget-body">
+                            <table id="stock-list-table" class="table table-bordered mb-0" summary="거래처별 매출조회 리스트">
+                                <colgroup>
+                                    <col width="15%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="20%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width="7%">
+                                    <col width=*>
+                                </colgroup>
+                                <thead>
+                                    <tr>
+                                        <th>거래처</th>
+                                        <th>일자</th>
+                                        <th>일련번호</th>
+                                        <th>코드</th>
+                                        <th>품목</th>
+                                        <th>수량</th>
+                                        <th>단가</th>
+                                        <th>공급가</th>
+                                        <th>부가세</th>
+                                        <th>합계금액</th>
+                                        <th>메모</th>
+                                    </tr>
+                                </thead>
+                                <tfoot class="table-primary">
+                                    <tr>
+                                        <th>합계</th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>100</th>
+                                        <th></th>
+                                        <th class="text-right">2,500,000</th>
+                                        <th class="text-right">0</th>
+                                        <th class="text-right">2,500,000</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                                <tbody>
+                                    <tr>
+                                        <th rowspan="6">청담러닝</th>
+                                        <th class="text-center">[소계]</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>80</td>
+                                        <td></td>
+                                        <td class="text-right">100,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">100,000</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="3">2020-09-15</th>
+                                        <th class="text-center">[소계]</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td>80</td>
+                                        <td></td>
+                                        <td class="text-right">1,980,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">1,980,000</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="2">002</th>
+                                        <td>00015</td>
+                                        <td class="text-left">PB TOEFL JUNIOR SET</td>
+                                        <td>40</td>
+                                        <td class="text-right">24,452</td>
+                                        <td class="text-right">1,458,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">450,111</td>
+                                        <td class="text-left">세트도서</td>
+                                    </tr>
+                                    <tr>
+                                        <td>00015</td>
+                                        <td class="text-left">PB TOEFL JUNIOR SET</td>
+                                        <td>40</td>
+                                        <td class="text-right">24,452</td>
+                                        <td class="text-right">1,458,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">450,111</td>
+                                        <td class="text-left">세트도서</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th rowspan="2">2020-09-15</th>
+                                        <th class="text-center">[소계]</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td>80</td>
+                                        <td></td>
+                                        <td class="text-right">1,980,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">1,980,000</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>002</th>
+                                        <td>00015</td>
+                                        <td class="text-left">PB TOEFL JUNIOR SET</td>
+                                        <td>40</td>
+                                        <td class="text-right">24,452</td>
+                                        <td class="text-right">1,458,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">450,111</td>
+                                        <td class="text-left">세트도서</td>
+                                    </tr>
+
+                                    <tr>
+                                        <th rowspan="2">키다리영어</th>
+                                        <th rowspan="2">2020-09-15</th>
+                                        <th class="text-center">[소계]</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td>80</td>
+                                        <td></td>
+                                        <td class="text-right">100,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">100,000</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>0004</th>
+                                        <td>000000</td>
+                                        <td class="text-left">PB TOEFL JUNIOR SET</td>
+                                        <td>80</td>
+                                        <td class="text-right">24,452</td>
+                                        <td class="text-right">1,458,000</td>
+                                        <td class="text-right">0</td>
+                                        <td class="text-right">450,111</td>
+                                        <td class="text-left">세트도서</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- 상세재고 리스트영역 끝 -->
+                    <!-- tab-stock-1 끝-->
+                </div>
+</template>
+
+<script>
+import dateSelect from '@/mixin/dateSelect'
+import VendorListPopup from '@/components/popup/common/VendorListPopup.vue'
+import ItemSelectSinglePopup from '@/components/popup/common/ItemSelectSinglePopup.vue'
+import SalesSearchVendorPrintPopup from '@/components/popup/print/SalesSearchVendorPrintPopup.vue'
+
+export default {
+  mixins: [
+    dateSelect
+  ],
+  components: {
+    VendorListPopup,
+    ItemSelectSinglePopup,
+    SalesSearchVendorPrintPopup
+  },
+  data () {
+    return {
+      modalOpenFlag: false
+    }
+  },
+  methods: {
+    // 모달팝업 open
+    openModalPopup (id) {
+      switch (id) {
+        case 'vendorList': // 거래처검색
+          this.modalPopupId = 'vendorList'
+          break
+        case 'itemSelectSingle': // 품목단일 선택
+          this.modalPopupId = 'itemSelectSingle'
+          break
+        case 'salesSearchVendorPrint': // 거래처별 매출 프린트
+          this.modalPopupId = 'salesSearchVendorPrint'
+          break
+      }
+      this.modalOpenFlag = true
+      document.body.classList.add('modal-open')
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+      document.body.classList.remove('modal-open')
+    }
+  }
+}
+</script>
+<style>
+
+</style>

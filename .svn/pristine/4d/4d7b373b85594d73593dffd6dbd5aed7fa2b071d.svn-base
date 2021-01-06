@@ -1,0 +1,74 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+       <div class="col-sm-12">
+            <div class="widget has-shadow">
+                <div class="widget-body">
+
+                    <div class="row">
+                       <ItemClassify bigText="대분류" :codegroup="codegroupBig"></ItemClassify>
+
+                       <ItemClassify bigText="중분류" :codegroup="codegroupMid" ></ItemClassify>
+
+                       <ItemClassify bigText="소분류" :codegroup="codegroupSmall"></ItemClassify>
+                    </div>
+                </div>
+
+                <div class="widget-footer">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start">
+                            <button type="button" class="btn btn-outline-primary" @click ="$router.push({name: 'baseCode'})">목록</button>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-end">
+                            <button type="button" class="btn btn-primary">저장</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import ItemClassify from '@/components/ItemClassify'
+
+import { codeApi } from '@/api'
+
+export default {
+  mixins: [pageHeader({title: '코드상세관리', groupName: '기초관리'})],
+  components: {
+    ItemClassify
+  },
+  props: ['cgCode'],
+  data () {
+    return {
+      codegroupBig: [],
+      codegroupMid: [],
+      codegroupSmall: []
+    }
+  },
+  mounted () {
+    this.getCodeDetail(this.cgCode)
+  },
+  methods: {
+    // api
+    getCodeDetail (cgCode) {
+      codeApi.getCodeGroupDetail(cgCode)
+        .then(res => {
+          console.log(res.data)
+          this.codegroupBig = res.data.bigCodeDetail
+          this.codegroupMid = res.data.middleCodeDetail
+          this.codegroupSmall = res.data.smallCodeDetail
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+}
+</script>

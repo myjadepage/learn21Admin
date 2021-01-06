@@ -1,0 +1,33 @@
+import DateSelect from '@/components/parts/DateSelect'
+
+let dateSelect = ({
+  components: {
+    DateSelect
+  },
+  data: function () {
+    return {
+      state: {
+        startdate: '',
+        enddate: ''
+      }
+    }
+  },
+  computed: {
+    todayStartday () {
+      return new Date()
+    },
+    todayEndday () {
+      return new Date()
+    }
+  },
+  methods: {
+    startDate (date) {
+      this.state.startdate = date
+    },
+    endDate (date) {
+      this.state.enddate = date
+    }
+  }
+})
+
+export default dateSelect

@@ -1,0 +1,27 @@
+import axios from 'axios'
+
+// 주문취소/반품정보 조회
+export function getOrderCancelList (param) {
+  return axios.post(`${process.env.BASE_URL}/order/cancel/find`, param)
+}
+
+// 주문취소/반품정보 Summary조회
+export function getOrderCancelSummary (param) {
+  return axios.post(`${process.env.BASE_URL}/order/cancel/find/summary`, param)
+}
+
+// 주문취소/반품정보 화면의 주문취소/반품접수 정보
+export function getOrderCancelDetail (param) {
+  return axios
+    .get(`${process.env.BASE_URL}/order/cancel/find/detail/info?pexceptionNo=` + param)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}
+
+// 주문취소/반품정보 화면의 주문취소/반품접수 정보
+export function findOrderCancelDetailOrder (param) {
+  return axios
+    .get(`${process.env.BASE_URL}/order/cancel/find/detail/order?orderNo=` + param)
+    .then(res => res.data)
+    .catch(err => console.error(err))
+}

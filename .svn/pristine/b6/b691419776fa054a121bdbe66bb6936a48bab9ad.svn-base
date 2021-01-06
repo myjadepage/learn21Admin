@@ -1,0 +1,114 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">품목선택</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <!-- 검색영역 시작-->
+                <div class="widget no-margin">
+                                <div class="widget-body no-padding">
+                                    <table class="table table-bordered item-select" summary="품목 검색하기">
+                                        <colgroup>
+                                            <col width="20%" />
+                                            <col width="*" />
+                                            <col width="15%" />
+                                        </colgroup>
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row" class="text-left">품목대분류</th>
+                                                <td>
+                                                    <select class="form-control">
+                                                        <option>선택</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </td>
+                                                <td rowspan="3">
+                                                    <button class="btn btn-primary btn-item">검색</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="text-left">품목중분류</th>
+                                                <td>
+                                                    <select class="form-control">
+                                                        <option>선택</option>
+                                                        <option>Ketchup</option>
+                                                        <option>Relish</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" class="text-left">품목명</th>
+                                                <td>
+                                                    <input type="text" class="form-control" placeholder="검색할 품목명 입력" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                </div>
+                <!-- 검색영역 끝-->
+                <div class="widget">
+                    <div class="widget-body no-padding">
+                        <table class="table table-bordered item-table" summary="품목명 리스트">
+                            <colgroup>
+                                <col width="5%" />
+                                <col width="10%" />
+                                <col width=* />
+                                <col width="15%" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>NO</th>
+                                    <th>품목ID</th>
+                                    <th>[품목분류]품목명</th>
+                                    <th>선택</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>A12345678</td>
+                                    <td class="text-left">대분류 1 > 중분류 1 > 소분류 1
+                                        <b class="item-name">PB TOEFL JUNIOR SET (A)</b></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-dark">선택</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+export default {
+  name: 'ItemSelectSinglePopup',
+  props: {
+    title: {
+      type: String,
+      require: true
+    }
+  },
+  data () {
+    return {
+    }
+  },
+  methods: {
+  }
+}
+</script>
+
+<style>
+
+</style>

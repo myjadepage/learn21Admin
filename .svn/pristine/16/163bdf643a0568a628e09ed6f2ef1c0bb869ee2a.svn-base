@@ -1,0 +1,322 @@
+<template>
+<div id="orderCancelInfoModal" class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">주문취소/반품접수 정보</h4>
+                <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>주문취소/반품 접수 정보</h5>
+                        <table class="table table-bordered totla-info" summary="주문취소/반품 접수 정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>신청자</th>
+                                    <td>홍길동</td>
+                                    <th>신청일자</th>
+                                    <td>2020-02+12</td>
+                                    <th>주문번호</th>
+                                    <td>123456</td>
+                                </tr>
+                                <tr>
+                                    <th>처리상태</th>
+                                    <td>접수</td>
+                                    <th>취소/반품구분</th>
+                                    <td>취소</td>
+                                    <th></th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>접수자</th>
+                                    <td>홍길동</td>
+                                    <th>접수일자</th>
+                                    <td>2020-12-12 10:45</td>
+                                    <th>접수경로</th>
+                                    <td>FRONT</td>
+                                </tr>
+                                <tr>
+                                    <th>처리메모</th>
+                                    <td colspan="5">
+                                        <div class="row">
+                                            <div class='col-sm-12'>
+                                                <textarea class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5>
+                            <i class="la la-minus"></i>주문취소/반품 항목 정보
+                            <button type="button" class="btn btn-sm btn-dark" style="float:right; margin-bottom:5px">배송현황보기</button>
+                        </h5>
+                        <table class="table table-bordered" summary="주문취소/반품 항목 정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width=*>
+                                <col width="5%">
+                                <col width="10%">
+                                <col width="7%">
+                                <col width="10%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+                                <col width="7%">
+
+                            </colgroup>
+                            <thead>
+                                <th>상품코드</th>
+                                <th>품목</th>
+                                <th>유형</th>
+                                <th>공급처</th>
+                                <th>접수수량</th>
+                                <th>사유</th>
+                                <th>회수유형</th>
+                                <th>양품회수</th>
+                                <th>불량회수</th>
+                                <th>상태</th>
+                                <th>물류구분</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>123456</td>
+                                    <td class="text-left">품목1</td>
+                                    <td class="text-center">일반</td>
+                                    <td>(주)청담러닝</td>
+                                    <td>13</td>
+                                    <td>고객변심</td>
+                                    <td>자사</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                    <td>전송완료</td>
+                                    <td>SCM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>회수송장 정보</h5>
+                        <table class="table table-bordered" summary="회수송장 정보">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="7%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <thead>
+                                <th>택배사</th>
+                                <th>송장정보</th>
+                                <th>회수구분</th>
+                                <th>회수일자</th>
+                                <th>관리메모</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>대한통운</td>
+                                    <td>123456</td>
+                                    <td class="text-center">접수</td>
+                                    <td>2020-12-12</td>
+                                    <td class="text-left">관리메모를 확인합니다.</td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <h5><i class="la la-minus"></i>주문취소/반품 처리 정보</h5>
+                        <table class="table table-bordered totla-info" summary="주문취소/반품 처리 정보">
+                            <colgroup>
+                                <col width="13%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width="23%">
+                                <col width="10%">
+                                <col width=*>
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th>환불요청메모</th>
+                                    <td colspan="5">환불요청메모를 표기합니다.</td>
+                                </tr>
+                                <tr>
+                                    <th>환불계좌</th>
+                                    <td colspan="3">국민은행(574012-12-12345</td>
+                                    <th>예금주</th>
+                                    <td>홍길동</td>
+                                </tr>
+                                <tr>
+                                    <th>환불지시일</th>
+                                    <td>2020-02-12 10:12</td>
+                                    <th>환불완료일</th>
+                                    <td></td>
+                                    <th>환불상태</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>현금환불액</th>
+                                    <td>15,000원</td>
+                                    <th>승인취소액</th>
+                                    <td>0원</td>
+                                    <th>할인취소액</th>
+                                    <td>0원</td>
+                                </tr>
+                                <tr>
+                                    <th>고객부담회수비용</th>
+                                    <td>0원</td>
+                                    <th>배송비취소액</th>
+                                    <td>0원</td>
+                                    <th></th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>관리메모</th>
+                                    <td colspan="5">
+                                        <div class="row">
+                                            <div class='col-sm-12'>
+                                                <textarea class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer" style="justify-content: center;">
+                <div class="row col">
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">닫기</button>
+                        <button type="button" class="btn btn-outline-danger">접수취소</button>
+                        <button type="button" class="btn btn-outline-primary">회수지시</button>
+                    </div>
+                    <div class="col-sm-6 d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary margin-right-5">메모저장</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</template>
+
+<script>
+import { findOrderCancelDetail } from '@/api/order/OrderCancelApi'
+export default {
+  name: 'orderCancelPopup',
+  //   props: ['modalParamObj'],
+  data: function () {
+    return {
+      /* 주문취소/반품 접수정보 */
+      orderCancelMainVO: {
+        exceptionNo: '', /* 주문예외번호 */
+        orderGuid: '', /* 주문서GUID */
+        orderNo: '', /* 주문번호 */
+        receiveTypeCd: '', /* 주문예외접수구분 (접수경로) */
+        exceptionTypeCd: '', /* 예외구분 (취소/반품/교환) */
+        orderCustomerName: '', /* 주문자명 */
+        loginId: '', /* 회원ID */
+        customerName: '', /* 고객명 */
+        statusCd: '', /* 예외처리상태 */
+        dateReceived: '', /* 예외접수일자 */
+        receiveName: '', /* 접수자명 */
+        dateCompleted: '', /* 처리완료일자 */
+        chargeName: '', /* 처리자명 */
+        receiver: '', /* 수취인명 */
+        customerTelNum: '', /* 고객연락처 */
+        dateCreated: '', /* 등록일자 */
+        customerTypeCd: '', /* 고객유형 */
+        receiveId: '', /* 접수자ID */
+        chargeId: '', /* 처리자ID */
+        adminMemo: '', /* 관리자메모 */
+        pid: '', /* 고객주민번호 */
+        customerEmail: '', /* 고객이메일 */
+        dateOrdered: '', /* 주문접수일자 */
+        paymentTypeCd: '', /* 결제수단 */
+        paymentTotal: '', /* 결제총액 */
+        itemTotal: '', /* 주문상품총액 */
+        deliveryCostTotal: '', /* 배송비총액 */
+        orderStatusCd: '' /* 주문상태 */
+      },
+      /* 주문취소/반품 항목정보 */
+      orderCancelDetailItemVOList: [],
+      /* 회수송장 정보 */
+      ordRecallInvoiceList: [],
+      /* 환불지시 정보 */
+      ordRefund: {
+        exceptionNo: '', /* 주문예외번호 */
+        refundAccount: '', /* 환불계좌번호 */
+        accountUserName: '', /* 환불계좌예금주명 */
+        refundBank: '', /* 환불계좌은행명 */
+        refundMemo: '', /* 환불메모 */
+        dateCreated: '', /* 등록일자 */
+        dateRefund: '', /* 환불일자 */
+        statusCd: '', /* 환불상태 */
+        refundAmount: '', /* 환불총액 */
+        refundCash: '', /* 현금환불액 */
+        refundCardCancel: '', /* 카드승인취소액 */
+        refundMileage: '', /* 아이머니환불액 */
+        refundDiscount: '', /* 즉시할인 환불액 (사용안함) */
+        adminMemo: '', /* 관리자메모 */
+        customerChargeDeliveryCost: '', /* 고객부담회수비용 (사용안함) */
+        refundDeliveryCost: '', /* 배송비환불액 */
+        refundCouponDiscount: '', /* 쿠폰환불액 */
+        refundOcbPoint: '', /*  */
+        refundAccountEnc: '' /*  */
+      }
+    }
+  },
+  methods: {
+    getDetailData () {
+      // 주문서 기본정보 조회
+      findOrderCancelDetail(this.modalParamObj.exceptionNo)
+        .then(res => {
+          this.orderCancelMainVO = res.orderCancelMainVO
+          this.orderCancelDetailItemVOList = res.orderCancelDetailItemVOList
+          this.ordRecallInvoiceList = res.ordRecallInvoiceList
+          this.ordRefund = res.ordRefund
+        })
+    }
+  },
+  mounted: function () {
+    this.getDetailData()
+  }
+}
+</script>
+
+<style>
+
+</style>

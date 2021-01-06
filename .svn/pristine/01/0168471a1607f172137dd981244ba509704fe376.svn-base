@@ -1,0 +1,157 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+       <div class="col-sm-12">
+
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="FAQ관리 검색하기">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">검색어</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control">
+                                                <option>검색구분</option>
+                                                <option>제목</option>
+                                                <option>내용</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">게시일자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <div class="input-group">
+                                                <input type="text" name="dates" class="form-control" placeholder="날짜선택">
+                                                <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                                <span class="input-group-addon">~</span>
+                                                <input type="text" name="dates" class="form-control" placeholder="날짜선택">
+                                                <span class="input-group-addon"><i class="la la-calendar"></i></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary">검색</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                            <!-- <select class="form-control col-sm-2">
+                                                <option>표시갯수</option>
+                                                <option>10개</option>
+                                                <option>20개</option>
+                                                <option>30개</option>
+                                            </select>
+                            <label class="col-sm-4">조회건수 : 20개</label> -->
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                            <button type="button" class="btn btn-outline-danger" rel="manage/manage_faq_input"
+                                data-src="manage/manage_faq_input.html">+ 신규</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table id="manage-faq-table" class="table table-bordered" summary="FAQ리스트 ">
+                        <colgroup>
+                            <col width="5% ">
+                            <col width="10% ">
+                            <col width=*>
+                            <col width="10% ">
+                            <col width="10% ">
+                            <col width="10% ">
+                            <col width="15% ">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>분류</th>
+                                <th>제목</th>
+                                <th>표시순서</th>
+                                <th>등록자</th>
+                                <th>조회수</th>
+                                <th>등록일자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> 9</td>
+                                <td>상품</td>
+                                <td class="text-left">학원 재원생입니다. 구매해애ㅑ 할 교제를 어디에서 볼 수 있나요?</td>
+                                <td>5</td>
+                                <td>김무엽</td>
+                                <td>27</td>
+                                <td>2020-09-15</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import PageHeader from '@/components/PageHeader'
+import { getFaqList } from '@/api'
+
+export default {
+  name: 'faqList',
+  components: {
+    PageHeader
+  },
+  data: function () {
+    return {
+      pageCurrentInfo: {
+        title: 'FAQ 관리',
+        groupName: '운영 관리'
+      },
+      modal: false
+    }
+  },
+  created () {
+    this.faqList()
+  },
+  methods: {
+    faqList () {
+      getFaqList()
+        .then(res => {
+          console.log('faq', res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

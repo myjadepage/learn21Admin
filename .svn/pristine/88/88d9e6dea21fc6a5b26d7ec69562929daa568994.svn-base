@@ -1,0 +1,188 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+       <div class="col-sm-12">
+
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="FAQ관리 검색하기">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">검색어</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control" v-model="selected">
+                                                <option value="">검색구분</option>
+                                                <option value="title">제목</option>
+                                                <option value="contents">내용</option>
+                                            </select>
+                                        </div>
+                                        <div class="col col-sm-89">
+                                          <input type="text" class="form-control" placeholder="" v-model="searchKeyword">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">게시일자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col">
+                                            <!-- date select component -->
+                                            <DateSelect @state-start-date="startDate" @state-end-date="endDate" :defStartDate="pfromDate"
+                                                        :defEndDate="ptoDate"></DateSelect>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="searchBtn()">검색</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+            <div class="widget has-shadow">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                            <select class="form-control col-sm-2">
+                                                <option>표시갯수</option>
+                                                <option>10개</option>
+                                                <option>20개</option>
+                                                <option>30개</option>
+                                            </select>
+                            <label class="col-sm-4">조회건수 : {{ faqListInfo.length }}개</label>
+                        </div>
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-end justify-content-center">
+                            <button type="button" class="btn btn-outline-danger" rel="manage/manage_faq_input"
+                                data-src="manage/manage_faq_input.html">+ 신규</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table id="manage-faq-table" class="table table-bordered" summary="FAQ리스트 ">
+                        <colgroup>
+                            <col width="5% ">
+                            <col width="10% ">
+                            <col width=*>
+                            <col width="10% ">
+                            <col width="10% ">
+                            <col width="10% ">
+                            <col width="15% ">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>분류</th>
+                                <th>제목</th>
+                                <th>표시순서</th>
+                                <th>등록자</th>
+                                <th>조회수</th>
+                                <th>등록일자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in filterFaqSortedNo()" :key="index">
+                                <td> {{ item.faqNo }}</td>
+                                <td>{{ item.faqCategoryCd }}</td>
+                                <td class="text-left">{{ item.title }}</td>
+                                <td>{{ item.dispOrder }}</td>
+                                <td></td>
+                                <td>{{ item.viewCount }}</td>
+                                <td>{{ item.dateCreated }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <!-- 리스트영역 끝 -->
+        </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+import dateSelect from '@/mixin/dateSelect'
+import { getFormatDate } from '@/assets/script.js'
+import { getFaqList } from '@/api'
+
+export default {
+  name: 'faqList',
+  mixins: [
+    pageHeader({title: 'FAQ 관리', groupName: '운영관리'}),
+    dateSelect
+  ],
+  data: function () {
+    return {
+      modal: false,
+      faqListInfo: [],
+      selected: '',
+      searchKeyword: ''
+
+    }
+  },
+  created () {
+    this.faqList()
+  },
+  methods: {
+    faqList (param) {
+      getFaqList(param)
+        .then(res => {
+          this.faqListInfo = res.data.map((el) => {
+            const container = {}
+            container.dateCreated = getFormatDate(el.dateCreated)
+            container.faqNo = el.faqNo
+            container.dispOrder = el.dispOrder
+            container.faqCategoryCd = el.faqCategoryCd
+            container.viewCount = el.viewCount
+            container.title = el.title
+            return container
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    filterFaqSortedNo () {
+      return this.faqListInfo.slice().sort((a, b) => a.faqNo < b.faqNo ? 1 : -1)
+    },
+    searchBtn () {
+      let param = {
+        searchStartDate: this.state.startdate,
+        searchEndDate: this.state.enddate,
+        searchType: this.selected,
+        searchKeyword: this.searchKeyword
+      }
+      if (param.searchType === '') {
+        alert('검색타입을 선택하세요')
+        return
+      }
+      if (param.searchStartDate === '' || param.searchEndDate === '') {
+        param.searchStartDate = null
+        param.searchEndDate = null
+      }
+      alert(param.searchType + '' + param.searchKeyword + '' + param.searchStartDate + '' + param.searchEndDate)
+      this.faqList(param)
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

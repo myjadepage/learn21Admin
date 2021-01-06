@@ -1,0 +1,260 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader v-bind:pageCurrentInfo="pageCurrentInfo" />
+      <div class="col-sm-12">
+        <!-- 검색영역 시작-->
+        <div class="widget has-shadow">
+          <div class="widget-body">
+            <table class="table table-bordered" summary="가맹점 검색하기">
+              <colgroup>
+                <col width="10%" />
+                <col width="40%" />
+                <col width="10%" />
+                <col width="40%" />
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th scope="row">
+                    <span>가맹점명</span>
+                  </th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-4">
+                        <input type="text" class="form-control" placeholder="검색어 입력"/>
+                      </div>
+                    </div>
+                  </td>
+                  <th><span>가맹점 그룹</span></th>
+                  <td>
+                    <div class="row">
+                      <div class="col col-sm-3">
+                        <select class="form-control" :value="fcGroupList" @input="selectFcGroup">
+                          <option value="">선택하세요</option>
+                          <option value="">청담어학원</option>
+                          <option value="">APRIL</option>
+                        </select>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center">
+              <button type="button" class="btn btn-primary">검색</button>
+            </div>
+          </div>
+        </div>
+        <!-- 검색영역 끝-->
+
+        <!-- 리스트영역 시작 -->
+        <div class="widget has-shadow">
+          <div class="widget-header bordered">
+            <div class="row">
+              <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                <div class="dropdown show vbt-per-page-dropdown col-sm-2">
+                          <a class="btn btn-block dropdown-toggle form-control" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              {{config.per_page}}
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                              <a v-for="(option, key, index) in config.per_page_options" :key="index" class="dropdown-item" href="" @click.prevent="perPageHandler(option)" v-bind:class="{ active:  (option == config.per_page)}">
+                                  {{option}}
+                              </a>
+                          </div>
+                      </div>
+                      <label class="col-sm-4 table-len-label">조회건수 : {{ rows.length }} 건</label>
+              </div>
+            </div>
+          </div>
+          <div class="widget-body">
+            <v-table :rows="rows" :columns="columns" :config="config" :classes="classes">
+                 <template slot="empty-results">
+                    조회된 공지사항이 없습니다.
+                </template>
+                <template slot="button" slot-scope="props">
+                   <button class="btn btn-sm btn-outline-dark" @click="$router.push({name: 'baseShopInput', params: `${props.fgCode}`})">수정</button>
+                </template>
+            </v-table>
+
+            <!-- <table class="table table-bordered" summary="가맹점보기 리스트">
+              <colgroup>
+                <col width="5%" />
+                <col width="10%" />
+                <col width=* />
+                <col width="15%" />
+                <col width="7%" />
+                <col width="10%" />
+                <col width="10%" />
+                <col width="7%" />
+                <col width="15%" />
+                <col width="7%" />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>NO</th>
+                  <th>그룹</th>
+                  <th>가맹점명</th>
+                  <th>사업자번호</th>
+                  <th>대표자</th>
+                  <th>전화</th>
+                  <th>FAX</th>
+                  <th>지역</th>
+                  <th>외부연결 코드</th>
+                  <th>관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(item, index) in rows" :key='index'>
+                  <td>{{ index }}</td>
+                  <td>{{ item.fgCode }}</td>
+                  <td class="text-left">{{ item.fuName }}</td>
+                  <td>{{ item.fuoFiiceNumber }}</td>
+                  <td>{{ item.fuCeoName }}</td>
+                  <td>{{ item.fuTel }}</td>
+                  <td>{{ item.fuFax }}</td>
+                  <td>{{ item.fuArea }}</td>
+                  <td>{{ item.fuOutCode }} | {{ item.fuOutCode2 }}</td>
+                  <td>
+                    <div class="col-sm-12 d-flex align-items-center justify-content-md-end justify-content-center">
+                      <button class="btn btn-sm btn-outline-dark" @click="$router.push({name: 'baseShopInput', params: `${item.fgCode}`})">수정</button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table> -->
+          </div>
+        </div>
+        <!-- 리스트영역 끝 -->
+      </div>
+      <!-- End Page Content -->
+    </div>
+  </div>
+</template>
+
+<script>
+import VueBootstrap4Table from 'vue-bootstrap4-table'
+import pageHeader from '@/mixin/pageHeader'
+import { getFcList } from '@/api'
+
+export default {
+  name: 'baseShopList',
+  mixins: [pageHeader({title: '가맹점 관리', groupName: '기초관리'})],
+  components: {
+    VTable: VueBootstrap4Table // table 이름변경 <v-table></v-table>
+  },
+  data: function () {
+    return {
+      fcGroupList: [],
+      fcList: [],
+      rows: [],
+      columns: [{
+        label: 'No',
+        name: 'index',
+        sort: true
+      },
+      {
+        label: '그룹',
+        name: 'fgCode',
+        sort: true
+      },
+      {
+        label: '가맹점명',
+        name: 'fuName',
+        sort: true,
+        row_classes: 'table-text-left'
+      },
+      {
+        label: '사업자번호',
+        name: 'fuoFiiceNumber',
+        sort: true
+      },
+      {
+        label: '대표자',
+        name: 'fuCeoName',
+        sort: true
+      },
+      {
+        label: '전화',
+        name: 'fuTel',
+        sort: true
+      },
+      {
+        label: 'FAX',
+        name: 'fuFax',
+        sort: true
+      },
+      {
+        label: '지역',
+        name: 'fuArea',
+        sort: true
+      },
+      {
+        label: '외부연결코드',
+        name: 'fuOutCode',
+        sort: true
+      },
+      {
+        label: '관리',
+        name: 'button',
+        sort: false
+      }],
+      config: {
+        pagination: true,
+        pagination_info: false,
+        num_of_visibile_pagination_buttons: 10,
+        checkbox_rows: false,
+        highlight_row_hover: true,
+        rows_selectable: false,
+        multi_column_sort: false,
+        card_mode: false,
+        selected_rows_info: false,
+        per_page: 20,
+        per_page_options: [20, 50, 100],
+        show_reset_button: false,
+        show_refresh_button: false,
+        global_search: {
+          placeholder: '',
+          visibility: false,
+          case_sensitive: false
+        }
+      },
+      classes: {
+        table: 'table table-bordered'
+      }
+    }
+  },
+  mounted () {
+    this.getFranchise()
+  },
+  methods: {
+    // api
+    getFranchise () {
+      getFcList()
+        .then(res => {
+          this.rows = res.data.map(el => {
+            const container = {}
+            container.fgCode = el.fgCode
+            container.fuName = el.fuName
+            container.fuoFiiceNumber = el.fuoFiiceNumber
+            container.fuCeoName = el.fuCeoName
+            container.fuTel = el.fuTel
+            container.fuFax = el.fuFax
+            container.fuArea = el.fuArea
+            container.fuOutCode = `${el.fuOutCode} | ${el.fuOutCode2} `
+            return container
+          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    selectFcGroup (e) {
+      console.log('event', e.target.value)
+    },
+    // table perpage
+    perPageHandler (option) {
+      this.config.per_page = option
+    }
+  }
+}
+</script>

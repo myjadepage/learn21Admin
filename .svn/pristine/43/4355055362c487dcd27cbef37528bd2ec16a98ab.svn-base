@@ -1,0 +1,190 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Container from '@/components/container/Container'
+import SignIn from './../views/SignIn'
+
+// import { RouterTabRoutes } from 'vue-router-tab'
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/SignIn',
+    name: 'signIn',
+    component: SignIn,
+    meta: {
+      authRequired: true
+    }
+  },
+  {
+    path: '/',
+    redirect: '/dashboard',
+    name: 'Home',
+    component: Container,
+    children: [
+      // ...RouterTabRoutes,
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard'),
+        meta: {
+          title: '대시보드'
+        }
+      },
+      {
+        path: 'base/shop_list',
+        name: 'baseShopList',
+        component: () => import('@/views/base/BaseShopList'),
+        meta: {
+          title: '가맹점관리'
+        }
+      },
+      {
+        path: 'base/shop_input',
+        name: 'baseShopInput',
+        component: () => import('@/views/base/BaseShopInput'),
+        meta: {
+          title: '가맹점등록/수정'
+        }
+      },
+      {
+        path: 'base/vendor_list',
+        name: 'baseVendorList',
+        component: () => import('@/views/base/BaseVendorList'),
+        meta: {
+          title: '거래처관리'
+        }
+      },
+      {
+        path: 'base/vendor_input',
+        name: 'baseVendorInput',
+        component: () => import('@/views/base/BaseVendorInput'),
+        meta: {
+          title: '거래처등록/수정'
+        }
+      },
+      {
+        path: 'base/items',
+        name: 'baseItems',
+        component: () => import('@/views/base/BaseItems'),
+        meta: {
+          title: '품목관리'
+        }
+      },
+      {
+        path: 'base/code',
+        name: 'baseCode',
+        component: () => import('@/views/base/BaseCode'),
+        meta: {
+          title: '코드관리'
+        }
+      },
+      {
+        path: 'base/code_detail/:cgCode',
+        name: 'baseCodeDetail',
+        component: () => import('@/views/base/BaseCodeDetail'),
+        props: true,
+        meta: {
+          title: '코드상세관리'
+        }
+      },
+      {
+        path: 'buy/list',
+        name: 'buyList',
+        component: () => import('@/views/buy/BuyList'),
+        meta: {
+          title: '구매발주서'
+        }
+      },
+      {
+        path: 'buy/confirm',
+        name: 'buyConfirm',
+        component: () => import('@/views/buy/BuyConfirm'),
+        meta: {
+          title: '매입확정'
+        }
+      },
+      {
+        path: 'buy/spec_list',
+        name: 'buySpecList',
+        component: () => import('@/views/buy/BuySpecList'),
+        meta: {
+          title: '매입명세서'
+        }
+      },
+      {
+        path: 'buy/search',
+        name: 'buySearch',
+        component: () => import('@/views/buy/BuySearch'),
+        meta: {
+          title: '매입조회'
+        }
+      },
+      {
+        path: 'buy/invoice',
+        name: 'buyInvoice',
+        component: () => import('@/views/buy/BuyInvoice'),
+        meta: {
+          title: '매입처원장'
+        }
+      },
+      {
+        path: 'buy/not_in',
+        name: 'buyNotIn',
+        component: () => import('@/views/buy/BuyNotIn'),
+        meta: {
+          title: '매입고현황'
+        }
+      },
+      {
+        path: 'sales/spec_list',
+        name: 'saleSpecList',
+        component: () => import('@/views/sales/SaleSpecList'),
+        meta: {
+          title: '매출명세서'
+        }
+      },
+      {
+        path: 'order/order_list',
+        name: 'orderList',
+        component: () => import('@/views/order/OrderList'),
+        meta: {
+          title: '주문서조회'
+        }
+      },
+      {
+        path: 'manage/notice_list',
+        name: 'noticeList',
+        component: () => import('@/views/manage/NoticeList'),
+        meta: {
+          title: '공지사항'
+        }
+      },
+      {
+        path: 'manage/notice_input',
+        name: 'noticeInput',
+        component: () => import('@/views/manage/NoticeInput'),
+        meta: {
+          title: '공지사항등록'
+        }
+      },
+      {
+        path: 'manage/faq_list',
+        name: 'faqList',
+        component: () => import('@/views/manage/FaqList'),
+        meta: {
+          title: 'FAQ'
+        }
+      }
+    ]
+  }
+]
+
+const router = new VueRouter({
+  mode: 'history',
+  scrollBehavior: () => ({ y: 0 }),
+  base: '/',
+  routes
+})
+
+export default router

@@ -1,0 +1,141 @@
+import axios from 'axios'
+
+const config = {
+  baseUrl: 'http://192.168.232.51:8080/booksadmin'
+}
+
+// sidebar menu item
+export function getMenuItemList () {
+  return axios.get(`${config.baseUrl}/basic/menu/find`)
+}
+
+/**********************
+******* 기초관리*******
+***********************/
+// 코드 관리 > 코드그룹 select option
+export function getCodeGroup () {
+  return axios.get(`${config.baseUrl}/basic/code/find/groupCode`)
+}
+// 코드 관리 >  검색
+export function getCodeList (cdName, cgCode) {
+  return axios.get(`${config.baseUrl}/basic/code/find`, {
+    params: {
+      cdName: cdName,
+      cgCode: cgCode
+    }
+  })
+}
+// 코드 관리 > 코드그룹 상세
+export function getCodeGroupDetail (cgCode) {
+  return axios.get(`${config.baseUrl}/basic/code/find/groupCode/detail`, {
+    params: {
+      cgCode: cgCode
+    }
+  })
+}
+// 코드 추가
+export function addCodeDetail (param) {
+  return axios.post(`${config.baseUrl}/basic/code/save`, param)
+}
+
+/***************************
+******* 주문/배송관리*******
+***************************/
+// 주문관리
+export function getOrderList (param) {
+  return axios.post(`${config.baseUrl}/order/find`, param)
+}
+
+/*************************
+*******상담관리**********
+***************************/
+export function getManToManList () {
+  return axios.post(`${config.baseUrl}/counsel/manToMan/find/all`, {})
+}
+
+/*************************
+******* 운영관리**********
+***************************/
+// 공지관리
+export function getNoticeList (param) {
+  if (param == null) {
+    return axios.get(`${config.baseUrl}/operation/notice/find/list`)
+  } else {
+    alert(param.searchType + ',' + param.searchKeyword + ',' + param.searchStartDate + '' + param.searchEndDate)
+    return axios.get(`${config.baseUrl}/operation/notice/find/list`, {
+      params: {
+        psearchStartDate: param.searchStartDate,
+        psearchEndDate: param.searchEndDate,
+        psearchType: param.searchType,
+        psearchKeyword: param.searchKeyword
+      }
+    })
+  }
+}
+
+// 공지등록
+export function inputNotice (param) {
+  return axios.post(`${config.baseUrl}/operation/notice/save`, param)
+}
+
+// faq
+export function getFaqList (param) {
+  if (param == null) {
+    return axios.get(`${config.baseUrl}/operation/faq/find/list`)
+  } else {
+    return axios.get(`${config.baseUrl}/operation/faq/find/list`, {
+      params: {
+        psearchStartDate: param.searchStartDate,
+        psearchEndDate: param.searchEndDate,
+        psearchType: param.searchType,
+        psearchKeyword: param.searchKeyword
+      }
+    })
+  }
+}
+
+/*************************
+******* 상담관리**********
+***************************/
+// 고객상담관리
+export function customCounsel (param) {
+  return axios.post(`${config.baseUrl}/counsel/customer/find/all`, {
+    params: {}
+  })
+}
+// 고객상담상세
+export function customCounselDetail (param) {
+  return axios.get(`${config.baseUrl}/counsel/customer/view`, {
+    params: {
+      porderNo: param.porderNo,
+      pcounselNo: param.pcounselNo
+    }
+  })
+}
+
+/***************************
+ ********* 공통 ************
+ **************************/
+// 직원관리
+export function userList (param) {
+  return axios.get(`${config.baseUrl}/common/user/find/all`, {
+    params: {
+      loginId: param.loginId
+    }
+  })
+}
+
+// login
+export function sigin (info) {
+  return axios.post(`${config.baseUrl}/common/signin`, info)
+}
+// export function sigin (param) {
+//   return axios({
+//     method: 'post',
+//     url: `${config.baseUrl}/common/signin`,
+//     headers: {
+//       'Content-Type': 'application/json'
+//     },
+//     data: param
+//   })
+// }

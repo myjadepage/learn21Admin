@@ -1,0 +1,331 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Container from '@/components/container/Container'
+import SignIn from './../views/SignIn'
+
+// import { RouterTabRoutes } from 'vue-router-tab'
+
+Vue.use(VueRouter)
+
+const routes = [
+  {
+    path: '/SignIn',
+    name: 'signIn',
+    component: SignIn,
+    meta: {
+      authRequired: true
+    }
+  },
+  {
+    path: '/',
+    redirect: '/dashboard',
+    name: 'Home',
+    component: Container,
+    children: [
+      // ...RouterTabRoutes,
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/Dashboard'),
+        meta: {
+          title: '대시보드'
+        }
+      },
+      // 기초관리 (가맹점관리/거래처관리/품목관리/코드관리)
+      {
+        path: 'base/shop_list',
+        name: 'baseShopList',
+        component: () => import('@/views/base/BaseShopList'),
+        meta: {
+          title: '가맹점관리'
+        }
+      },
+      {
+        path: 'base/shop_input/:id?',
+        name: 'baseShopInput',
+        component: () => import('@/views/base/BaseShopInput'),
+        meta: {
+          title: '가맹점등록/수정'
+        }
+      },
+      {
+        path: 'base/vendor_list',
+        name: 'baseVendorList',
+        component: () => import('@/views/base/BaseVendorList'),
+        meta: {
+          title: '거래처관리'
+        }
+      },
+      {
+        path: 'base/vendor_input/:id?',
+        name: 'baseVendorInput',
+        component: () => import('@/views/base/BaseVendorInput'),
+        meta: {
+          title: '거래처등록/수정'
+        }
+      },
+      {
+        path: 'base/items',
+        name: 'baseItems',
+        component: () => import('@/views/base/BaseItems'),
+        meta: {
+          title: '품목관리'
+        }
+      },
+      {
+        path: 'base/items_input/:id?',
+        name: 'baseItemsInput',
+        component: () => import('@/views/base/BaseItemsInput'),
+        meta: {
+          title: '품목등록'
+        }
+      },
+      {
+        path: 'base/code',
+        name: 'baseCode',
+        component: () => import('@/views/base/BaseCode'),
+        meta: {
+          title: '코드관리'
+        }
+      },
+      {
+        path: 'base/code_detail/:cgCode',
+        name: 'baseCodeDetail',
+        component: () => import('@/views/base/BaseCodeDetail'),
+        props: true,
+        meta: {
+          title: '코드상세관리'
+        }
+      },
+      // 구매관리(구매발주서/매입확정/매입명세서/매입조회/매입처원장/미입고현황)
+      {
+        path: 'buy/list',
+        name: 'buyList',
+        component: () => import('@/views/buy/BuyList'),
+        meta: {
+          title: '구매발주서'
+        }
+      },
+      {
+        path: 'buy/confirm',
+        name: 'buyConfirm',
+        component: () => import('@/views/buy/BuyConfirm'),
+        meta: {
+          title: '매입확정'
+        }
+      },
+      {
+        path: 'buy/spec_list',
+        name: 'buySpecList',
+        component: () => import('@/views/buy/BuySpecList'),
+        meta: {
+          title: '매입명세서'
+        }
+      },
+      {
+        path: 'buy/search',
+        name: 'buySearch',
+        component: () => import('@/views/buy/BuySearch'),
+        meta: {
+          title: '매입조회'
+        }
+      },
+      {
+        path: 'buy/invoice_note',
+        name: 'buyInvoiceNote',
+        component: () => import('@/views/buy/BuyInvoiceNote'),
+        meta: {
+          title: '매입처원장'
+        }
+      },
+      {
+        path: 'buy/not_in',
+        name: 'buyNotIn',
+        component: () => import('@/views/buy/BuyNotIn'),
+        meta: {
+          title: '매입고현황'
+        }
+      },
+      // 영업관리(매출명세서/매출정산/매출조회/매출처원장)
+      {
+        path: 'sales/spec_list',
+        name: 'salesSpecList',
+        component: () => import('@/views/sales/SaleSpecList'),
+        meta: {
+          title: '매출명세서'
+        }
+      },
+      {
+        path: 'sales/sales_settle',
+        name: 'salesSettle',
+        component: () => import('@/views/sales/SalesSettle'),
+        meta: {
+          title: '매출정산'
+        }
+      },
+      {
+        path: 'sales/sales_search',
+        name: 'salesSearch',
+        component: () => import('@/views/sales/SalesSearch'),
+        meta: {
+          title: '매출정산'
+        }
+      },
+      {
+        path: 'sales/sales_invoice_note',
+        name: 'salesInvoiceNote',
+        component: () => import('@/views/sales/salesInvoiceNote'),
+        meta: {
+          title: '매출처원장'
+        }
+      },
+      // 주문관리(주문서조뇌/주문취소반품/환불관리/반품연동조회)
+      {
+        path: 'order/order_list',
+        name: 'orderList',
+        component: () => import('@/views/order/OrderList'),
+        meta: {
+          title: '주문서조회'
+        }
+      },
+      {
+        path: 'order/cancel_list',
+        name: 'orderCancelList',
+        component: () => import('@/views/order/OrderCancelList'),
+        meta: {
+          title: '주문취소/반품 조회'
+        }
+      },
+      {
+        path: 'order/refund_list',
+        name: 'orderRefundList',
+        component: () => import('@/views/order/OrderRefundList'),
+        meta: {
+          title: '환불 관리'
+        }
+      },
+      // 물류관리(재고현황/품목별상세재고/재고자산조정관리/송장관리/택배출고현황/반품관리/반품처리현황/가맹점물류이동)
+      // 상품관리(상품분류관리/상품관리/상품정보일괄변경)
+      {
+        path: 'product/grouping',
+        name: 'grouping',
+        component: () => import('@/views/product/Grouping'),
+        meta: {
+          title: '상품분류관리'
+        }
+      },
+      {
+        path: 'product/grouping_manage',
+        name: 'groupingManage',
+        component: () => import('@/views/product/GroupingManage'),
+        props: true,
+        meta: {
+          title: '상품분류 등록/수정'
+        }
+      },
+      {
+        path: 'product/product_manage',
+        name: 'productManage',
+        component: () => import('@/views/product/productManage'),
+        props: true,
+        meta: {
+          title: '상품관리'
+        }
+      },
+      {
+        path: 'product/product_input',
+        name: 'productInput',
+        component: () => import('@/views/product/productInput'),
+        props: true,
+        meta: {
+          title: '상품등록/수정'
+        }
+      },
+      {
+        path: 'product/product_update_all',
+        name: 'productUpdateAll',
+        component: () => import('@/views/product/ProductUpdateAll'),
+        props: true,
+        meta: {
+          title: '상품정보 일괄변경'
+        }
+      },
+      // 상담관리(1:1상담관리/고객상담관리/SMS전송결과)
+      {
+        path: 'cs/qa_list',
+        name: 'qaList',
+        component: () => import('@/views/cs/MantomanList'),
+        meta: {
+          title: '1:1'
+        }
+      },
+      {
+        path: 'cs/cs_manage',
+        name: 'csManage',
+        component: () => import('@/views/cs/CsManage'),
+        meta: {
+          title: '고객상담'
+        }
+      },
+      {
+        path: 'cs/sms_list',
+        name: 'smsList',
+        component: () => import('@/views/cs/SmsList'),
+        meta: {
+          title: 'SMS전송결과'
+        }
+      },
+      // 운영관리(공지사항관리/FAQ관리)
+      {
+        path: 'manage/notice_list',
+        name: 'noticeList',
+        component: () => import('@/views/manage/NoticeList'),
+        meta: {
+          title: '공지사항'
+        }
+      },
+      {
+        path: 'manage/notice_input',
+        name: 'noticeInput',
+        component: () => import('@/views/manage/NoticeInput'),
+        meta: {
+          title: '공지사항등록'
+        }
+      },
+      {
+        path: 'manage/faq_list',
+        name: 'faqList',
+        component: () => import('@/views/manage/FaqList'),
+        meta: {
+          title: 'FAQ'
+        }
+      },
+      {
+        path: 'manage/faq_input',
+        name: 'faqInput',
+        component: () => import('@/views/manage/FaqInput'),
+        meta: {
+          title: 'FAQ등록'
+        }
+      },
+      // 직원관리(직원관리)
+      {
+        path: 'member/user_manage',
+        name: 'userManage',
+        component: () => import('@/views/member/UserManage'),
+        meta: {
+          title: '직원관리'
+        }
+      }
+    ]
+  }
+]
+
+const router = new VueRouter({
+  mode: 'history',
+  scrollBehavior: () => ({ y: 0 }),
+  base: '/',
+  routes
+})
+
+export default router

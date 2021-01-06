@@ -1,0 +1,14 @@
+let popup = ({
+  data () {
+    return {
+      modal: false
+    }
+  },
+  methods: {
+    closeModal () {
+      this.modal = false
+    }
+  }
+})
+
+export default popup

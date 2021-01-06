@@ -1,0 +1,111 @@
+<template>
+  <div class="modal-mask">
+    <div class="modal-dialog modal-item">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">{{ title }}</h4>
+                <button type="button" class="close"  @click="$emit('close')">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only">close</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                <div class="widget">
+                    <div class="widget-body">
+                        <table class="table table-bordered" summary="상품분류">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="40%">
+                                <col width="10%">
+                                <col width="40%">
+                            </colgroup>
+                            <tbody>
+                                <tr>
+                                    <th scope="row"><span class="text-primary">상품분류</span></th>
+                                    <td class="text-left">청담 > 중분류1 > 소분류</td>
+                                    <th><span class="text-primary">등록 상품수</span></th>
+                                    <td class="text-left">총 28건</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                 <div class="widget ">
+                <div class="widget-header bordered">
+                    <div class="row">
+                        <div class="col-sm-6 d-flex align-items-center justify-content-md-start justify-content-center">
+                            <select class="form-control col-sm-2">
+                                                <option>표시갯수</option>
+                                                <option>10개</option>
+                                                <option>20개</option>
+                                                <option>30개</option>
+                                            </select>
+                            <label class="col-sm-4">조회건수 : 20개</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="상품분류별 상품조회 리스트">
+                        <colgroup>
+                            <col width="15%">
+                            <col width="15%">
+                            <col width="15%">
+                            <col width=*>
+                            <col width="7%">
+                            <col width="10%">
+                            <col width="10%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">상품코드</th>
+                                <th scope="col">상품명</th>
+                                <th scope="col">품목ID</th>
+                                <th scope="col">상품구분</th>
+                                <th scope="col">판매</th>
+                                <th scope="col">브랜드</th>
+                                <th scope="col">공급처</th>
+                                <th scope="col">등록일자</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>003401</td>
+                                <td>i-Spring Level 2C Homework Book</td>
+                                <td>LN01200001</td>
+                                <td>일반</td>
+                                <td>o</td>
+                                <td>(주)청담러닝</td>
+                                <td>(주)청담러닝</td>
+                                <td>2020-09-15</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+export default {
+  name: 'groupingProductViewPopup',
+  props: {
+    title: {
+      type: String,
+      require: true
+    }
+  },
+  data () {
+    return {
+      param: {}
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

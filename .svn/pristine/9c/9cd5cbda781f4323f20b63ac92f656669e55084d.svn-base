@@ -1,0 +1,19 @@
+<template>
+  <div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+    </div>
+  </div>
+</template>
+
+<script>
+import pageHeader from '@/mixin/pageHeader'
+export default {
+  mixins: [pageHeader({title: 'SMS 전송결과', groupName: '상담관리'})]
+}
+</script>
+
+<style>
+
+</style>

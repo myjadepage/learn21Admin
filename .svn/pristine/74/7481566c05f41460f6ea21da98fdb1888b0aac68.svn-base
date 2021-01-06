@@ -1,0 +1,219 @@
+<template>
+<div class="container-fluid">
+    <div class="row">
+      <PageHeader :pageCurrentInfo="pageCurrentInfo" />
+
+      <div class="col-sm-12">
+
+            <!-- 검색영역 시작-->
+            <div class="widget has-shadow">
+                <div class="widget-body">
+                    <table class="table table-bordered" summary="상담 검색하기">
+                        <colgroup>
+                            <col width="10%">
+                            <col width="40%">
+                            <col width="10%">
+                            <col width="40%">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row"><span class="text-primary">작성자 검색</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control">
+                                                                <option>고객ID</option>
+                                                                <option>고객명</option>
+                                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">담당자 검색</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control">
+                                                                <option>담당자ID</option>
+                                                                <option>담당자명</option>
+                                                            </select>
+                                        </div>
+                                        <div class="col col-sm-4">
+                                            <input type="text" class="form-control" placeholder="검색어 입력">
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">상담구분</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control">
+                                                                <option>전체</option>
+                                                                <option>알반상담</option>
+                                                                <option>주문상담</option>
+                                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th><span class="text-primary">상담유형</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-3">
+                                            <select class="form-control">
+                                                                    <option>상담유형1</option>
+                                                                    <option>Ketchup</option>
+                                                                    <option>Relish</option>
+                                                            </select>
+                                        </div>
+                                        <div class="col col-sm-3">
+                                            <select class="form-control">
+                                                                    <option>상담유형2</option>
+                                                                    <option>Ketchup</option>
+                                                                    <option>Relish</option>
+                                                            </select>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row"><span class="text-primary">작성일자</span></th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col col-sm-8">
+                                            <!-- date select component -->
+                                            <DateSelect @state-start-date="startDate" @state-end-date="endDate"
+                                            :defStartDate="pfromDate"
+                                            :defEndDate="ptoDate"></DateSelect>
+                                        </div>
+                                    </div>
+                                </td>
+                                <th>상태</th>
+                                <td>
+                                    <div class="row">
+                                        <div class="col-sm-12 d-flex align-items-center">
+                                            <div class="styled-radio">
+                                                <input type="radio" name="radQa" id="radQa-1">
+                                                <label for="radQa-1">전체</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="radQa" id="radQa-2">
+                                                <label for="radQa-2">접수</label>
+                                            </div>
+                                            <div class="styled-radio">
+                                                <input type="radio" name="radQa" id="radQa-3">
+                                                <label for="radQa-3">답변완료</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="text-center">
+                        <button class="btn btn-primary" @click="searchBtn">검색</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 검색영역 끝-->
+
+            <!-- 리스트영역 시작 -->
+                <DataTableVue4
+                    :columnDef="columnDef"
+                    :rowData="manToManListInfo"
+                    :isPaging="true"
+                     :rowEditorList="
+                    [{
+                        type: 'LINK',
+                        editColumn: 'title',
+                         onClick: (data) => { this.openModalPopup('MantoManInfoPopup', '35044') }
+                     }]"
+                />
+            <!-- 리스트영역 끝 -->
+            <manto-man-info-popup v-if="modalOpenFlag && modalPopupId === 'MantoManInfoPopup'" title="1:1상담"
+                      :modalParamObj="modalParamObj" @close="closeModalPopup" :key="componentKey"></manto-man-info-popup>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+import MantoManInfoPopup from '@/components/popup/MantoManInfoPopup.vue'
+import popup from '@/mixin/popup.js'
+import pageHeader from '@/mixin/pageHeader'
+import dateSelect from '@/mixin/dateSelect'
+import { getManToManList } from '@/api'
+import DataTableVue4 from '@/components/DataTableVue4'
+
+export default {
+  components: { MantoManInfoPopup, DataTableVue4 },
+  mixins: [
+    pageHeader({title: '1:1 상담관리', groupName: '상담관리'}),
+    dateSelect,
+    popup
+  ],
+  data: function () {
+    return {
+      manToManListInfo: [],
+      searchParam: {},
+      columnDef: [
+        {label: 'No', name: 'counselNo', sort: true},
+        {label: '제목', name: 'title', sort: true},
+        {label: '작성자명', name: 'userNameCreatedBy', sort: true, row_classes: 'table-text-left'},
+        {label: '상담구분', name: 'childCounselTypeCd', sort: true},
+        {label: '상담유형1', name: 'counselTypeCd', sort: true},
+        {label: '상담유형2', name: 'childCounselTypeCd', sort: true},
+        {label: '담당자', name: 'chargeName', sort: true},
+        {label: '상태', name: 'fuArea', sort: true},
+        {label: '작성일자', name: 'statusCd', sort: true}],
+      componentKey: 0,
+      modalOpenFlag: false, // 모달창 openFlag
+      modalPopupId: '', // 오픈할 모달창 id
+      modalParamObj: {} // 모달창 호출시 params
+    }
+  },
+  created () {
+    this.getManToMan()
+  },
+  methods: {
+    getManToMan () {
+      getManToManList()
+        .then(res => {
+          console.log(res.data)
+          this.manToManListInfo = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    searchBtn () {},
+    // 모달팝업 open
+    openModalPopup (id, o) {
+      if (id === 'MantoManInfoPopup') {
+        // 주문서 상세팝업 오픈시
+        this.modalPopupId = 'MantoManInfoPopup'
+        this.modalParamObj = o
+      }
+      this.modalOpenFlag = true
+      document.body.classList.add('modal-open')
+    },
+    // 모달창 close
+    closeModalPopup () {
+      this.modalPopupId = ''
+      this.modalOpenFlag = false
+      document.body.classList.remove('modal-open')
+    },
+    forceRerender () {
+      this.componentKey += 1
+    }
+  }
+}
+</script>
+
+<style>
+
+</style>

@@ -1,0 +1,34 @@
+import DateSelect from '@/components/parts/DateSelect'
+import { getFormatDate } from '@/assets/script.js'
+
+let dateSelect = ({
+  components: {
+    DateSelect
+  },
+  data: function () {
+    return {
+      state: {
+        startdate: '',
+        enddate: ''
+      }
+    }
+  },
+  computed: {
+    pfromDate () {
+      return getFormatDate(new Date())
+    },
+    ptoDate () {
+      return getFormatDate(new Date())
+    }
+  },
+  methods: {
+    startDate (date) {
+      this.state.startdate = date
+    },
+    endDate (date) {
+      this.state.enddate = date
+    }
+  }
+})
+
+export default dateSelect
